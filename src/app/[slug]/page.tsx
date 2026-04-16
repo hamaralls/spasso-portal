@@ -1,0 +1,239 @@
+import { notFound } from 'next/navigation'
+import type { Metadata } from 'next'
+import Image from 'next/image'
+import Link from 'next/link'
+import Badge from '@/components/Badge'
+import ArticleCard from '@/components/ArticleCard'
+import SectionHeader from '@/components/SectionHeader'
+import ShareButtons from '@/components/ShareButtons'
+import {
+  getCategoria,
+  getArtigosPorCategoria,
+  getArtigoCompleto,
+  getArtigosRelacionados,
+} from '@/lib/supabase/queries'
+import { formatDate, readingTime } from '@/lib/format'
+
+export const runtime = 'edge'
+
+interface Props {
+  params: Promise<{ slug: string }>
+  searchParams: Promise<{ page?: string }>
+}
+
+export async function generateMetadata({ params }: Props): Promise<Metadata> {
+  const { slug } = await params
+
+  const categoria = await getCategoria(slug)
+  if (categoria) {
+    return {
+      title: `${categoria.name} — Notícias`,
+      description: `Últimas notícias sobre ${categoria.name}.`,
+      alternates: { canonical: `/${slug}/` },
+    }
+  }
+
+  const artigo = await getArtigoCompleto(slug)
+  if (!artigo) return {}
+
+  const title = artigo.seo_title || artigo.title
+  const description = artigo.seo_description || artigo.excerpt?.replace(/<[^>]+>/g, '') || ''
+  const image = artigo.featured_image_url
+
+  return {
+    title,
+    description,
+    alternates: { canonical: `/${slug}/` },
+    openGraph: {
+      title,
+      description,
+      type: 'article',
+      publishedTime: artigo.published_at ?? undefined,
+      images: image ? [{ url: image, width: 1200, height: 630 }] : [],
+    },
+  }
+}
+
+export default async function SlugPage({ params, searchParams }: Props) {
+  const { slug } = await params
+  const { page: pageParam } = await searchParams
+  const page = Math.max(1, parseInt(pageParam ?? '1', 10))
+  const perPage = 12
+
+  // 1. Verificar se é uma categoria
+  const categoria = await getCategoria(slug)
+  if (categoria) {
+    const { articles, total } = await getArtigosPorCategoria(slug, page, perPage)
+    const totalPages = Math.ceil(total / perPage)
+
+    return (
+      <div className="max-w-7xl mx-auto px-4 py-8">
+        <div className="mb-8">
+          <SectionHeader title={categoria.name} />
+          <p className="text-sm text-gray-500">{total} notícias</p>
+        </div>
+
+        {articles.length === 0 ? (
+          <div className="text-center py-16 text-gray-400">
+            <p>Nenhuma notícia publicada ainda.</p>
+          </div>
+        ) : (
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+            {articles.map((article) => (
+              <ArticleCard key={article.id} article={article} />
+            ))}
+          </div>
+        )}
+
+        {totalPages > 1 && (
+          <div className="flex justify-center gap-2 mt-10">
+            {page > 1 && (
+              <a
+                href={`/${slug}/?page=${page - 1}`}
+                className="px-4 py-2 rounded border border-gray-300 text-sm font-medium hover:bg-gray-50 transition-colors"
+              >
+                ← Anterior
+              </a>
+            )}
+            <span className="px-4 py-2 text-sm text-gray-500">
+              Página {page} de {totalPages}
+            </span>
+            {page < totalPages && (
+              <a
+                href={`/${slug}/?page=${page + 1}`}
+                className="px-4 py-2 rounded border border-gray-300 text-sm font-medium hover:bg-gray-50 transition-colors"
+              >
+                Próxima →
+              </a>
+            )}
+          </div>
+        )}
+      </div>
+    )
+  }
+
+  // 2. Tentar como artigo
+  const artigo = await getArtigoCompleto(slug)
+  if (!artigo) notFound()
+
+  const relacionados = await getArtigosRelacionados(
+    artigo.category_slug ?? '',
+    artigo.slug,
+    3
+  )
+
+  const htmlContent = artigo.content?.rendered ?? ''
+  const tempoLeitura = artigo.reading_time_min ?? readingTime(htmlContent)
+  const url = `https://jornalspassocidades.com.br/${artigo.slug}/`
+
+  const jsonLd = {
+    '@context': 'https://schema.org',
+    '@type': 'NewsArticle',
+    headline: artigo.title,
+    datePublished: artigo.published_at,
+    dateModified: artigo.updated_at,
+    image: artigo.featured_image_url ? [artigo.featured_image_url] : [],
+    url,
+    publisher: {
+      '@type': 'Organization',
+      name: 'Spasso Cidades',
+      url: 'https://jornalspassocidades.com.br',
+    },
+  }
+
+  return (
+    <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+      />
+
+      <article className="bg-white">
+        <div className="max-w-3xl mx-auto px-4 py-8">
+          {/* Breadcrumb */}
+          <nav className="text-xs text-gray-400 mb-4 flex items-center gap-1.5">
+            <Link href="/" className="hover:text-[#dd8500]">Home</Link>
+            {artigo.category_slug && (
+              <>
+                <span>/</span>
+                <Link
+                  href={`/${artigo.category_slug}/`}
+                  className="hover:text-[#dd8500] capitalize"
+                >
+                  {artigo.category_slug.replace(/-/g, ' ')}
+                </Link>
+              </>
+            )}
+          </nav>
+
+          {/* Badge + título */}
+          <div className="mb-4">
+            {artigo.category_slug && (
+              <div className="mb-3">
+                <Badge name={artigo.category_slug.replace(/-/g, ' ')} />
+              </div>
+            )}
+            <h1 className="text-2xl md:text-4xl font-extrabold text-[#1a1a1a] leading-tight">
+              {artigo.title}
+            </h1>
+          </div>
+
+          {/* Meta */}
+          <div className="flex flex-wrap items-center gap-x-4 gap-y-1 text-sm text-gray-500 mb-6 pb-4 border-b border-gray-100">
+            {artigo.published_at && (
+              <time dateTime={artigo.published_at}>{formatDate(artigo.published_at)}</time>
+            )}
+            <span>{tempoLeitura} min de leitura</span>
+          </div>
+
+          {/* Imagem destaque */}
+          {artigo.featured_image_url && (
+            <div className="relative w-full aspect-video mb-6 rounded-lg overflow-hidden">
+              <Image
+                src={artigo.featured_image_url}
+                alt={artigo.title}
+                fill
+                priority
+                className="object-cover"
+                sizes="(max-width: 768px) 100vw, 768px"
+              />
+            </div>
+          )}
+
+          {/* Conteúdo */}
+          <div
+            className="prose-spasso"
+            dangerouslySetInnerHTML={{ __html: htmlContent }}
+          />
+
+          {/* Badge de origem */}
+          {artigo.origin_badge && (
+            <div className="mt-6 border border-gray-200 rounded-lg p-4 bg-gray-50 text-sm text-gray-600">
+              <p className="font-semibold text-gray-800 text-xs uppercase tracking-wide mb-1">
+                Conteúdo de terceiros
+              </p>
+              <p>{artigo.origin_badge}</p>
+            </div>
+          )}
+
+          {/* Compartilhar */}
+          <div className="mt-8 pt-6 border-t border-gray-100">
+            <ShareButtons title={artigo.title} url={url} />
+          </div>
+        </div>
+      </article>
+
+      {/* Relacionados */}
+      {relacionados.length > 0 && (
+        <section className="max-w-7xl mx-auto px-4 py-10">
+          <SectionHeader title="Veja Também" />
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+            {relacionados.map((article) => (
+              <ArticleCard key={article.id} article={article} />
+            ))}
+          </div>
+        </section>
+      )}
+    </>
+  )
+}

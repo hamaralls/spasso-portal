@@ -128,3 +128,68 @@
     @apply font-sans;
   }
 }
+
+/* ── Conteúdo do artigo (migrado do WordPress) ── */
+.prose-spasso {
+  font-size: 1.0625rem;
+  line-height: 1.75;
+  color: #1a1a1a;
+  max-width: 68ch;
+}
+.prose-spasso p {
+  margin-bottom: 1.25rem;
+}
+.prose-spasso h2 {
+  font-size: 1.5rem;
+  font-weight: 800;
+  margin-top: 2rem;
+  margin-bottom: 0.75rem;
+  color: #1a1a1a;
+}
+.prose-spasso h3 {
+  font-size: 1.25rem;
+  font-weight: 700;
+  margin-top: 1.5rem;
+  margin-bottom: 0.5rem;
+  color: #1a1a1a;
+}
+.prose-spasso ul,
+.prose-spasso ol {
+  padding-left: 1.5rem;
+  margin-bottom: 1.25rem;
+}
+.prose-spasso ul { list-style-type: disc; }
+.prose-spasso ol { list-style-type: decimal; }
+.prose-spasso li { margin-bottom: 0.35rem; }
+.prose-spasso a {
+  color: #dd8500;
+  text-decoration: none;
+}
+.prose-spasso a:hover { text-decoration: underline; }
+.prose-spasso strong { font-weight: 700; }
+.prose-spasso em { font-style: italic; }
+.prose-spasso blockquote {
+  border-left: 4px solid #dd8500;
+  padding: 0.75rem 1rem;
+  margin: 1.5rem 0;
+  background: #fdf8f0;
+  font-style: italic;
+  color: #555;
+}
+.prose-spasso img {
+  max-width: 100%;
+  height: auto;
+  border-radius: 0.5rem;
+  margin: 1.5rem 0;
+}
+.prose-spasso figure { margin: 1.5rem 0; }
+.prose-spasso figcaption {
+  text-align: center;
+  font-size: 0.8rem;
+  color: #888;
+  margin-top: 0.5rem;
+}
+.prose-spasso iframe {
+  max-width: 100%;
+  margin: 1.5rem 0;
+}

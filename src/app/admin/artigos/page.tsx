@@ -1,0 +1,136 @@
+import Link from 'next/link'
+import { createClient } from '@/lib/supabase/server'
+import { listArticles } from '@/lib/supabase/admin'
+import { formatDateShort } from '@/lib/format'
+
+export const runtime = 'edge'
+
+const STATUS_LABEL: Record<string, string> = {
+  draft: 'Rascunho',
+  published: 'Publicado',
+  scheduled: 'Agendado',
+  archived: 'Arquivado',
+}
+
+const STATUS_COLOR: Record<string, string> = {
+  draft: 'bg-gray-100 text-gray-600',
+  published: 'bg-green-100 text-green-700',
+  scheduled: 'bg-blue-100 text-blue-700',
+  archived: 'bg-red-100 text-red-700',
+}
+
+interface Props {
+  searchParams: Promise<{ status?: string; page?: string }>
+}
+
+export default async function ArtigosPage({ searchParams }: Props) {
+  const { status = 'all', page: pageStr = '1' } = await searchParams
+  const page = Math.max(1, parseInt(pageStr, 10))
+
+  await createClient() // garante sessão válida
+  const { articles, total } = await listArticles(page, 20, status)
+  const totalPages = Math.ceil(total / 20)
+
+  return (
+    <div className="p-6">
+      <div className="flex items-center justify-between mb-6">
+        <div>
+          <h1 className="text-xl font-bold text-gray-900">Artigos</h1>
+          <p className="text-sm text-gray-500">{total} no total</p>
+        </div>
+        <Link
+          href="/admin/artigos/novo"
+          className="px-4 py-2 bg-[#dd8500] text-white text-sm font-semibold rounded-lg hover:bg-[#c87800] transition-colors"
+        >
+          + Novo artigo
+        </Link>
+      </div>
+
+      {/* Filtros */}
+      <div className="flex gap-2 mb-4 flex-wrap">
+        {['all', 'published', 'draft', 'archived'].map((s) => (
+          <Link
+            key={s}
+            href={`/admin/artigos?status=${s}`}
+            className={`px-3 py-1.5 rounded-full text-xs font-semibold transition-colors ${
+              status === s
+                ? 'bg-[#dd8500] text-white'
+                : 'bg-white border border-gray-200 text-gray-600 hover:border-[#dd8500]'
+            }`}
+          >
+            {s === 'all' ? 'Todos' : STATUS_LABEL[s]}
+          </Link>
+        ))}
+      </div>
+
+      {/* Tabela */}
+      <div className="bg-white rounded-xl border border-gray-100 overflow-hidden">
+        {articles.length === 0 ? (
+          <div className="text-center py-16 text-gray-400">
+            <p>Nenhum artigo encontrado.</p>
+          </div>
+        ) : (
+          <table className="w-full text-sm">
+            <thead className="bg-gray-50 border-b border-gray-100">
+              <tr>
+                <th className="text-left px-4 py-3 font-medium text-gray-500">Título</th>
+                <th className="text-left px-4 py-3 font-medium text-gray-500 hidden md:table-cell">Categoria</th>
+                <th className="text-left px-4 py-3 font-medium text-gray-500">Status</th>
+                <th className="text-left px-4 py-3 font-medium text-gray-500 hidden lg:table-cell">Data</th>
+                <th className="px-4 py-3" />
+              </tr>
+            </thead>
+            <tbody className="divide-y divide-gray-50">
+              {articles.map((article) => (
+                <tr key={article.id} className="hover:bg-gray-50 transition-colors">
+                  <td className="px-4 py-3">
+                    <p className="font-medium text-gray-900 line-clamp-1">{article.title}</p>
+                    <p className="text-xs text-gray-400 mt-0.5">/{article.slug}/</p>
+                  </td>
+                  <td className="px-4 py-3 text-gray-500 hidden md:table-cell">
+                    {article.category_slug ?? '—'}
+                  </td>
+                  <td className="px-4 py-3">
+                    <span className={`px-2 py-0.5 rounded-full text-xs font-semibold ${STATUS_COLOR[article.status] ?? ''}`}>
+                      {STATUS_LABEL[article.status] ?? article.status}
+                    </span>
+                  </td>
+                  <td className="px-4 py-3 text-gray-400 text-xs hidden lg:table-cell">
+                    {article.published_at
+                      ? formatDateShort(article.published_at)
+                      : formatDateShort(article.created_at)}
+                  </td>
+                  <td className="px-4 py-3 text-right">
+                    <Link
+                      href={`/admin/artigos/${article.id}/editar`}
+                      className="text-xs font-medium text-[#dd8500] hover:underline"
+                    >
+                      Editar
+                    </Link>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        )}
+      </div>
+
+      {/* Paginação */}
+      {totalPages > 1 && (
+        <div className="flex justify-center gap-2 mt-6">
+          {page > 1 && (
+            <Link href={`/admin/artigos?status=${status}&page=${page - 1}`}
+              className="px-4 py-2 rounded border text-sm">← Anterior</Link>
+          )}
+          <span className="px-4 py-2 text-sm text-gray-500">
+            {page} / {totalPages}
+          </span>
+          {page < totalPages && (
+            <Link href={`/admin/artigos?status=${status}&page=${page + 1}`}
+              className="px-4 py-2 rounded border text-sm">Próxima →</Link>
+          )}
+        </div>
+      )}
+    </div>
+  )
+}

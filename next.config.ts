@@ -88,7 +88,7 @@ const nextConfig: NextConfig = {
       { source: '/category/featured/',               destination: '/', permanent: true },
       { source: '/category/destaque/',               destination: '/', permanent: true },
       { source: '/category/blog/',                   destination: '/', permanent: true },
-      { source: '/category/td-demo-:path*',          destination: '/', permanent: true },
+      { source: '/category/td-demo/:path*',            destination: '/', permanent: true },
 
       // ── Feed ──────────────────────────────────────────────
       { source: '/feed/',                            destination: '/feed.xml', permanent: true },

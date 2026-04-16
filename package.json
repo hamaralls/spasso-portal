@@ -6,7 +6,11 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "eslint"
+    "lint": "eslint",
+    "migrate:01": "tsx --env-file=.env.local scripts/01-extrair-dados.ts",
+    "migrate:02": "tsx --env-file=.env.local scripts/02-migrar-posts.ts",
+    "migrate:03": "tsx --env-file=.env.local scripts/03-migrar-imagens.ts",
+    "migrate:04": "tsx --env-file=.env.local scripts/04-migrar-inline.ts"
   },
   "dependencies": {
     "@base-ui/react": "^1.4.0",
@@ -35,9 +39,11 @@
     "@types/node": "^20",
     "@types/react": "^19",
     "@types/react-dom": "^19",
+    "dotenv": "^17.4.2",
     "eslint": "^9",
     "eslint-config-next": "15.5.2",
     "tailwindcss": "^4",
+    "tsx": "^4.21.0",
     "typescript": "^5",
     "wrangler": "^4.83.0"
   }

@@ -10,7 +10,9 @@
     "migrate:01": "tsx --env-file=.env.local scripts/01-extrair-dados.ts",
     "migrate:02": "tsx --env-file=.env.local scripts/02-migrar-posts.ts",
     "migrate:03": "tsx --env-file=.env.local scripts/03-migrar-imagens.ts",
-    "migrate:04": "tsx --env-file=.env.local scripts/04-migrar-inline.ts"
+    "migrate:04": "tsx --env-file=.env.local scripts/04-migrar-inline.ts",
+    "validate": "tsx --env-file=.env.local scripts/06-validar.ts",
+    "validate:prod": "tsx --env-file=.env.local scripts/06-validar.ts --base=https://jornalspassocidades.com.br"
   },
   "dependencies": {
     "@base-ui/react": "^1.4.0",

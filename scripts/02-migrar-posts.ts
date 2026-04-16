@@ -26,7 +26,7 @@ const supabase = createClient(
 
 // ── Mapeamento de categorias ────────────────────────────
 
-const CIDADES_MAP: Record<string, string> = {
+const CIDADES_MAP: Record<string, string | null> = {
   'sumare':                    'sumare',
   'hortolandia':               'hortolandia',
   'nova-odessa':               'nova-odessa',
@@ -246,8 +246,8 @@ async function getOrgId(): Promise<string> {
     .limit(1)
     .single()
   if (error || !data) throw new Error(`Organização não encontrada: ${error?.message}`)
-  orgId = data.id
-  return orgId
+  orgId = data.id as string
+  return orgId as string
 }
 
 // ── Main ─────────────────────────────────────────────────

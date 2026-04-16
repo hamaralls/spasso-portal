@@ -53,16 +53,24 @@ async function check(url: string, opts: {
     })
 
     if (expectRedirectTo) {
-      const loc = res.headers.get('location') ?? ''
-      const statusOk = res.status === 301 || res.status === 308
-      const targetOk = loc.endsWith(expectRedirectTo) || loc === expectRedirectTo
+      // Next.js 15 + Cloudflare Pages retorna 308 (equivalente ao 301 para SEO)
+      // Testa a cadeia completa com follow para verificar destino final
+      const followRes = await fetch(url, {
+        redirect: 'follow',
+        signal: AbortSignal.timeout(15000),
+        headers: { 'User-Agent': 'SpassoValidator/1.0' },
+      })
+      const finalUrl = new URL(followRes.url).pathname
+      const firstStatus = res.status // 308 or 301
+      const statusOk = firstStatus === 301 || firstStatus === 308
+      const targetOk = finalUrl === expectRedirectTo || finalUrl.startsWith(expectRedirectTo.replace(/\/$/, ''))
       return {
         url,
         ok: statusOk && targetOk,
-        status: res.status,
-        note: statusOk && targetOk
-          ? `→ ${loc}`
-          : `status=${res.status} location=${loc} (esperado 301→${expectRedirectTo})`,
+        status: firstStatus,
+        note: targetOk
+          ? `${firstStatus} → ${finalUrl}`
+          : `${firstStatus} → destino=${finalUrl} (esperado ${expectRedirectTo})`,
       }
     }
 

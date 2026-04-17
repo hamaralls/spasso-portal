@@ -1,8 +1,17 @@
 import { getAdminClient } from '@/lib/supabase/admin'
 import { uploadToR2, r2Key } from '@/lib/r2'
 import { readingTime } from '@/lib/format'
+import { getRequestContext } from '@cloudflare/next-on-pages'
 
 export const runtime = 'edge'
+
+function getSecret(): string {
+  try {
+    return (getRequestContext().env.CODA_WEBHOOK_SECRET as string | undefined ?? '').trim()
+  } catch {
+    return (process.env.CODA_WEBHOOK_SECRET ?? '').trim()
+  }
+}
 
 async function resolveImage(codaImageUrl?: string, featuredImageUrl?: string): Promise<string | null> {
   if (featuredImageUrl) return featuredImageUrl
@@ -22,7 +31,7 @@ async function resolveImage(codaImageUrl?: string, featuredImageUrl?: string): P
 
 export async function POST(request: Request) {
   const apiKey = request.headers.get('x-api-key')
-  const secret = (process.env.CODA_WEBHOOK_SECRET ?? '').trim()
+  const secret = getSecret()
   if (!secret) {
     return Response.json({ error: 'Webhook não configurado (sem secret)' }, { status: 503 })
   }

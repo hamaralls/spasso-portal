@@ -22,7 +22,11 @@ async function resolveImage(codaImageUrl?: string, featuredImageUrl?: string): P
 
 export async function POST(request: Request) {
   const apiKey = request.headers.get('x-api-key')
-  if (!apiKey || apiKey !== process.env.CODA_WEBHOOK_SECRET) {
+  const secret = (process.env.CODA_WEBHOOK_SECRET ?? '').trim()
+  if (!secret) {
+    return Response.json({ error: 'Webhook não configurado (sem secret)' }, { status: 503 })
+  }
+  if (!apiKey || apiKey.trim() !== secret) {
     return Response.json({ error: 'Não autorizado' }, { status: 401 })
   }
 

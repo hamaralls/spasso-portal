@@ -7,6 +7,7 @@ export async function getArtigosRecentes(limit = 13): Promise<ArticlePublico[]> 
   const { data } = await getSupabase()
     .from('artigos_publicados')
     .select('*')
+    .order('published_at', { ascending: false })
     .limit(limit)
   return data ?? []
 }
@@ -25,6 +26,7 @@ export async function getArtigosPorCategoria(
     .from('artigos_publicados')
     .select('*', { count: 'exact' })
     .eq('category_slug', slug)
+    .order('published_at', { ascending: false })
     .range(from, to)
 
   return { articles: data ?? [], total: count ?? 0 }
@@ -40,6 +42,7 @@ export async function getArtigosPorCategorias(
     .from('artigos_publicados')
     .select('*')
     .in('category_slug', slugs)
+    .order('published_at', { ascending: false })
     .limit(limit)
   return data ?? []
 }
@@ -94,6 +97,7 @@ export async function getArtigosRelacionados(
     .select('*')
     .eq('category_slug', categorySlug)
     .neq('slug', excludeSlug)
+    .order('published_at', { ascending: false })
     .limit(limit)
   return data ?? []
 }

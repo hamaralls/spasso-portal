@@ -3,6 +3,7 @@ import { Inter } from 'next/font/google'
 import Script from 'next/script'
 import Header from '@/components/Header'
 import Footer from '@/components/Footer'
+import AuthRecoveryRedirect from '@/components/AuthRecoveryRedirect'
 import './globals.css'
 
 const inter = Inter({
@@ -43,6 +44,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html lang="pt-BR" className={`${inter.variable} h-full`}>
       <body className="min-h-full flex flex-col bg-[#f5f5f5] text-[#1a1a1a] antialiased">
+        <AuthRecoveryRedirect />
         <Header />
         <main className="flex-1">{children}</main>
         <Footer />

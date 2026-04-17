@@ -8,7 +8,8 @@ export async function middleware(request: NextRequest) {
   // Modo manutenção — ativa com MAINTENANCE_MODE=true no Cloudflare Pages
   if (process.env.MAINTENANCE_MODE === 'true') {
     if (!pathname.startsWith('/admin') && !pathname.startsWith('/api') &&
-        !pathname.startsWith('/login') && pathname !== '/manutencao') {
+        !pathname.startsWith('/login') && !pathname.startsWith('/reset-password') &&
+        pathname !== '/manutencao') {
       return NextResponse.redirect(new URL('/manutencao', request.url))
     }
   }

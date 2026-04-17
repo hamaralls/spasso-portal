@@ -3,6 +3,16 @@ import { NextResponse } from 'next/server'
 import type { NextRequest } from 'next/server'
 
 export async function middleware(request: NextRequest) {
+  const { pathname } = request.nextUrl
+
+  // Modo manutenção — ativa com MAINTENANCE_MODE=true no Cloudflare Pages
+  if (process.env.MAINTENANCE_MODE === 'true') {
+    if (!pathname.startsWith('/admin') && !pathname.startsWith('/api') &&
+        !pathname.startsWith('/login') && pathname !== '/manutencao') {
+      return NextResponse.redirect(new URL('/manutencao', request.url))
+    }
+  }
+
   let response = NextResponse.next({ request })
 
   const supabase = createServerClient(
@@ -25,7 +35,6 @@ export async function middleware(request: NextRequest) {
   )
 
   const { data: { user } } = await supabase.auth.getUser()
-  const { pathname } = request.nextUrl
 
   if (!user && pathname.startsWith('/admin')) {
     return NextResponse.redirect(new URL('/login', request.url))
@@ -39,5 +48,5 @@ export async function middleware(request: NextRequest) {
 }
 
 export const config = {
-  matcher: ['/admin/:path*', '/login'],
+  matcher: ['/((?!_next/static|_next/image|favicon.ico|manutencao).*)'],
 }

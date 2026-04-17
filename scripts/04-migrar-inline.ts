@@ -38,7 +38,6 @@ async function main() {
     const { data, error } = await supabase
       .from('articles')
       .select('id, content')
-      .or(`content->rendered.like.%${WP_BASE}%,content->rendered.like.%${WP_BASE_2}%`)
       .range(page * PAGE_SIZE, (page + 1) * PAGE_SIZE - 1)
 
     if (error) { console.error(error.message); break }

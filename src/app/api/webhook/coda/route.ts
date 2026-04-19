@@ -46,9 +46,9 @@ export async function POST(request: Request) {
     return Response.json({ error: 'JSON inválido' }, { status: 400 })
   }
 
-  // Limpa title/slug de aspas que o n8n pode inserir ao montar JSON
-  const title = ((body.title as string | undefined) ?? '').replace(/^"+|"+$/g, '').trim()
-  const slug  = ((body.slug  as string | undefined) ?? '').replace(/^"+|"+$/g, '').trim()
+  // Limpa title/slug de aspas, backticks e colchetes que o n8n insere ao montar JSON
+  const title = ((body.title as string | undefined) ?? '').replace(/^[\`"'\[\]]+|[\`"'\[\]]+$/g, '').trim()
+  const slug  = ((body.slug  as string | undefined) ?? '').replace(/^[\`"'\[\]]+|[\`"'\[\]]+$/g, '').trim()
   const content            = body.content            as string | undefined
   const excerpt            = body.excerpt            as string | undefined
   const featured_image_url = body.featured_image_url as string | undefined

@@ -13,11 +13,12 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
 
   const staticPages: MetadataRoute.Sitemap = [
     { url: BASE, lastModified: new Date(), changeFrequency: 'hourly', priority: 1 },
-    { url: `${BASE}/sobre/`, changeFrequency: 'monthly', priority: 0.3 },
-    { url: `${BASE}/contato/`, changeFrequency: 'monthly', priority: 0.3 },
-    { url: `${BASE}/privacidade/`, changeFrequency: 'yearly', priority: 0.2 },
+    { url: `${BASE}/sobre/`, changeFrequency: 'monthly', priority: 0.4 },
+    { url: `${BASE}/contato/`, changeFrequency: 'monthly', priority: 0.4 },
+    { url: `${BASE}/anuncie/`, changeFrequency: 'monthly', priority: 0.5 },
     { url: `${BASE}/edicao-impressa/`, changeFrequency: 'weekly', priority: 0.5 },
-    { url: `${BASE}/anuncie/`, changeFrequency: 'monthly', priority: 0.4 },
+    { url: `${BASE}/privacidade/`, changeFrequency: 'yearly', priority: 0.2 },
+    { url: `${BASE}/termos-de-uso/`, changeFrequency: 'yearly', priority: 0.2 },
   ]
 
   const categoriaPages: MetadataRoute.Sitemap = categorias.map((cat) => ({

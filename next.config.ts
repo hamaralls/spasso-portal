@@ -1,6 +1,7 @@
 import type { NextConfig } from 'next'
 
 const nextConfig: NextConfig = {
+  trailingSlash: true,
   eslint: {
     ignoreDuringBuilds: true,
   },
@@ -101,6 +102,12 @@ const nextConfig: NextConfig = {
       // ── Feed ──────────────────────────────────────────────
       { source: '/feed',                            destination: '/feed.xml', permanent: true },
       { source: '/feed/',                           destination: '/feed.xml', permanent: true },
+
+      // ── Páginas estáticas (slugs WP antigos) ──────────────
+      { source: '/politica-de-privacidade',         destination: '/privacidade/', permanent: true },
+      { source: '/politica-de-privacidade/',        destination: '/privacidade/', permanent: true },
+      { source: '/sobre-nos',                       destination: '/sobre/', permanent: true },
+      { source: '/sobre-nos/',                      destination: '/sobre/', permanent: true },
     ]
   },
 }

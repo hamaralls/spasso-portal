@@ -103,6 +103,27 @@ export async function getArtigosRelacionados(
   return data ?? []
 }
 
+// ── Busca full-text ──────────────────────────────────────────────────────────
+
+export async function buscarArtigos(
+  query: string,
+  page = 1,
+  perPage = 12
+): Promise<{ articles: ArticlePublico[]; total: number }> {
+  const from = (page - 1) * perPage
+  const to = from + perPage - 1
+  const term = `%${query.trim()}%`
+
+  const { data, count } = await getSupabase()
+    .from('artigos_publicados')
+    .select('*', { count: 'exact' })
+    .or(`title.ilike.${term},excerpt.ilike.${term}`)
+    .order('published_at', { ascending: false })
+    .range(from, to)
+
+  return { articles: data ?? [], total: count ?? 0 }
+}
+
 // ── Sitemap: todos os slugs publicados ───────────────────────────────────────
 
 export async function getAllArtigosSlugs(): Promise<

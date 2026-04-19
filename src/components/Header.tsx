@@ -2,7 +2,7 @@
 
 import Link from 'next/link'
 import { useState, useRef, useEffect } from 'react'
-import { ChevronDown, Menu, X } from 'lucide-react'
+import { ChevronDown, Menu, X, Search } from 'lucide-react'
 
 const REGIAO = [
   { name: 'Hortolândia', href: '/sp/hortolandia/' },
@@ -110,6 +110,9 @@ export default function Header() {
             >
               Anuncie
             </Link>
+            <Link href="/busca/" aria-label="Buscar" className="text-white/80 hover:text-white transition-colors">
+              <Search size={18} />
+            </Link>
           </nav>
 
           {/* Mobile hamburger */}
@@ -149,6 +152,7 @@ export default function Header() {
           <MobileLink href="/opiniao/" onClick={() => setMobileOpen(false)}>Opinião</MobileLink>
           <MobileLink href="/edicao-impressa/" onClick={() => setMobileOpen(false)}>Ed. Impressa</MobileLink>
           <MobileLink href="/anuncie/" onClick={() => setMobileOpen(false)}>Anuncie</MobileLink>
+          <MobileLink href="/busca/" onClick={() => setMobileOpen(false)}>🔍 Buscar</MobileLink>
         </div>
       )}
     </header>

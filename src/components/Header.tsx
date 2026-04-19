@@ -89,7 +89,7 @@ export default function Header() {
 
       {/* ── Topo: data + logo grande centralizado + busca ── */}
       <div className="max-w-7xl mx-auto px-4">
-        <div className="relative flex items-center justify-between py-3 lg:py-4">
+        <div className="relative flex items-center justify-between py-5 lg:py-8">
 
           {/* Esquerda: data (desktop) / hamburger (mobile) */}
           <div className="w-32 lg:w-48 shrink-0">
@@ -113,7 +113,7 @@ export default function Header() {
               width={480}
               height={96}
               priority
-              className="h-16 lg:h-24 w-auto max-w-[200px] lg:max-w-[360px]"
+              className="w-[200px] lg:w-[400px] h-auto"
             />
           </Link>
 
@@ -130,7 +130,7 @@ export default function Header() {
       {/* ── NavBar branca (desktop) ── */}
       <nav className="hidden lg:block border-t border-gray-100">
         <div className="max-w-7xl mx-auto px-4">
-          <div className="flex items-center justify-between h-10">
+          <div className="flex items-center justify-between h-11">
             <div className="flex items-center gap-6">
               <Link href="/sp/sumare"
                 className="text-[#1a1a1a] text-xs font-semibold uppercase tracking-wider hover:text-[#f5821f] transition-colors">

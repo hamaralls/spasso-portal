@@ -66,7 +66,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
 
   return (
     <html lang="pt-BR" className={`${inter.variable} h-full`}>
-      <body className="min-h-full flex flex-col bg-[#f5f5f5] text-[#1a1a1a] antialiased">
+      <body className="min-h-full flex flex-col bg-white text-[#1a1a1a] antialiased">
         <AuthRecoveryRedirect />
         <Header />
         <main className="flex-1">{children}</main>

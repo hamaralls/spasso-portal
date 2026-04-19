@@ -1,4 +1,5 @@
 import Link from 'next/link'
+import NewsletterSignup from '@/components/NewsletterSignup'
 
 export default function Footer() {
   const year = new Date().getFullYear()
@@ -13,6 +14,12 @@ export default function Footer() {
             <p className="text-white/80 text-sm leading-relaxed">
               O diário digital de Sumaré e região. Cobertura da Região Metropolitana de Campinas.
             </p>
+            <div className="mt-4">
+              <p className="text-white/60 text-xs font-semibold uppercase tracking-wide mb-2">
+                Newsletter
+              </p>
+              <NewsletterSignup />
+            </div>
           </div>
 
           {/* Links */}

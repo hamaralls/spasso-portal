@@ -6,30 +6,36 @@ import { useState, useRef, useEffect } from 'react'
 import { ChevronDown, Menu, X, Search } from 'lucide-react'
 
 const REGIAO = [
-  { name: 'Hortolândia', href: '/sp/hortolandia' },
-  { name: 'Nova Odessa', href: '/sp/nova-odessa' },
-  { name: 'Campinas', href: '/sp/campinas' },
-  { name: 'Paulínia', href: '/sp/paulinia' },
-  { name: 'Monte Mor', href: '/sp/monte-mor' },
-  { name: 'Sta. Bárbara d\'Oeste', href: '/sp/santa-barbara-doeste' },
-  { name: 'RMC', href: '/rmc' },
+  { name: 'Hortolândia',           href: '/sp/hortolandia' },
+  { name: 'Nova Odessa',           href: '/sp/nova-odessa' },
+  { name: 'Campinas',              href: '/sp/campinas' },
+  { name: 'Paulínia',              href: '/sp/paulinia' },
+  { name: 'Monte Mor',             href: '/sp/monte-mor' },
+  { name: "Sta. Bárbara d'Oeste",  href: '/sp/santa-barbara-doeste' },
+  { name: 'RMC',                   href: '/rmc' },
 ]
 
 const TEMAS = [
-  { name: 'Saúde', href: '/saude' },
-  { name: 'Esporte', href: '/esporte' },
-  { name: 'Educação', href: '/educacao' },
-  { name: 'Meio Ambiente', href: '/meio-ambiente' },
-  { name: 'Política', href: '/politica' },
-  { name: 'Tecnologia', href: '/tecnologia' },
-  { name: 'Economia', href: '/economia' },
-  { name: 'Eventos', href: '/eventos' },
-  { name: 'Cultura e Lazer', href: '/cultura-e-lazer' },
-  { name: 'Empregos', href: '/empregos' },
+  { name: 'Saúde',          href: '/saude' },
+  { name: 'Esporte',        href: '/esporte' },
+  { name: 'Educação',       href: '/educacao' },
+  { name: 'Meio Ambiente',  href: '/meio-ambiente' },
+  { name: 'Política',       href: '/politica' },
+  { name: 'Tecnologia',     href: '/tecnologia' },
+  { name: 'Economia',       href: '/economia' },
+  { name: 'Eventos',        href: '/eventos' },
+  { name: 'Cultura e Lazer',href: '/cultura-e-lazer' },
+  { name: 'Empregos',       href: '/empregos' },
   { name: 'Estilo de Vida', href: '/estilo-de-vida' },
 ]
 
-function Dropdown({ label, items, cols = 1 }: {
+function formatDate() {
+  return new Date().toLocaleDateString('pt-BR', {
+    weekday: 'long', day: 'numeric', month: 'long', year: 'numeric',
+  })
+}
+
+function NavDropdown({ label, items, cols = 1 }: {
   label: string
   items: { name: string; href: string }[]
   cols?: 1 | 2
@@ -38,21 +44,21 @@ function Dropdown({ label, items, cols = 1 }: {
   const ref = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
-    function onClick(e: MouseEvent) {
+    function onClickOutside(e: MouseEvent) {
       if (ref.current && !ref.current.contains(e.target as Node)) setOpen(false)
     }
-    document.addEventListener('mousedown', onClick)
-    return () => document.removeEventListener('mousedown', onClick)
+    document.addEventListener('mousedown', onClickOutside)
+    return () => document.removeEventListener('mousedown', onClickOutside)
   }, [])
 
   return (
     <div ref={ref} className="relative">
       <button
         onClick={() => setOpen(!open)}
-        className="flex items-center gap-1 text-[#1a1a1a] text-sm font-semibold uppercase tracking-wide hover:text-[#f5821f] transition-colors py-1"
+        className="flex items-center gap-1 text-white/90 text-xs font-semibold uppercase tracking-wider hover:text-white transition-colors py-1"
       >
         {label}
-        <ChevronDown size={13} className={`transition-transform ${open ? 'rotate-180' : ''}`} />
+        <ChevronDown size={11} className={`transition-transform ${open ? 'rotate-180' : ''}`} />
       </button>
 
       {open && (
@@ -79,67 +85,96 @@ export default function Header() {
   const [mobileOpen, setMobileOpen] = useState(false)
 
   return (
-    <header className="bg-white sticky top-0 z-50 border-b border-gray-200 shadow-sm">
-      <div className="max-w-7xl mx-auto px-4">
-        <div className="flex items-center justify-between h-16">
+    <header className="bg-white sticky top-0 z-50 shadow-sm">
 
-          {/* Logo */}
-          <Link href="/" className="shrink-0">
+      {/* ── Topo: data + logo + busca ──────────────────────────── */}
+      <div className="max-w-7xl mx-auto px-4">
+        <div className="relative flex items-center justify-between h-16 lg:h-20">
+
+          {/* Esquerda: data (desktop) / hamburger (mobile) */}
+          <div className="w-28 lg:w-40 shrink-0">
+            {/* Mobile: hamburguer */}
+            <button
+              onClick={() => setMobileOpen(!mobileOpen)}
+              className="lg:hidden text-[#1a1a1a] p-1"
+              aria-label="Menu"
+            >
+              {mobileOpen ? <X size={24} /> : <Menu size={24} />}
+            </button>
+
+            {/* Desktop: data */}
+            <span className="hidden lg:block text-[11px] text-gray-400 leading-tight capitalize">
+              {formatDate()}
+            </span>
+          </div>
+
+          {/* Centro: logo */}
+          <Link href="/" className="absolute left-1/2 -translate-x-1/2">
             <Image
               src="/logo.png"
               alt="Spasso Cidades"
-              width={180}
-              height={36}
+              width={220}
+              height={44}
               priority
-              className="h-9 w-auto"
+              className="h-10 lg:h-12 w-auto"
             />
           </Link>
 
-          {/* Desktop nav */}
-          <nav className="hidden lg:flex items-center gap-5">
-            <Link href="/sp/sumare" className="text-[#1a1a1a] text-sm font-semibold uppercase tracking-wide hover:text-[#f5821f] transition-colors">
-              Sumaré
+          {/* Direita: busca */}
+          <div className="w-28 lg:w-40 shrink-0 flex justify-end">
+            <Link href="/busca" aria-label="Buscar" className="text-gray-400 hover:text-[#f5821f] transition-colors p-1">
+              <Search size={20} />
             </Link>
-            <Dropdown label="Região" items={REGIAO} />
-            <Link href="/brasil" className="text-[#1a1a1a] text-sm font-semibold uppercase tracking-wide hover:text-[#f5821f] transition-colors">
-              Brasil
-            </Link>
-            <Dropdown label="Temas" items={TEMAS} cols={2} />
-            <Link href="/colunistas" className="text-[#1a1a1a] text-sm font-semibold uppercase tracking-wide hover:text-[#f5821f] transition-colors">
-              Colunistas
-            </Link>
-            <Link href="/edicao-impressa" className="text-[#1a1a1a] text-sm font-semibold uppercase tracking-wide hover:text-[#f5821f] transition-colors">
-              Ed. Impressa
-            </Link>
-            <Link
-              href="/anuncie"
-              className="text-sm font-bold uppercase tracking-wide bg-[#f5821f] text-white px-4 py-1.5 rounded-full hover:bg-[#e0711a] transition-colors"
-            >
-              Anuncie
-            </Link>
-            <Link href="/busca" aria-label="Buscar" className="text-gray-500 hover:text-[#f5821f] transition-colors">
-              <Search size={18} />
-            </Link>
-          </nav>
-
-          {/* Mobile hamburger */}
-          <button
-            onClick={() => setMobileOpen(!mobileOpen)}
-            className="lg:hidden text-[#1a1a1a] p-1"
-            aria-label="Menu"
-          >
-            {mobileOpen ? <X size={24} /> : <Menu size={24} />}
-          </button>
+          </div>
         </div>
       </div>
 
-      {/* Barra laranja fina decorativa */}
-      <div className="h-0.5 bg-[#f5821f]" />
+      {/* ── NavBar escura (desktop only) ───────────────────────── */}
+      <nav className="hidden lg:block bg-[#1a1a1a]">
+        <div className="max-w-7xl mx-auto px-4">
+          <div className="flex items-center justify-between h-10">
 
-      {/* Mobile menu */}
+            {/* Links */}
+            <div className="flex items-center gap-5">
+              <Link href="/sp/sumare"
+                className="text-white/90 text-xs font-semibold uppercase tracking-wider hover:text-white transition-colors">
+                Sumaré
+              </Link>
+              <NavDropdown label="Região" items={REGIAO} />
+              <Link href="/brasil"
+                className="text-white/90 text-xs font-semibold uppercase tracking-wider hover:text-white transition-colors">
+                Brasil
+              </Link>
+              <NavDropdown label="Temas" items={TEMAS} cols={2} />
+              <Link href="/colunistas"
+                className="text-white/90 text-xs font-semibold uppercase tracking-wider hover:text-white transition-colors">
+                Colunistas
+              </Link>
+              <Link href="/edicao-impressa"
+                className="text-white/90 text-xs font-semibold uppercase tracking-wider hover:text-white transition-colors">
+                Ed. Impressa
+              </Link>
+            </div>
+
+            {/* Anuncie pill */}
+            <Link
+              href="/anuncie"
+              className="text-xs font-bold uppercase tracking-wider bg-[#f5821f] text-white px-4 py-1 rounded-full hover:bg-[#e0711a] transition-colors"
+            >
+              Anuncie
+            </Link>
+          </div>
+        </div>
+
+        {/* Linha laranja na base da navBar */}
+        <div className="h-0.5 bg-[#f5821f]" />
+      </nav>
+
+      {/* ── Menu mobile ────────────────────────────────────────── */}
       {mobileOpen && (
         <div className="lg:hidden bg-white border-t border-gray-100 px-4 py-3 space-y-1 shadow-lg">
           <MobileLink href="/sp/sumare" onClick={() => setMobileOpen(false)}>Sumaré</MobileLink>
+
           <div className="pt-1 pb-1">
             <p className="text-gray-400 text-xs uppercase font-bold px-2 pb-1">Região</p>
             {REGIAO.map((item) => (
@@ -148,7 +183,9 @@ export default function Header() {
               </MobileLink>
             ))}
           </div>
+
           <MobileLink href="/brasil" onClick={() => setMobileOpen(false)}>Brasil</MobileLink>
+
           <div className="pt-1 pb-1">
             <p className="text-gray-400 text-xs uppercase font-bold px-2 pb-1">Temas</p>
             <div className="grid grid-cols-2">
@@ -159,6 +196,7 @@ export default function Header() {
               ))}
             </div>
           </div>
+
           <MobileLink href="/colunistas" onClick={() => setMobileOpen(false)}>Colunistas</MobileLink>
           <MobileLink href="/edicao-impressa" onClick={() => setMobileOpen(false)}>Ed. Impressa</MobileLink>
           <MobileLink href="/anuncie" onClick={() => setMobileOpen(false)}>Anuncie</MobileLink>

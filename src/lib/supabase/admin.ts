@@ -80,6 +80,32 @@ export async function listArticles(page = 1, perPage = 20, status?: string) {
   return { articles: data ?? [], total: count ?? 0 }
 }
 
+export async function getDashboardStats() {
+  const sb = getAdminClient()
+
+  const [totalResult, publishedResult, draftResult, topViewsResult, semFotoResult] = await Promise.all([
+    sb.from('articles').select('id', { count: 'exact', head: true }),
+    sb.from('articles').select('id', { count: 'exact', head: true }).eq('status', 'published'),
+    sb.from('articles').select('id', { count: 'exact', head: true }).eq('status', 'draft'),
+    sb.from('articles')
+      .select('id, title, slug, views, category_slug, published_at')
+      .eq('status', 'published')
+      .order('views', { ascending: false })
+      .limit(10),
+    sb.from('articles').select('id', { count: 'exact', head: true })
+      .eq('status', 'published')
+      .is('featured_image_url', null),
+  ])
+
+  return {
+    total: totalResult.count ?? 0,
+    published: publishedResult.count ?? 0,
+    draft: draftResult.count ?? 0,
+    semFoto: semFotoResult.count ?? 0,
+    topViews: topViewsResult.data ?? [],
+  }
+}
+
 export async function getArticleById(id: string) {
   const sb = getAdminClient()
   const { data, error } = await sb

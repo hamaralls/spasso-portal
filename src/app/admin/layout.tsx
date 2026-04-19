@@ -22,6 +22,7 @@ export default async function AdminLayout({ children }: { children: React.ReactN
         </div>
 
         <nav className="flex-1 p-3 space-y-1">
+          <NavLink href="/admin">📊 Dashboard</NavLink>
           <NavLink href="/admin/artigos">📝 Artigos</NavLink>
         </nav>
 

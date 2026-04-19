@@ -81,7 +81,7 @@ export default async function SlugPage({ params, searchParams }: Props) {
     return (
       <div className="max-w-7xl mx-auto px-4 py-8">
         <div className="mb-8">
-          <SectionHeader title={categoria.name} />
+          <SectionHeader title={categoria.name} color={categoria.badge_color ?? '#f5821f'} />
           <p className="text-sm text-gray-500">{total} notícias</p>
         </div>
 

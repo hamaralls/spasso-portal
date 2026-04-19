@@ -80,7 +80,7 @@ export default async function Home() {
         {/* Últimas notícias */}
         {gridArticles.length > 0 && (
           <section>
-            <SectionHeader title="Últimas Notícias" />
+            <SectionHeader title="Últimas Notícias" color="#f5821f" />
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
               {gridArticles.map((article) => (
                 <ArticleCard key={article.id} article={article} />
@@ -94,7 +94,7 @@ export default async function Home() {
         {/* Sumaré */}
         {sumare.length > 0 && (
           <section>
-            <SectionHeader title="Sumaré" href="/sp/sumare" />
+            <SectionHeader title="Sumaré" href="/sp/sumare" color="#f5821f" />
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
               <div className="md:col-span-1">
                 <ArticleCard article={sumare[0]} size="featured" />
@@ -111,7 +111,7 @@ export default async function Home() {
         {/* Região */}
         {regiao.length > 0 && (
           <section>
-            <SectionHeader title="Região Metropolitana" href="/rmc" />
+            <SectionHeader title="Região Metropolitana" href="/rmc" color="#2563eb" />
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
               {regiao.map((article) => (
                 <ArticleCard key={article.id} article={article} />
@@ -123,7 +123,7 @@ export default async function Home() {
         {/* Brasil */}
         {brasil.length > 0 && (
           <section>
-            <SectionHeader title="Brasil" href="/brasil" />
+            <SectionHeader title="Brasil" href="/brasil" color="#ec3535" />
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
               {brasil.map((article) => (
                 <ArticleCard key={article.id} article={article} />
@@ -135,7 +135,7 @@ export default async function Home() {
         {/* Saúde */}
         {saude.length > 0 && (
           <section>
-            <SectionHeader title="Saúde" href="/saude" />
+            <SectionHeader title="Saúde" href="/saude" color="#0891b2" />
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
               {saude.map((article) => (
                 <ArticleCard key={article.id} article={article} />
@@ -147,7 +147,7 @@ export default async function Home() {
         {/* Política */}
         {politica.length > 0 && (
           <section>
-            <SectionHeader title="Política" href="/politica" />
+            <SectionHeader title="Política" href="/politica" color="#7c3aed" />
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
               {politica.map((article) => (
                 <ArticleCard key={article.id} article={article} />
@@ -159,7 +159,7 @@ export default async function Home() {
         {/* Economia */}
         {economia.length > 0 && (
           <section>
-            <SectionHeader title="Economia" href="/economia" />
+            <SectionHeader title="Economia" href="/economia" color="#16a34a" />
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
               {economia.map((article) => (
                 <ArticleCard key={article.id} article={article} />
@@ -171,7 +171,7 @@ export default async function Home() {
         {/* Educação */}
         {educacao.length > 0 && (
           <section>
-            <SectionHeader title="Educação" href="/educacao" />
+            <SectionHeader title="Educação" href="/educacao" color="#d97706" />
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
               {educacao.map((article) => (
                 <ArticleCard key={article.id} article={article} />
@@ -183,7 +183,7 @@ export default async function Home() {
         {/* Cultura e Lazer */}
         {cultura.length > 0 && (
           <section>
-            <SectionHeader title="Cultura e Lazer" href="/cultura-e-lazer" />
+            <SectionHeader title="Cultura e Lazer" href="/cultura-e-lazer" color="#db2777" />
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
               {cultura.map((article) => (
                 <ArticleCard key={article.id} article={article} />
@@ -195,7 +195,7 @@ export default async function Home() {
         {/* Esporte */}
         {esporte.length > 0 && (
           <section>
-            <SectionHeader title="Esporte" href="/esporte" />
+            <SectionHeader title="Esporte" href="/esporte" color="#059669" />
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
               {esporte.map((article) => (
                 <ArticleCard key={article.id} article={article} />
@@ -207,7 +207,7 @@ export default async function Home() {
         {/* Eventos */}
         {eventos.length > 0 && (
           <section>
-            <SectionHeader title="Eventos" href="/eventos" />
+            <SectionHeader title="Eventos" href="/eventos" color="#ea580c" />
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
               {eventos.map((article) => (
                 <ArticleCard key={article.id} article={article} />
@@ -221,7 +221,7 @@ export default async function Home() {
         {/* Opinião */}
         {opiniao.length > 0 && (
           <section>
-            <SectionHeader title="Opinião" href="/opiniao" />
+            <SectionHeader title="Opinião" href="/opiniao" color="#7c3aed" />
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
               {opiniao.map((article) => (
                 <ArticleCard key={article.id} article={article} />

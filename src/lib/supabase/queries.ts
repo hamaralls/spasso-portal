@@ -148,5 +148,6 @@ export async function getAllArtigosSlugs(): Promise<
     .select('slug, published_at')
     .eq('status', 'published')
     .order('published_at', { ascending: false })
+    .limit(10000)
   return data ?? []
 }

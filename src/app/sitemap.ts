@@ -22,13 +22,13 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   ]
 
   const categoriaPages: MetadataRoute.Sitemap = categorias.map((cat) => ({
-    url: `${BASE}${cat.url_prefix}/`,
+    url: `${BASE}${cat.url_prefix}`,
     changeFrequency: 'hourly' as const,
     priority: 0.8,
   }))
 
   const artigoPages: MetadataRoute.Sitemap = slugs.map((item) => ({
-    url: `${BASE}/${item.slug}/`,
+    url: `${BASE}/${item.slug}`,
     lastModified: item.published_at ? new Date(item.published_at) : new Date(),
     changeFrequency: 'weekly' as const,
     priority: 0.6,

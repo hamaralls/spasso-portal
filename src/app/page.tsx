@@ -81,8 +81,17 @@ export default async function Home() {
         {gridArticles.length > 0 && (
           <section>
             <SectionHeader title="Últimas Notícias" color="#f5821f" />
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
-              {gridArticles.map((article) => (
+            <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+              {/* Primeiro artigo: destaque em 2 colunas */}
+              <div className="col-span-2">
+                <ArticleCard article={gridArticles[0]} size="featured" />
+              </div>
+              {/* Dois artigos ao lado do destaque */}
+              {gridArticles.slice(1, 3).map((article) => (
+                <ArticleCard key={article.id} article={article} />
+              ))}
+              {/* Restante em grid uniforme */}
+              {gridArticles.slice(3).map((article) => (
                 <ArticleCard key={article.id} article={article} />
               ))}
             </div>

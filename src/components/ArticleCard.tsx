@@ -10,18 +10,22 @@ interface ArticleCardProps {
 }
 
 export default function ArticleCard({ article, size = 'default' }: ArticleCardProps) {
-  const { slug, title, excerpt, featured_image_url, category_name, badge_color, published_at, author_name, author_avatar, origin_badge } = article
+  const { slug, title, excerpt, featured_image_url, category_name, badge_color, published_at, author_name, author_avatar, origin_badge, columnist_type } = article
 
   if (size === 'columnist') {
     const displayName = author_name ?? origin_badge ?? null
     const initials = displayName
       ? displayName.split(' ').filter(Boolean).map((n: string) => n[0].toUpperCase()).slice(0, 2).join('')
       : '?'
+    // editorial = círculo colorido com inicial, person = foto real
+    const isEditorial = !columnist_type || columnist_type === 'editorial'
 
     return (
       <Link href={`/${slug}`} className="group block bg-white rounded-lg p-4 shadow-sm hover:shadow-md transition-shadow text-center">
-        <div className="mx-auto mb-3 w-16 h-16 rounded-full overflow-hidden bg-[#7c3aed]/10 flex items-center justify-center shrink-0">
-          {author_avatar ? (
+        <div className="mx-auto mb-3 w-16 h-16 rounded-full overflow-hidden flex items-center justify-center shrink-0"
+          style={{ background: isEditorial ? '#7c3aed1a' : undefined }}
+        >
+          {!isEditorial && author_avatar ? (
             <Image
               src={author_avatar}
               alt={displayName ?? ''}

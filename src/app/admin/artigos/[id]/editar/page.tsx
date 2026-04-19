@@ -1,7 +1,7 @@
 import { notFound } from 'next/navigation'
 import ArticleEditorClient from '@/components/admin/ArticleEditorClient'
 import { getCategorias } from '@/lib/supabase/queries'
-import { getArticleById } from '@/lib/supabase/admin'
+import { getArticleById, listColumnists } from '@/lib/supabase/admin'
 
 export const runtime = 'edge'
 
@@ -11,9 +11,10 @@ interface Props {
 
 export default async function EditarArtigoPage({ params }: Props) {
   const { id } = await params
-  const [article, categories] = await Promise.all([
+  const [article, categories, columnists] = await Promise.all([
     getArticleById(id),
     getCategorias(),
+    listColumnists(),
   ])
 
   if (!article) notFound()
@@ -32,6 +33,7 @@ export default async function EditarArtigoPage({ params }: Props) {
     seo_description: article.seo_description ?? '',
     status: article.status as 'draft' | 'published' | 'archived',
     content: article.content ?? { rendered: '' },
+    columnist_id: article.columnist_id ?? '',
   }
 
   return (
@@ -50,7 +52,7 @@ export default async function EditarArtigoPage({ params }: Props) {
         </a>
       </div>
       <div className="flex-1 overflow-hidden">
-        <ArticleEditorClient categories={categories} initial={initial} />
+        <ArticleEditorClient categories={categories} columnists={columnists as never} initial={initial} />
       </div>
     </div>
   )

@@ -19,6 +19,7 @@ export interface ArticleInput {
   content_type: string
   source_type: string
   origin_badge?: string
+  columnist_id?: string | null
   seo_title?: string
   seo_description?: string
   seo_keywords?: string[]
@@ -116,4 +117,65 @@ export async function getArticleById(id: string) {
     .single()
   if (error) throw error
   return data
+}
+
+// ── Colunistas ────────────────────────────────────────────────
+
+export interface ColumnistInput {
+  name: string
+  slug: string
+  bio?: string
+  avatar_url?: string
+  type: 'editorial' | 'person'
+  active?: boolean
+}
+
+export async function listColumnists() {
+  const sb = getAdminClient()
+  const { data, error } = await sb
+    .from('columnists')
+    .select('id, name, slug, type, avatar_url, active, created_at')
+    .order('name')
+  if (error) throw error
+  return data ?? []
+}
+
+export async function getColumnistById(id: string) {
+  const sb = getAdminClient()
+  const { data, error } = await sb
+    .from('columnists')
+    .select('*')
+    .eq('id', id)
+    .single()
+  if (error) throw error
+  return data
+}
+
+export async function createColumnist(input: ColumnistInput) {
+  const sb = getAdminClient()
+  const { data, error } = await sb
+    .from('columnists')
+    .insert({ ...input, active: input.active ?? true })
+    .select('id, slug')
+    .single()
+  if (error) throw error
+  return data
+}
+
+export async function updateColumnist(id: string, input: Partial<ColumnistInput>) {
+  const sb = getAdminClient()
+  const { data, error } = await sb
+    .from('columnists')
+    .update(input)
+    .eq('id', id)
+    .select('id, slug')
+    .single()
+  if (error) throw error
+  return data
+}
+
+export async function deleteColumnist(id: string) {
+  const sb = getAdminClient()
+  const { error } = await sb.from('columnists').delete().eq('id', id)
+  if (error) throw error
 }

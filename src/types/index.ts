@@ -54,7 +54,7 @@ export interface Article {
   reading_time_min: number | null
 }
 
-// View artigos_publicados (join com category + user)
+// View artigos_publicados (join com category + user + columnist)
 export interface ArticlePublico {
   id: string
   slug: string
@@ -75,6 +75,18 @@ export interface ArticlePublico {
   url_prefix: string | null
   author_name: string | null
   author_avatar: string | null
+  columnist_type: string | null
+}
+
+export interface Columnist {
+  id: string
+  name: string
+  slug: string
+  bio: string | null
+  avatar_url: string | null
+  type: 'editorial' | 'person'
+  active: boolean
+  created_at: string
 }
 
 export interface Redirect {

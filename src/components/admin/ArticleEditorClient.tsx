@@ -1,7 +1,7 @@
 'use client'
 
 import dynamic from 'next/dynamic'
-import type { Category } from '@/types'
+import type { Category, Columnist } from '@/types'
 
 const ArticleEditor = dynamic(
   () => import('./ArticleEditor'),
@@ -29,10 +29,12 @@ interface ArticleData {
   seo_description: string
   status: 'draft' | 'published' | 'archived'
   content: { rendered: string }
+  columnist_id?: string
 }
 
 interface Props {
   categories: Category[]
+  columnists?: Columnist[]
   initial?: Partial<ArticleData>
 }
 

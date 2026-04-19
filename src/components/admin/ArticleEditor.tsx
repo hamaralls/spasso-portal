@@ -7,7 +7,7 @@ import StarterKit from '@tiptap/starter-kit'
 import Image from '@tiptap/extension-image'
 import Link from '@tiptap/extension-link'
 import Placeholder from '@tiptap/extension-placeholder'
-import type { Category } from '@/types'
+import type { Category, Columnist } from '@/types'
 
 interface ArticleData {
   id?: string
@@ -23,10 +23,12 @@ interface ArticleData {
   seo_description: string
   status: 'draft' | 'published' | 'archived'
   content: { rendered: string }
+  columnist_id?: string
 }
 
 interface Props {
   categories: Category[]
+  columnists?: Columnist[]
   initial?: Partial<ArticleData>
 }
 
@@ -41,7 +43,7 @@ function slugify(str: string): string {
     .slice(0, 100)
 }
 
-export default function ArticleEditor({ categories, initial }: Props) {
+export default function ArticleEditor({ categories, columnists = [], initial }: Props) {
   const router = useRouter()
   const isEditing = !!initial?.id
 
@@ -53,6 +55,7 @@ export default function ArticleEditor({ categories, initial }: Props) {
   const [contentType, setContentType] = useState(initial?.content_type ?? 'news')
   const [sourceType, setSourceType]   = useState(initial?.source_type ?? 'original')
   const [originBadge, setOriginBadge] = useState(initial?.origin_badge ?? '')
+  const [columnistId, setColumnistId] = useState(initial?.columnist_id ?? '')
   const [coverUrl, setCoverUrl]     = useState(initial?.featured_image_url ?? '')
   const [seoTitle, setSeoTitle]     = useState(initial?.seo_title ?? '')
   const [seoDesc, setSeoDesc]       = useState(initial?.seo_description ?? '')
@@ -138,6 +141,7 @@ export default function ArticleEditor({ categories, initial }: Props) {
       content_type: contentType,
       source_type: sourceType,
       origin_badge: originBadge || null,
+      columnist_id: columnistId || null,
       featured_image_url: coverUrl || null,
       seo_title: seoTitle || null,
       seo_description: seoDesc || null,
@@ -258,6 +262,17 @@ export default function ArticleEditor({ categories, initial }: Props) {
               ))}
             </select>
           </Field>
+
+          {category === 'colunistas' && columnists.length > 0 && (
+            <Field label="Colunista">
+              <select value={columnistId} onChange={(e) => setColumnistId(e.target.value)} className={selectCls}>
+                <option value="">— Selecionar colunista —</option>
+                {columnists.map((c) => (
+                  <option key={c.id} value={c.id}>{c.name}</option>
+                ))}
+              </select>
+            </Field>
+          )}
 
           <Field label="Tipo de conteúdo">
             <select value={contentType} onChange={(e) => setContentType(e.target.value)} className={selectCls}>

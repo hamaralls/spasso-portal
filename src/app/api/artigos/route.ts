@@ -38,6 +38,7 @@ export async function POST(request: Request) {
     content_type:       body.content_type  ?? 'news',
     source_type:        body.source_type   ?? 'original',
     origin_badge:       body.origin_badge  || null,
+    columnist_id:       body.columnist_id  || null,
     seo_title:          body.seo_title     || null,
     seo_description:    body.seo_description || null,
     reading_time_min:   mins,

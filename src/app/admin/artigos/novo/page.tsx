@@ -1,10 +1,11 @@
 import ArticleEditorClient from '@/components/admin/ArticleEditorClient'
 import { getCategorias } from '@/lib/supabase/queries'
+import { listColumnists } from '@/lib/supabase/admin'
 
 export const runtime = 'edge'
 
 export default async function NovoArtigoPage() {
-  const categories = await getCategorias()
+  const [categories, columnists] = await Promise.all([getCategorias(), listColumnists()])
 
   return (
     <div className="flex flex-col h-screen">
@@ -14,7 +15,7 @@ export default async function NovoArtigoPage() {
         <h1 className="text-sm font-semibold text-gray-800">Novo artigo</h1>
       </div>
       <div className="flex-1 overflow-hidden">
-        <ArticleEditorClient categories={categories} />
+        <ArticleEditorClient categories={categories} columnists={columnists as never} />
       </div>
     </div>
   )

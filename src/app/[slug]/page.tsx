@@ -7,6 +7,7 @@ import ArticleCard from '@/components/ArticleCard'
 import SectionHeader from '@/components/SectionHeader'
 import ShareButtons from '@/components/ShareButtons'
 import { AdUnit } from '@/components/AdUnit'
+import ViewTracker from '@/components/ViewTracker'
 import {
   getCategoria,
   getArtigosPorCategoria,
@@ -200,6 +201,7 @@ export default async function SlugPage({ params, searchParams }: Props) {
         dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbLd) }}
       />
 
+      <ViewTracker slug={artigo.slug} />
       <article className="bg-white">
         <div className="max-w-3xl mx-auto px-4 py-8">
           {/* Breadcrumb */}

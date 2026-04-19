@@ -94,7 +94,7 @@ export default async function Home() {
         {/* Sumaré */}
         {sumare.length > 0 && (
           <section>
-            <SectionHeader title="Sumaré" href="/sp/sumare" color="#f5821f" />
+            <SectionHeader title="Sumaré" href="/sp/sumare" color="#8dc63f" />
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
               <div className="md:col-span-1">
                 <ArticleCard article={sumare[0]} size="featured" />
@@ -111,7 +111,7 @@ export default async function Home() {
         {/* Região */}
         {regiao.length > 0 && (
           <section>
-            <SectionHeader title="Região Metropolitana" href="/rmc" color="#2563eb" />
+            <SectionHeader title="Região Metropolitana" href="/rmc" color="#8dc63f" />
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
               {regiao.map((article) => (
                 <ArticleCard key={article.id} article={article} />

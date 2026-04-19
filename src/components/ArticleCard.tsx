@@ -10,12 +10,12 @@ interface ArticleCardProps {
 }
 
 export default function ArticleCard({ article, size = 'default' }: ArticleCardProps) {
-  const { slug, title, excerpt, featured_image_url, category_name, badge_color, published_at, reading_time_min } = article
+  const { slug, title, excerpt, featured_image_url, category_name, badge_color, published_at } = article
 
   if (size === 'featured') {
     return (
-      <Link href={`/${slug}/`} className="group block">
-        <div className="relative aspect-video w-full overflow-hidden rounded-lg bg-gray-200">
+      <Link href={`/${slug}`} className="group block bg-white rounded-lg overflow-hidden shadow-sm hover:shadow-md transition-shadow">
+        <div className="relative aspect-video w-full overflow-hidden bg-gray-200">
           {featured_image_url ? (
             <Image
               src={featured_image_url}
@@ -28,13 +28,13 @@ export default function ArticleCard({ article, size = 'default' }: ArticleCardPr
             <div className="absolute inset-0 bg-gradient-to-br from-[#f5821f]/20 to-[#f5821f]/5" />
           )}
         </div>
-        <div className="mt-3">
+        <div className="p-3">
           {category_name && (
-            <div className="mb-2">
+            <div className="mb-1">
               <Badge name={category_name} color={badge_color} />
             </div>
           )}
-          <h3 className="text-lg font-bold text-[#1a1a1a] leading-snug group-hover:text-[#f5821f] transition-colors line-clamp-3">
+          <h3 className="font-bold text-[#1a1a1a] leading-snug group-hover:text-[#f5821f] transition-colors line-clamp-3">
             {title}
           </h3>
           {excerpt && (
@@ -42,9 +42,8 @@ export default function ArticleCard({ article, size = 'default' }: ArticleCardPr
               {excerpt.replace(/<[^>]+>/g, '')}
             </p>
           )}
-          <div className="mt-2 flex items-center gap-2 text-xs text-gray-400">
-            <span>{timeAgo(published_at)}</span>
-            {reading_time_min && <span>· {reading_time_min} min</span>}
+          <div className="mt-1.5 text-xs text-gray-400">
+            {timeAgo(published_at)}
           </div>
         </div>
       </Link>
@@ -53,8 +52,8 @@ export default function ArticleCard({ article, size = 'default' }: ArticleCardPr
 
   if (size === 'compact') {
     return (
-      <Link href={`/${slug}/`} className="group flex gap-3 items-start">
-        <div className="relative w-20 h-16 flex-shrink-0 overflow-hidden rounded bg-gray-200">
+      <Link href={`/${slug}`} className="group flex gap-3 items-start bg-white rounded-lg p-2 shadow-sm hover:shadow-md transition-shadow">
+        <div className="relative w-20 h-14 flex-shrink-0 overflow-hidden rounded bg-gray-200">
           {featured_image_url && (
             <Image
               src={featured_image_url}
@@ -67,7 +66,7 @@ export default function ArticleCard({ article, size = 'default' }: ArticleCardPr
         </div>
         <div className="flex-1 min-w-0">
           {category_name && (
-            <div className="mb-1">
+            <div className="mb-0.5">
               <Badge name={category_name} color={badge_color} />
             </div>
           )}
@@ -82,8 +81,8 @@ export default function ArticleCard({ article, size = 'default' }: ArticleCardPr
 
   // default card
   return (
-    <Link href={`/${slug}/`} className="group block">
-      <div className="relative aspect-video w-full overflow-hidden rounded-lg bg-gray-200">
+    <Link href={`/${slug}`} className="group block bg-white rounded-lg overflow-hidden shadow-sm hover:shadow-md transition-shadow">
+      <div className="relative aspect-video w-full overflow-hidden bg-gray-200">
         {featured_image_url ? (
           <Image
             src={featured_image_url}
@@ -96,18 +95,17 @@ export default function ArticleCard({ article, size = 'default' }: ArticleCardPr
           <div className="absolute inset-0 bg-gradient-to-br from-gray-100 to-gray-200" />
         )}
       </div>
-      <div className="mt-3">
+      <div className="p-3">
         {category_name && (
-          <div className="mb-2">
+          <div className="mb-1">
             <Badge name={category_name} color={badge_color} />
           </div>
         )}
-        <h3 className="font-bold text-[#1a1a1a] leading-snug group-hover:text-[#f5821f] transition-colors line-clamp-2">
+        <h3 className="text-sm font-bold text-[#1a1a1a] leading-snug group-hover:text-[#f5821f] transition-colors line-clamp-2">
           {title}
         </h3>
-        <div className="mt-2 flex items-center gap-2 text-xs text-gray-400">
-          <span>{timeAgo(published_at)}</span>
-          {reading_time_min && <span>· {reading_time_min} min de leitura</span>}
+        <div className="mt-1.5 text-xs text-gray-400">
+          {timeAgo(published_at)}
         </div>
       </div>
     </Link>

@@ -15,13 +15,13 @@ export default async function Home() {
     getArtigosPorCategorias(['sumare'], 3),
     getArtigosPorCategorias(['hortolandia', 'nova-odessa', 'campinas', 'paulinia', 'monte-mor'], 3),
     getArtigosPorCategorias(['brasil'], 3),
-    getArtigosPorCategorias(['saude'], 3),
-    getArtigosPorCategorias(['politica'], 3),
-    getArtigosPorCategorias(['economia'], 3),
-    getArtigosPorCategorias(['educacao'], 3),
-    getArtigosPorCategorias(['cultura-e-lazer'], 3),
-    getArtigosPorCategorias(['esporte'], 3),
-    getArtigosPorCategorias(['eventos'], 3),
+    getArtigosPorCategorias(['saude'], 4),
+    getArtigosPorCategorias(['politica'], 4),
+    getArtigosPorCategorias(['economia'], 4),
+    getArtigosPorCategorias(['educacao'], 4),
+    getArtigosPorCategorias(['cultura-e-lazer'], 4),
+    getArtigosPorCategorias(['esporte'], 4),
+    getArtigosPorCategorias(['eventos'], 4),
     getArtigosPorCategorias(['colunistas'], 4),
     getColunistas(),
   ])
@@ -89,7 +89,7 @@ export default async function Home() {
               </div>
               {/* Dois artigos ao lado do destaque */}
               {gridArticles.slice(1, 3).map((article) => (
-                <ArticleCard key={article.id} article={article} />
+                <ArticleCard key={article.id} article={article} size="featured" />
               ))}
               {/* Restante em grid uniforme */}
               {gridArticles.slice(3).map((article) => (
@@ -197,7 +197,7 @@ export default async function Home() {
         {saude.length > 0 && (
           <section>
             <SectionHeader title="Saúde" href="/saude" color="#0891b2" />
-            <div className="grid grid-cols-2 lg:grid-cols-3 gap-4">
+            <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
               {saude.map((article) => (
                 <ArticleCard key={article.id} article={article} />
               ))}
@@ -209,7 +209,7 @@ export default async function Home() {
         {politica.length > 0 && (
           <section>
             <SectionHeader title="Política" href="/politica" color="#7c3aed" />
-            <div className="grid grid-cols-2 lg:grid-cols-3 gap-4">
+            <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
               {politica.map((article) => (
                 <ArticleCard key={article.id} article={article} />
               ))}
@@ -221,7 +221,7 @@ export default async function Home() {
         {economia.length > 0 && (
           <section>
             <SectionHeader title="Economia" href="/economia" color="#16a34a" />
-            <div className="grid grid-cols-2 lg:grid-cols-3 gap-4">
+            <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
               {economia.map((article) => (
                 <ArticleCard key={article.id} article={article} />
               ))}
@@ -233,7 +233,7 @@ export default async function Home() {
         {educacao.length > 0 && (
           <section>
             <SectionHeader title="Educação" href="/educacao" color="#d97706" />
-            <div className="grid grid-cols-2 lg:grid-cols-3 gap-4">
+            <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
               {educacao.map((article) => (
                 <ArticleCard key={article.id} article={article} />
               ))}
@@ -245,7 +245,7 @@ export default async function Home() {
         {cultura.length > 0 && (
           <section>
             <SectionHeader title="Cultura e Lazer" href="/cultura-e-lazer" color="#db2777" />
-            <div className="grid grid-cols-2 lg:grid-cols-3 gap-4">
+            <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
               {cultura.map((article) => (
                 <ArticleCard key={article.id} article={article} />
               ))}
@@ -257,7 +257,7 @@ export default async function Home() {
         {esporte.length > 0 && (
           <section>
             <SectionHeader title="Esporte" href="/esporte" color="#059669" />
-            <div className="grid grid-cols-2 lg:grid-cols-3 gap-4">
+            <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
               {esporte.map((article) => (
                 <ArticleCard key={article.id} article={article} />
               ))}
@@ -269,7 +269,7 @@ export default async function Home() {
         {eventos.length > 0 && (
           <section>
             <SectionHeader title="Eventos" href="/eventos" color="#ea580c" />
-            <div className="grid grid-cols-2 lg:grid-cols-3 gap-4">
+            <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
               {eventos.map((article) => (
                 <ArticleCard key={article.id} article={article} />
               ))}

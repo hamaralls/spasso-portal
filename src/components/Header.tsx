@@ -110,10 +110,10 @@ export default function Header() {
             <Image
               src="/logo.png"
               alt="Spasso Cidades"
-              width={300}
-              height={60}
+              width={480}
+              height={96}
               priority
-              className="h-12 lg:h-16 w-auto"
+              className="h-16 lg:h-24 w-auto max-w-[200px] lg:max-w-[360px]"
             />
           </Link>
 

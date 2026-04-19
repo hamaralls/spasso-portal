@@ -18,7 +18,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   return {
     title: `${categoria.name} — Notícias`,
     description: `Últimas notícias de ${categoria.name} e região.`,
-    alternates: { canonical: `/sp/${cidade}/` },
+    alternates: { canonical: `/sp/${cidade}` },
   }
 }
 
@@ -61,7 +61,7 @@ export default async function CidadePage({ params, searchParams }: Props) {
         <div className="flex justify-center gap-2 mt-10">
           {page > 1 && (
             <a
-              href={`/sp/${cidade}/?page=${page - 1}`}
+              href={`/sp/${cidade}?page=${page - 1}`}
               className="px-4 py-2 rounded border border-gray-300 text-sm font-medium hover:bg-gray-50 transition-colors"
             >
               ← Anterior
@@ -72,7 +72,7 @@ export default async function CidadePage({ params, searchParams }: Props) {
           </span>
           {page < totalPages && (
             <a
-              href={`/sp/${cidade}/?page=${page + 1}`}
+              href={`/sp/${cidade}?page=${page + 1}`}
               className="px-4 py-2 rounded border border-gray-300 text-sm font-medium hover:bg-gray-50 transition-colors"
             >
               Próxima →

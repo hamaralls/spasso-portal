@@ -32,7 +32,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     return {
       title: `${categoria.name} — Notícias`,
       description: `Últimas notícias sobre ${categoria.name}.`,
-      alternates: { canonical: `/${slug}/` },
+      alternates: { canonical: `/${slug}` },
     }
   }
 
@@ -50,7 +50,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   return {
     title,
     description,
-    alternates: { canonical: `/${slug}/` },
+    alternates: { canonical: `/${slug}` },
     ...(authorName ? { authors: [{ name: authorName }] } : {}),
     openGraph: {
       title,
@@ -100,7 +100,7 @@ export default async function SlugPage({ params, searchParams }: Props) {
           <div className="flex justify-center gap-2 mt-10">
             {page > 1 && (
               <a
-                href={`/${slug}/?page=${page - 1}`}
+                href={`/${slug}?page=${page - 1}`}
                 className="px-4 py-2 rounded border border-gray-300 text-sm font-medium hover:bg-gray-50 transition-colors"
               >
                 ← Anterior
@@ -111,7 +111,7 @@ export default async function SlugPage({ params, searchParams }: Props) {
             </span>
             {page < totalPages && (
               <a
-                href={`/${slug}/?page=${page + 1}`}
+                href={`/${slug}?page=${page + 1}`}
                 className="px-4 py-2 rounded border border-gray-300 text-sm font-medium hover:bg-gray-50 transition-colors"
               >
                 Próxima →
@@ -134,7 +134,7 @@ export default async function SlugPage({ params, searchParams }: Props) {
 
   const htmlContent = artigo.content?.rendered ?? ''
   const tempoLeitura = artigo.reading_time_min ?? readingTime(htmlContent)
-  const url = `https://jornalspassocidades.com.br/${artigo.slug}/`
+  const url = `https://jornalspassocidades.com.br/${artigo.slug}`
 
   const authorRaw = artigo.author as unknown
   const authorName = Array.isArray(authorRaw)
@@ -174,9 +174,9 @@ export default async function SlugPage({ params, searchParams }: Props) {
     ? artigo.category_slug.replace(/-/g, ' ').replace(/\b\w/g, (c: string) => c.toUpperCase())
     : null)
   const categoryUrl = categoriaArtigo
-    ? `https://jornalspassocidades.com.br${categoriaArtigo.url_prefix}/`
+    ? `https://jornalspassocidades.com.br${categoriaArtigo.url_prefix}`
     : artigo.category_slug
-    ? `https://jornalspassocidades.com.br/${artigo.category_slug}/`
+    ? `https://jornalspassocidades.com.br/${artigo.category_slug}`
     : null
 
   const breadcrumbLd = {
@@ -212,7 +212,7 @@ export default async function SlugPage({ params, searchParams }: Props) {
             {categoriaArtigo && (
               <>
                 <span>/</span>
-                <Link href={`${categoriaArtigo.url_prefix}/`} className="hover:text-[#dd8500]">
+                <Link href={`${categoriaArtigo.url_prefix}`} className="hover:text-[#dd8500]">
                   {categoriaArtigo.name}
                 </Link>
               </>

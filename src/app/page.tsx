@@ -10,13 +10,16 @@ import { timeAgo } from '@/lib/format'
 export const runtime = 'edge'
 
 export default async function Home() {
-  const [recentes, sumare, regiao, brasil, saude, politica, opiniao] = await Promise.all([
+  const [recentes, sumare, regiao, brasil, saude, politica, economia, educacao, cultura, opiniao] = await Promise.all([
     getArtigosRecentes(13),
     getArtigosPorCategorias(['sumare'], 3),
     getArtigosPorCategorias(['hortolandia', 'nova-odessa', 'campinas', 'paulinia', 'monte-mor'], 3),
     getArtigosPorCategorias(['brasil'], 3),
     getArtigosPorCategorias(['saude'], 3),
     getArtigosPorCategorias(['politica'], 3),
+    getArtigosPorCategorias(['economia'], 3),
+    getArtigosPorCategorias(['educacao'], 3),
+    getArtigosPorCategorias(['cultura-e-lazer'], 3),
     getArtigosPorCategorias(['opiniao'], 3),
   ])
 
@@ -29,7 +32,7 @@ export default async function Home() {
       {hero ? (
         <section className="bg-white">
           <div className="max-w-7xl mx-auto px-4 py-6">
-            <Link href={`/${hero.slug}/`} className="group block">
+            <Link href={`/${hero.slug}`} className="group block">
               <div className="relative w-full aspect-[21/9] overflow-hidden rounded-xl bg-gray-200">
                 {hero.featured_image_url ? (
                   <Image
@@ -84,13 +87,12 @@ export default async function Home() {
           </section>
         )}
 
-        {/* Banner home — entre últimas e Sumaré */}
         <AdUnit slot="home-leaderboard" format="leaderboard" className="flex justify-center" />
 
         {/* Sumaré */}
         {sumare.length > 0 && (
           <section>
-            <SectionHeader title="Sumaré" href="/sp/sumare/" />
+            <SectionHeader title="Sumaré" href="/sp/sumare" />
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
               <div className="md:col-span-1">
                 <ArticleCard article={sumare[0]} size="featured" />
@@ -107,7 +109,7 @@ export default async function Home() {
         {/* Região */}
         {regiao.length > 0 && (
           <section>
-            <SectionHeader title="Região Metropolitana" href="/rmc/" />
+            <SectionHeader title="Região Metropolitana" href="/rmc" />
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
               {regiao.map((article) => (
                 <ArticleCard key={article.id} article={article} />
@@ -119,7 +121,7 @@ export default async function Home() {
         {/* Brasil */}
         {brasil.length > 0 && (
           <section>
-            <SectionHeader title="Brasil" href="/brasil/" />
+            <SectionHeader title="Brasil" href="/brasil" />
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
               {brasil.map((article) => (
                 <ArticleCard key={article.id} article={article} />
@@ -131,7 +133,7 @@ export default async function Home() {
         {/* Saúde */}
         {saude.length > 0 && (
           <section>
-            <SectionHeader title="Saúde" href="/saude/" />
+            <SectionHeader title="Saúde" href="/saude" />
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
               {saude.map((article) => (
                 <ArticleCard key={article.id} article={article} />
@@ -143,7 +145,7 @@ export default async function Home() {
         {/* Política */}
         {politica.length > 0 && (
           <section>
-            <SectionHeader title="Política" href="/politica/" />
+            <SectionHeader title="Política" href="/politica" />
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
               {politica.map((article) => (
                 <ArticleCard key={article.id} article={article} />
@@ -152,13 +154,48 @@ export default async function Home() {
           </section>
         )}
 
-        {/* Banner home — antes de Opinião */}
+        {/* Economia */}
+        {economia.length > 0 && (
+          <section>
+            <SectionHeader title="Economia" href="/economia" />
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+              {economia.map((article) => (
+                <ArticleCard key={article.id} article={article} />
+              ))}
+            </div>
+          </section>
+        )}
+
+        {/* Educação */}
+        {educacao.length > 0 && (
+          <section>
+            <SectionHeader title="Educação" href="/educacao" />
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+              {educacao.map((article) => (
+                <ArticleCard key={article.id} article={article} />
+              ))}
+            </div>
+          </section>
+        )}
+
+        {/* Cultura e Lazer */}
+        {cultura.length > 0 && (
+          <section>
+            <SectionHeader title="Cultura e Lazer" href="/cultura-e-lazer" />
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+              {cultura.map((article) => (
+                <ArticleCard key={article.id} article={article} />
+              ))}
+            </div>
+          </section>
+        )}
+
         <AdUnit slot="home-leaderboard-2" format="leaderboard" className="flex justify-center" />
 
         {/* Opinião */}
         {opiniao.length > 0 && (
           <section>
-            <SectionHeader title="Opinião" href="/opiniao/" />
+            <SectionHeader title="Opinião" href="/opiniao" />
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
               {opiniao.map((article) => (
                 <ArticleCard key={article.id} article={article} />

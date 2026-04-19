@@ -3,6 +3,7 @@ import Image from 'next/image'
 import { createClient } from '@/lib/supabase/server'
 import { listArticles } from '@/lib/supabase/admin'
 import { formatDateShort } from '@/lib/format'
+import DeleteButton from '@/components/admin/DeleteButton'
 
 export const runtime = 'edge'
 
@@ -115,13 +116,14 @@ export default async function ArtigosPage({ searchParams }: Props) {
                   <td className="px-4 py-3 text-gray-400 text-xs hidden lg:table-cell">
                     {article.published_at ? formatDateShort(article.published_at) : '—'}
                   </td>
-                  <td className="px-4 py-3 text-right">
+                  <td className="px-4 py-3 text-right whitespace-nowrap">
                     <Link
                       href={`/admin/artigos/${article.id}/editar`}
                       className="text-xs font-medium text-[#dd8500] hover:underline"
                     >
                       Editar
                     </Link>
+                    <DeleteButton id={article.id} />
                   </td>
                 </tr>
               ))}

@@ -16,17 +16,17 @@ const REGIAO = [
 ]
 
 const TEMAS = [
-  { name: 'Saúde',          href: '/saude' },
-  { name: 'Esporte',        href: '/esporte' },
-  { name: 'Educação',       href: '/educacao' },
-  { name: 'Meio Ambiente',  href: '/meio-ambiente' },
-  { name: 'Política',       href: '/politica' },
-  { name: 'Tecnologia',     href: '/tecnologia' },
-  { name: 'Economia',       href: '/economia' },
-  { name: 'Eventos',        href: '/eventos' },
-  { name: 'Cultura e Lazer',href: '/cultura-e-lazer' },
-  { name: 'Empregos',       href: '/empregos' },
-  { name: 'Estilo de Vida', href: '/estilo-de-vida' },
+  { name: 'Saúde',           href: '/saude' },
+  { name: 'Esporte',         href: '/esporte' },
+  { name: 'Educação',        href: '/educacao' },
+  { name: 'Meio Ambiente',   href: '/meio-ambiente' },
+  { name: 'Política',        href: '/politica' },
+  { name: 'Tecnologia',      href: '/tecnologia' },
+  { name: 'Economia',        href: '/economia' },
+  { name: 'Eventos',         href: '/eventos' },
+  { name: 'Cultura e Lazer', href: '/cultura-e-lazer' },
+  { name: 'Empregos',        href: '/empregos' },
+  { name: 'Estilo de Vida',  href: '/estilo-de-vida' },
 ]
 
 function formatDate() {
@@ -55,7 +55,7 @@ function NavDropdown({ label, items, cols = 1 }: {
     <div ref={ref} className="relative">
       <button
         onClick={() => setOpen(!open)}
-        className="flex items-center gap-1 text-white/90 text-xs font-semibold uppercase tracking-wider hover:text-white transition-colors py-1"
+        className="flex items-center gap-1 text-[#1a1a1a] text-xs font-semibold uppercase tracking-wider hover:text-[#f5821f] transition-colors py-1"
       >
         {label}
         <ChevronDown size={11} className={`transition-transform ${open ? 'rotate-180' : ''}`} />
@@ -87,13 +87,12 @@ export default function Header() {
   return (
     <header className="bg-white sticky top-0 z-50 shadow-sm">
 
-      {/* ── Topo: data + logo + busca ──────────────────────────── */}
+      {/* ── Topo: data + logo grande centralizado + busca ── */}
       <div className="max-w-7xl mx-auto px-4">
-        <div className="relative flex items-center justify-between h-16 lg:h-20">
+        <div className="relative flex items-center justify-between py-3 lg:py-4">
 
           {/* Esquerda: data (desktop) / hamburger (mobile) */}
-          <div className="w-28 lg:w-40 shrink-0">
-            {/* Mobile: hamburguer */}
+          <div className="w-32 lg:w-48 shrink-0">
             <button
               onClick={() => setMobileOpen(!mobileOpen)}
               className="lg:hidden text-[#1a1a1a] p-1"
@@ -101,62 +100,58 @@ export default function Header() {
             >
               {mobileOpen ? <X size={24} /> : <Menu size={24} />}
             </button>
-
-            {/* Desktop: data */}
             <span className="hidden lg:block text-[11px] text-gray-400 leading-tight capitalize">
               {formatDate()}
             </span>
           </div>
 
-          {/* Centro: logo */}
+          {/* Centro: logo grande */}
           <Link href="/" className="absolute left-1/2 -translate-x-1/2">
             <Image
               src="/logo.png"
               alt="Spasso Cidades"
-              width={220}
-              height={44}
+              width={300}
+              height={60}
               priority
-              className="h-10 lg:h-12 w-auto"
+              className="h-12 lg:h-16 w-auto"
             />
           </Link>
 
           {/* Direita: busca */}
-          <div className="w-28 lg:w-40 shrink-0 flex justify-end">
-            <Link href="/busca" aria-label="Buscar" className="text-gray-400 hover:text-[#f5821f] transition-colors p-1">
+          <div className="w-32 lg:w-48 shrink-0 flex justify-end">
+            <Link href="/busca" aria-label="Buscar"
+              className="text-gray-400 hover:text-[#f5821f] transition-colors p-1">
               <Search size={20} />
             </Link>
           </div>
         </div>
       </div>
 
-      {/* ── NavBar escura (desktop only) ───────────────────────── */}
-      <nav className="hidden lg:block bg-[#1a1a1a]">
+      {/* ── NavBar branca (desktop) ── */}
+      <nav className="hidden lg:block border-t border-gray-100">
         <div className="max-w-7xl mx-auto px-4">
           <div className="flex items-center justify-between h-10">
-
-            {/* Links */}
-            <div className="flex items-center gap-5">
+            <div className="flex items-center gap-6">
               <Link href="/sp/sumare"
-                className="text-white/90 text-xs font-semibold uppercase tracking-wider hover:text-white transition-colors">
+                className="text-[#1a1a1a] text-xs font-semibold uppercase tracking-wider hover:text-[#f5821f] transition-colors">
                 Sumaré
               </Link>
               <NavDropdown label="Região" items={REGIAO} />
               <Link href="/brasil"
-                className="text-white/90 text-xs font-semibold uppercase tracking-wider hover:text-white transition-colors">
+                className="text-[#1a1a1a] text-xs font-semibold uppercase tracking-wider hover:text-[#f5821f] transition-colors">
                 Brasil
               </Link>
               <NavDropdown label="Temas" items={TEMAS} cols={2} />
               <Link href="/colunistas"
-                className="text-white/90 text-xs font-semibold uppercase tracking-wider hover:text-white transition-colors">
+                className="text-[#1a1a1a] text-xs font-semibold uppercase tracking-wider hover:text-[#f5821f] transition-colors">
                 Colunistas
               </Link>
               <Link href="/edicao-impressa"
-                className="text-white/90 text-xs font-semibold uppercase tracking-wider hover:text-white transition-colors">
+                className="text-[#1a1a1a] text-xs font-semibold uppercase tracking-wider hover:text-[#f5821f] transition-colors">
                 Ed. Impressa
               </Link>
             </div>
 
-            {/* Anuncie pill */}
             <Link
               href="/anuncie"
               className="text-xs font-bold uppercase tracking-wider bg-[#f5821f] text-white px-4 py-1 rounded-full hover:bg-[#e0711a] transition-colors"
@@ -165,12 +160,10 @@ export default function Header() {
             </Link>
           </div>
         </div>
-
-        {/* Linha laranja na base da navBar */}
         <div className="h-0.5 bg-[#f5821f]" />
       </nav>
 
-      {/* ── Menu mobile ────────────────────────────────────────── */}
+      {/* ── Menu mobile ── */}
       {mobileOpen && (
         <div className="lg:hidden bg-white border-t border-gray-100 px-4 py-3 space-y-1 shadow-lg">
           <MobileLink href="/sp/sumare" onClick={() => setMobileOpen(false)}>Sumaré</MobileLink>

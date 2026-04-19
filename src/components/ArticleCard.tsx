@@ -27,13 +27,13 @@ export default function ArticleCard({ article, size = 'default' }: ArticleCardPr
           ) : (
             <div className="absolute inset-0 bg-gradient-to-br from-[#f5821f]/20 to-[#f5821f]/5" />
           )}
-        </div>
-        <div className="p-3">
           {category_name && (
-            <div className="mb-1">
+            <div className="absolute bottom-2 left-2">
               <Badge name={category_name} color={badge_color} />
             </div>
           )}
+        </div>
+        <div className="p-3">
           <h3 className="font-bold text-[#1a1a1a] leading-snug group-hover:text-[#f5821f] transition-colors line-clamp-3">
             {title}
           </h3>
@@ -63,13 +63,13 @@ export default function ArticleCard({ article, size = 'default' }: ArticleCardPr
               sizes="80px"
             />
           )}
-        </div>
-        <div className="flex-1 min-w-0">
           {category_name && (
-            <div className="mb-0.5">
+            <div className="absolute bottom-1 left-1">
               <Badge name={category_name} color={badge_color} />
             </div>
           )}
+        </div>
+        <div className="flex-1 min-w-0">
           <h3 className="text-sm font-bold text-[#1a1a1a] leading-snug group-hover:text-[#f5821f] transition-colors line-clamp-2">
             {title}
           </h3>
@@ -94,13 +94,13 @@ export default function ArticleCard({ article, size = 'default' }: ArticleCardPr
         ) : (
           <div className="absolute inset-0 bg-gradient-to-br from-gray-100 to-gray-200" />
         )}
-      </div>
-      <div className="p-3">
         {category_name && (
-          <div className="mb-1">
+          <div className="absolute bottom-2 left-2">
             <Badge name={category_name} color={badge_color} />
           </div>
         )}
+      </div>
+      <div className="p-3">
         <h3 className="text-sm font-bold text-[#1a1a1a] leading-snug group-hover:text-[#f5821f] transition-colors line-clamp-2">
           {title}
         </h3>

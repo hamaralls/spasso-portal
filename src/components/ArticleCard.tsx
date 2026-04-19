@@ -10,12 +10,13 @@ interface ArticleCardProps {
 }
 
 export default function ArticleCard({ article, size = 'default' }: ArticleCardProps) {
-  const { slug, title, excerpt, featured_image_url, category_name, badge_color, published_at, author_name, author_avatar } = article
+  const { slug, title, excerpt, featured_image_url, category_name, badge_color, published_at, author_name, author_avatar, origin_badge } = article
 
   if (size === 'columnist') {
-    const initials = author_name
-      ? author_name.split(' ').filter(Boolean).map((n) => n[0].toUpperCase()).slice(0, 2).join('')
-      : 'C'
+    const displayName = author_name ?? origin_badge ?? null
+    const initials = displayName
+      ? displayName.split(' ').filter(Boolean).map((n: string) => n[0].toUpperCase()).slice(0, 2).join('')
+      : '?'
 
     return (
       <Link href={`/${slug}`} className="group block bg-white rounded-lg p-4 shadow-sm hover:shadow-md transition-shadow text-center">
@@ -23,7 +24,7 @@ export default function ArticleCard({ article, size = 'default' }: ArticleCardPr
           {author_avatar ? (
             <Image
               src={author_avatar}
-              alt={author_name ?? ''}
+              alt={displayName ?? ''}
               width={64}
               height={64}
               className="object-cover w-full h-full"
@@ -32,8 +33,8 @@ export default function ArticleCard({ article, size = 'default' }: ArticleCardPr
             <span className="text-xl font-bold text-[#7c3aed]">{initials}</span>
           )}
         </div>
-        {author_name && (
-          <p className="text-xs font-bold text-[#7c3aed] uppercase tracking-wide mb-2 truncate">{author_name}</p>
+        {displayName && (
+          <p className="text-xs font-bold text-[#7c3aed] uppercase tracking-wide mb-2 truncate">{displayName}</p>
         )}
         <h3 className="text-sm font-bold text-[#1a1a1a] leading-snug group-hover:text-[#7c3aed] transition-colors line-clamp-3">
           {title}

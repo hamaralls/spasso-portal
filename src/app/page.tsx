@@ -10,11 +10,13 @@ import { timeAgo } from '@/lib/format'
 export const runtime = 'edge'
 
 export default async function Home() {
-  const [recentes, sumare, regiao, brasil, opiniao] = await Promise.all([
+  const [recentes, sumare, regiao, brasil, saude, politica, opiniao] = await Promise.all([
     getArtigosRecentes(13),
     getArtigosPorCategorias(['sumare'], 3),
     getArtigosPorCategorias(['hortolandia', 'nova-odessa', 'campinas', 'paulinia', 'monte-mor'], 3),
     getArtigosPorCategorias(['brasil'], 3),
+    getArtigosPorCategorias(['saude'], 3),
+    getArtigosPorCategorias(['politica'], 3),
     getArtigosPorCategorias(['opiniao'], 3),
   ])
 
@@ -120,6 +122,30 @@ export default async function Home() {
             <SectionHeader title="Brasil" href="/brasil/" />
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
               {brasil.map((article) => (
+                <ArticleCard key={article.id} article={article} />
+              ))}
+            </div>
+          </section>
+        )}
+
+        {/* Saúde */}
+        {saude.length > 0 && (
+          <section>
+            <SectionHeader title="Saúde" href="/saude/" />
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+              {saude.map((article) => (
+                <ArticleCard key={article.id} article={article} />
+              ))}
+            </div>
+          </section>
+        )}
+
+        {/* Política */}
+        {politica.length > 0 && (
+          <section>
+            <SectionHeader title="Política" href="/politica/" />
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+              {politica.map((article) => (
                 <ArticleCard key={article.id} article={article} />
               ))}
             </div>

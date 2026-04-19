@@ -125,11 +125,10 @@ export default async function SlugPage({ params, searchParams }: Props) {
   const artigo = await getArtigoCompleto(slug)
   if (!artigo) notFound()
 
-  const relacionados = await getArtigosRelacionados(
-    artigo.category_slug ?? '',
-    artigo.slug,
-    3
-  )
+  const [relacionados, categoriaArtigo] = await Promise.all([
+    getArtigosRelacionados(artigo.category_slug ?? '', artigo.slug, 3),
+    artigo.category_slug ? getCategoria(artigo.category_slug) : Promise.resolve(null),
+  ])
 
   const htmlContent = artigo.content?.rendered ?? ''
   const tempoLeitura = artigo.reading_time_min ?? readingTime(htmlContent)
@@ -169,10 +168,12 @@ export default async function SlugPage({ params, searchParams }: Props) {
     },
   }
 
-  const categoryLabel = artigo.category_slug
+  const categoryLabel = categoriaArtigo?.name ?? (artigo.category_slug
     ? artigo.category_slug.replace(/-/g, ' ').replace(/\b\w/g, (c: string) => c.toUpperCase())
-    : null
-  const categoryUrl = artigo.category_slug
+    : null)
+  const categoryUrl = categoriaArtigo
+    ? `https://jornalspassocidades.com.br${categoriaArtigo.url_prefix}/`
+    : artigo.category_slug
     ? `https://jornalspassocidades.com.br/${artigo.category_slug}/`
     : null
 
@@ -204,14 +205,11 @@ export default async function SlugPage({ params, searchParams }: Props) {
           {/* Breadcrumb */}
           <nav className="text-xs text-gray-400 mb-4 flex items-center gap-1.5">
             <Link href="/" className="hover:text-[#dd8500]">Home</Link>
-            {artigo.category_slug && (
+            {categoriaArtigo && (
               <>
                 <span>/</span>
-                <Link
-                  href={`/${artigo.category_slug}/`}
-                  className="hover:text-[#dd8500] capitalize"
-                >
-                  {artigo.category_slug.replace(/-/g, ' ')}
+                <Link href={`${categoriaArtigo.url_prefix}/`} className="hover:text-[#dd8500]">
+                  {categoriaArtigo.name}
                 </Link>
               </>
             )}
@@ -219,9 +217,9 @@ export default async function SlugPage({ params, searchParams }: Props) {
 
           {/* Badge + título */}
           <div className="mb-4">
-            {artigo.category_slug && (
+            {categoriaArtigo && (
               <div className="mb-3">
-                <Badge name={artigo.category_slug.replace(/-/g, ' ')} />
+                <Badge name={categoriaArtigo.name} color={categoriaArtigo.badge_color} />
               </div>
             )}
             <h1 className="text-2xl md:text-4xl font-extrabold text-[#1a1a1a] leading-tight">
@@ -231,6 +229,7 @@ export default async function SlugPage({ params, searchParams }: Props) {
 
           {/* Meta */}
           <div className="flex flex-wrap items-center gap-x-4 gap-y-1 text-sm text-gray-500 mb-6 pb-4 border-b border-gray-100">
+            {authorName && <span className="font-medium text-[#1a1a1a]">{authorName}</span>}
             {artigo.published_at && (
               <time dateTime={artigo.published_at}>{formatDate(artigo.published_at)}</time>
             )}

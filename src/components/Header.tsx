@@ -5,25 +5,21 @@ import Image from 'next/image'
 import { useState } from 'react'
 import { Menu, X, Search } from 'lucide-react'
 
-// Nav flat — estilo Metrópoles
+// Nav flat — estilo Metrópoles (13 itens principais)
 const NAV_ITEMS = [
-  { name: 'Últimas',       href: '/' },
-  { name: 'Sumaré',        href: '/sp/sumare' },
-  { name: 'Hortolândia',   href: '/sp/hortolandia' },
-  { name: 'Nova Odessa',   href: '/sp/nova-odessa' },
-  { name: 'Campinas',      href: '/sp/campinas' },
-  { name: 'Paulínia',      href: '/sp/paulinia' },
-  { name: 'Monte Mor',     href: '/sp/monte-mor' },
-  { name: 'RMC',           href: '/rmc' },
-  { name: 'Brasil',        href: '/brasil' },
-  { name: 'Política',      href: '/politica' },
-  { name: 'Saúde',         href: '/saude' },
-  { name: 'Economia',      href: '/economia' },
-  { name: 'Educação',      href: '/educacao' },
-  { name: 'Esportes',      href: '/esporte' },
-  { name: 'Cultura',       href: '/cultura-e-lazer' },
-  { name: 'Vida & Estilo', href: '/estilo-de-vida' },
-  { name: 'Colunistas',    href: '/colunistas' },
+  { name: 'Últimas',     href: '/' },
+  { name: 'Sumaré',      href: '/sp/sumare' },
+  { name: 'Hortolândia', href: '/sp/hortolandia' },
+  { name: 'Nova Odessa', href: '/sp/nova-odessa' },
+  { name: 'Campinas',    href: '/sp/campinas' },
+  { name: 'RMC',         href: '/rmc' },
+  { name: 'SP',          href: '/rmc' },
+  { name: 'Brasil',      href: '/brasil' },
+  { name: 'Política',    href: '/politica' },
+  { name: 'Saúde',       href: '/saude' },
+  { name: 'Esportes',    href: '/esporte' },
+  { name: 'Cultura',     href: '/cultura-e-lazer' },
+  { name: 'Colunistas',  href: '/colunistas' },
 ]
 
 // Menu mobile completo (inclui itens extras não na nav desktop)
@@ -116,7 +112,7 @@ export default function Header() {
               <Link
                 key={item.href}
                 href={item.href}
-                className="whitespace-nowrap text-[#1a1a1a] text-[11px] font-semibold uppercase tracking-wide hover:text-[#f5821f] transition-colors"
+                className="whitespace-nowrap text-[#333] text-[13px] font-medium hover:text-[#f5821f] transition-colors"
               >
                 {item.name}
               </Link>

@@ -6,11 +6,42 @@ import type { ArticlePublico } from '@/types'
 
 interface ArticleCardProps {
   article: ArticlePublico
-  size?: 'default' | 'featured' | 'compact'
+  size?: 'default' | 'featured' | 'compact' | 'columnist'
 }
 
 export default function ArticleCard({ article, size = 'default' }: ArticleCardProps) {
-  const { slug, title, excerpt, featured_image_url, category_name, badge_color, published_at } = article
+  const { slug, title, excerpt, featured_image_url, category_name, badge_color, published_at, author_name, author_avatar } = article
+
+  if (size === 'columnist') {
+    const initials = author_name
+      ? author_name.split(' ').filter(Boolean).map((n) => n[0].toUpperCase()).slice(0, 2).join('')
+      : 'C'
+
+    return (
+      <Link href={`/${slug}`} className="group block bg-white rounded-lg p-4 shadow-sm hover:shadow-md transition-shadow text-center">
+        <div className="mx-auto mb-3 w-16 h-16 rounded-full overflow-hidden bg-[#7c3aed]/10 flex items-center justify-center shrink-0">
+          {author_avatar ? (
+            <Image
+              src={author_avatar}
+              alt={author_name ?? ''}
+              width={64}
+              height={64}
+              className="object-cover w-full h-full"
+            />
+          ) : (
+            <span className="text-xl font-bold text-[#7c3aed]">{initials}</span>
+          )}
+        </div>
+        {author_name && (
+          <p className="text-xs font-bold text-[#7c3aed] uppercase tracking-wide mb-2 truncate">{author_name}</p>
+        )}
+        <h3 className="text-sm font-bold text-[#1a1a1a] leading-snug group-hover:text-[#7c3aed] transition-colors line-clamp-3">
+          {title}
+        </h3>
+        <div className="mt-2 text-xs text-gray-400">{timeAgo(published_at)}</div>
+      </Link>
+    )
+  }
 
   if (size === 'featured') {
     return (

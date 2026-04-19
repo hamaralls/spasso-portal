@@ -22,7 +22,7 @@ export default async function Home() {
     getArtigosPorCategorias(['cultura-e-lazer'], 3),
     getArtigosPorCategorias(['esporte'], 3),
     getArtigosPorCategorias(['eventos'], 3),
-    getArtigosPorCategorias(['opiniao'], 3),
+    getArtigosPorCategorias(['opiniao'], 4),
   ])
 
   const [hero, ...grid] = recentes
@@ -224,13 +224,13 @@ export default async function Home() {
 
         <AdUnit slot="home-leaderboard-2" format="leaderboard" className="flex justify-center" />
 
-        {/* Opinião */}
+        {/* Colunistas */}
         {opiniao.length > 0 && (
           <section>
-            <SectionHeader title="Opinião" href="/opiniao" color="#7c3aed" />
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+            <SectionHeader title="Colunistas" href="/opiniao" color="#7c3aed" />
+            <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
               {opiniao.map((article) => (
-                <ArticleCard key={article.id} article={article} />
+                <ArticleCard key={article.id} article={article} size="columnist" />
               ))}
             </div>
           </section>

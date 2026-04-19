@@ -169,11 +169,34 @@ export default async function SlugPage({ params, searchParams }: Props) {
     },
   }
 
+  const categoryLabel = artigo.category_slug
+    ? artigo.category_slug.replace(/-/g, ' ').replace(/\b\w/g, (c: string) => c.toUpperCase())
+    : null
+  const categoryUrl = artigo.category_slug
+    ? `https://jornalspassocidades.com.br/${artigo.category_slug}/`
+    : null
+
+  const breadcrumbLd = {
+    '@context': 'https://schema.org',
+    '@type': 'BreadcrumbList',
+    itemListElement: [
+      { '@type': 'ListItem', position: 1, name: 'Home', item: 'https://jornalspassocidades.com.br' },
+      ...(categoryLabel && categoryUrl
+        ? [{ '@type': 'ListItem', position: 2, name: categoryLabel, item: categoryUrl }]
+        : []),
+      { '@type': 'ListItem', position: categoryLabel ? 3 : 2, name: artigo.title, item: url },
+    ],
+  }
+
   return (
     <>
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+      />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbLd) }}
       />
 
       <article className="bg-white">

@@ -13,6 +13,14 @@ function getSecret(): string {
   }
 }
 
+const VALID_CATEGORY_SLUGS = new Set([
+  'brasil','campinas','cultura-e-lazer','economia','educacao','empregos',
+  'esporte','estilo-de-vida','eventos','hortolandia','infraestrutura',
+  'meio-ambiente','monte-mor','nova-odessa','opiniao','outras-cidades',
+  'paulinia','politica','rmc','santa-barbara-doeste','saude','seguranca',
+  'sumare','tecnologia',
+])
+
 // Converte data do Coda (DD/MM/YY ou DD/MM/YYYY) → ISO string (YYYY-MM-DDTHH:mm:ssZ)
 function parseCodaDate(raw?: string): string | undefined {
   if (!raw) return undefined
@@ -67,7 +75,8 @@ export async function POST(request: Request) {
   const excerpt            = body.excerpt            as string | undefined
   const featured_image_url = body.featured_image_url as string | undefined
   const coda_image_url    = body.coda_image_url    as string | undefined
-  const category_slug     = body.category_slug     as string | undefined
+  const rawCategorySlug   = ((body.category_slug as string | undefined) ?? '').trim()
+  const category_slug     = VALID_CATEGORY_SLUGS.has(rawCategorySlug) ? rawCategorySlug : undefined
   const published_at       = parseCodaDate(body.published_at as string | undefined)
   const status             = body.status             as string | undefined
 

@@ -112,8 +112,22 @@ export async function buscarArtigos(
 ): Promise<{ articles: ArticlePublico[]; total: number }> {
   const from = (page - 1) * perPage
   const to = from + perPage - 1
-  const term = `%${query.trim()}%`
 
+  // Tenta FTS via RPC (usa GIN index, stemming em português)
+  const { data: rpcData, error: rpcErr } = await getSupabase()
+    .rpc('search_artigos', { query, page_from: from, page_to: to })
+
+  if (!rpcErr && rpcData) {
+    // RPC não retorna count total — faz query separada só para o total
+    const { count } = await getSupabase()
+      .from('artigos_publicados')
+      .select('id', { count: 'exact', head: true })
+      .textSearch('title', query, { type: 'websearch', config: 'portuguese' })
+    return { articles: rpcData as ArticlePublico[], total: count ?? rpcData.length }
+  }
+
+  // Fallback: ILIKE (funciona antes de aplicar migration 003)
+  const term = `%${query.trim()}%`
   const { data, count } = await getSupabase()
     .from('artigos_publicados')
     .select('*', { count: 'exact' })

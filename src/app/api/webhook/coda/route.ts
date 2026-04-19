@@ -13,6 +13,20 @@ function getSecret(): string {
   }
 }
 
+// Converte data do Coda (DD/MM/YY ou DD/MM/YYYY) → ISO string (YYYY-MM-DDTHH:mm:ssZ)
+function parseCodaDate(raw?: string): string | undefined {
+  if (!raw) return undefined
+  // Se já está em formato ISO, retorna direto
+  if (/^\d{4}-\d{2}-\d{2}/.test(raw)) return raw
+  // Formato brasileiro DD/MM/YY ou DD/MM/YYYY
+  const match = raw.match(/^(\d{1,2})\/(\d{1,2})\/(\d{2,4})$/)
+  if (!match) return raw
+  let [, day, month, year] = match
+  if (year.length === 2) year = Number(year) > 50 ? `19${year}` : `20${year}`
+  const iso = `${year}-${month.padStart(2, '0')}-${day.padStart(2, '0')}T12:00:00Z`
+  return iso
+}
+
 async function resolveImage(codaImageUrl?: string, featuredImageUrl?: string): Promise<string | null> {
   if (featuredImageUrl) return featuredImageUrl
   if (!codaImageUrl) return null
@@ -54,7 +68,7 @@ export async function POST(request: Request) {
   const featured_image_url = body.featured_image_url as string | undefined
   const coda_image_url    = body.coda_image_url    as string | undefined
   const category_slug     = body.category_slug     as string | undefined
-  const published_at       = body.published_at       as string | undefined
+  const published_at       = parseCodaDate(body.published_at as string | undefined)
   const status             = body.status             as string | undefined
 
   if (!title || !slug) {

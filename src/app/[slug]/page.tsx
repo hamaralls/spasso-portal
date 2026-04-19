@@ -55,6 +55,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     openGraph: {
       title,
       description,
+      url: `https://jornalspassocidades.com.br/${slug}`,
       type: 'article',
       publishedTime: artigo.published_at ?? undefined,
       modifiedTime: artigo.updated_at ?? undefined,

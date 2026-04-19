@@ -105,7 +105,7 @@ export default function Header() {
               Brasil
             </Link>
             <Dropdown label="Temas" items={TEMAS} cols={2} />
-            <Link href="/opiniao" className="text-[#1a1a1a] text-sm font-semibold uppercase tracking-wide hover:text-[#f5821f] transition-colors">
+            <Link href="/colunistas" className="text-[#1a1a1a] text-sm font-semibold uppercase tracking-wide hover:text-[#f5821f] transition-colors">
               Colunistas
             </Link>
             <Link href="/edicao-impressa" className="text-[#1a1a1a] text-sm font-semibold uppercase tracking-wide hover:text-[#f5821f] transition-colors">
@@ -159,7 +159,7 @@ export default function Header() {
               ))}
             </div>
           </div>
-          <MobileLink href="/opiniao" onClick={() => setMobileOpen(false)}>Colunistas</MobileLink>
+          <MobileLink href="/colunistas" onClick={() => setMobileOpen(false)}>Colunistas</MobileLink>
           <MobileLink href="/edicao-impressa" onClick={() => setMobileOpen(false)}>Ed. Impressa</MobileLink>
           <MobileLink href="/anuncie" onClick={() => setMobileOpen(false)}>Anuncie</MobileLink>
           <MobileLink href="/busca" onClick={() => setMobileOpen(false)}>Buscar</MobileLink>

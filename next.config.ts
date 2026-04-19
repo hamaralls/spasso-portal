@@ -88,9 +88,10 @@ const nextConfig: NextConfig = {
       { source: '/category/brasil',                 destination: '/brasil/',         permanent: true },
       { source: '/category/infraestrutura',         destination: '/infraestrutura/', permanent: true },
 
-      // ── Opinião ───────────────────────────────────────────
-      { source: '/category/politicando',            destination: '/opiniao/', permanent: true },
-      { source: '/category/opiniao',                destination: '/opiniao/', permanent: true },
+      // ── Colunistas (antigo Opinião) ───────────────────────
+      { source: '/category/politicando',            destination: '/colunistas', permanent: true },
+      { source: '/category/opiniao',                destination: '/colunistas', permanent: true },
+      { source: '/opiniao',                         destination: '/colunistas', permanent: true },
 
       // ── WP interno (→ home) ───────────────────────────────
       { source: '/category/featured',               destination: '/', permanent: true },

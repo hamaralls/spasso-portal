@@ -29,7 +29,7 @@ export default function Footer() {
               {[
                 { name: 'Sumaré', href: '/sp/sumare/' },
                 { name: 'Brasil', href: '/brasil/' },
-                { name: 'Opinião', href: '/opiniao/' },
+                { name: 'Colunistas', href: '/colunistas' },
                 { name: 'Edição Impressa', href: '/edicao-impressa/' },
                 { name: 'Anuncie', href: '/anuncie/' },
               ].map((item) => (

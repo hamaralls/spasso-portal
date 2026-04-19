@@ -22,7 +22,7 @@ export default async function Home() {
     getArtigosPorCategorias(['cultura-e-lazer'], 3),
     getArtigosPorCategorias(['esporte'], 3),
     getArtigosPorCategorias(['eventos'], 3),
-    getArtigosPorCategorias(['opiniao'], 4),
+    getArtigosPorCategorias(['colunistas'], 4),
   ])
 
   const [hero, ...grid] = recentes
@@ -236,7 +236,7 @@ export default async function Home() {
         {/* Colunistas */}
         {opiniao.length > 0 && (
           <section>
-            <SectionHeader title="Colunistas" href="/opiniao" color="#7c3aed" />
+            <SectionHeader title="Colunistas" href="/colunistas" color="#7c3aed" />
             <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
               {opiniao.map((article) => (
                 <ArticleCard key={article.id} article={article} size="columnist" />

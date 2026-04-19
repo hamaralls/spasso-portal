@@ -25,7 +25,7 @@ const CATEGORIAS = [
   'sumare','hortolandia','nova-odessa','campinas','paulinia','monte-mor',
   'santa-barbara-doeste','outras-cidades','rmc','brasil','saude','politica',
   'economia','educacao','cultura-e-lazer','esporte','eventos','meio-ambiente',
-  'seguranca','empregos','tecnologia','infraestrutura','estilo-de-vida','opiniao',
+  'seguranca','empregos','tecnologia','infraestrutura','estilo-de-vida','colunistas',
 ]
 
 interface Props {

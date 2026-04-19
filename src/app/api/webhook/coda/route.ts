@@ -16,7 +16,7 @@ function getSecret(): string {
 const VALID_CATEGORY_SLUGS = new Set([
   'brasil','campinas','cultura-e-lazer','economia','educacao','empregos',
   'esporte','estilo-de-vida','eventos','hortolandia','infraestrutura',
-  'meio-ambiente','monte-mor','nova-odessa','opiniao','outras-cidades',
+  'meio-ambiente','monte-mor','nova-odessa','colunistas','outras-cidades',
   'paulinia','politica','rmc','santa-barbara-doeste','saude','seguranca',
   'sumare','tecnologia',
 ])

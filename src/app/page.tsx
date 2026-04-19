@@ -4,13 +4,13 @@ import Badge from '@/components/Badge'
 import ArticleCard from '@/components/ArticleCard'
 import SectionHeader from '@/components/SectionHeader'
 import { AdUnit } from '@/components/AdUnit'
-import { getArtigosRecentes, getArtigosPorCategorias } from '@/lib/supabase/queries'
+import { getArtigosRecentes, getArtigosPorCategorias, getColunistas } from '@/lib/supabase/queries'
 import { timeAgo } from '@/lib/format'
 
 export const runtime = 'edge'
 
 export default async function Home() {
-  const [recentes, sumare, regiao, brasil, saude, politica, economia, educacao, cultura, esporte, eventos, opiniao] = await Promise.all([
+  const [recentes, sumare, regiao, brasil, saude, politica, economia, educacao, cultura, esporte, eventos, opiniao, colunistas] = await Promise.all([
     getArtigosRecentes(13),
     getArtigosPorCategorias(['sumare'], 3),
     getArtigosPorCategorias(['hortolandia', 'nova-odessa', 'campinas', 'paulinia', 'monte-mor'], 3),
@@ -23,6 +23,7 @@ export default async function Home() {
     getArtigosPorCategorias(['esporte'], 3),
     getArtigosPorCategorias(['eventos'], 3),
     getArtigosPorCategorias(['colunistas'], 4),
+    getColunistas(),
   ])
 
   const [hero, ...grid] = recentes
@@ -113,6 +114,51 @@ export default async function Home() {
                   <ArticleCard key={article.id} article={article} />
                 ))}
               </div>
+            </div>
+          </section>
+        )}
+
+        {/* Colunistas */}
+        {(opiniao.length > 0 || colunistas.length > 0) && (
+          <section>
+            <SectionHeader title="Colunistas" href="/colunistas" color="#7c3aed" />
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+              {colunistas.map(col => {
+                const initials = col.name
+                  .split(' ').filter(Boolean)
+                  .map((n: string) => n[0].toUpperCase())
+                  .slice(0, 2).join('')
+                const latestArticle = opiniao.find(a =>
+                  a.author_name === col.name || a.origin_badge === col.name
+                ) ?? opiniao[0]
+                return (
+                  <Link
+                    key={col.id}
+                    href="/colunistas"
+                    className="group bg-white rounded-xl p-5 shadow-sm hover:shadow-md transition-shadow flex items-center gap-4"
+                  >
+                    <div className="w-14 h-14 rounded-full overflow-hidden flex items-center justify-center shrink-0"
+                      style={{ background: col.type === 'person' && col.avatar_url ? undefined : '#7c3aed1a' }}>
+                      {col.type === 'person' && col.avatar_url ? (
+                        <Image src={col.avatar_url} alt={col.name} width={56} height={56} className="object-cover w-full h-full" />
+                      ) : (
+                        <span className="text-xl font-extrabold text-[#7c3aed]">{initials}</span>
+                      )}
+                    </div>
+                    <div className="min-w-0">
+                      <p className="text-xs font-bold text-[#7c3aed] uppercase tracking-wide truncate">{col.name}</p>
+                      {latestArticle && (
+                        <p className="text-xs text-gray-500 line-clamp-2 mt-0.5 leading-snug group-hover:text-[#7c3aed] transition-colors">
+                          {latestArticle.title}
+                        </p>
+                      )}
+                    </div>
+                  </Link>
+                )
+              })}
+              {colunistas.length === 0 && opiniao.map((article) => (
+                <ArticleCard key={article.id} article={article} size="columnist" />
+              ))}
             </div>
           </section>
         )}
@@ -233,17 +279,6 @@ export default async function Home() {
 
         <AdUnit slot="home-leaderboard-2" format="leaderboard" className="flex justify-center" />
 
-        {/* Colunistas */}
-        {opiniao.length > 0 && (
-          <section>
-            <SectionHeader title="Colunistas" href="/colunistas" color="#7c3aed" />
-            <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
-              {opiniao.map((article) => (
-                <ArticleCard key={article.id} article={article} size="columnist" />
-              ))}
-            </div>
-          </section>
-        )}
       </div>
     </>
   )

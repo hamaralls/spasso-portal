@@ -86,6 +86,17 @@ export async function getCategorias(): Promise<Category[]> {
   return data ?? []
 }
 
+// ── Colunistas (público) ──────────────────────────────────────────────────────
+
+export async function getColunistas() {
+  const { data } = await getSupabase()
+    .from('columnists')
+    .select('id, name, slug, type, avatar_url, bio, active')
+    .eq('active', true)
+    .order('name')
+  return (data ?? []) as { id: string; name: string; slug: string; type: string; avatar_url: string | null; bio: string | null; active: boolean }[]
+}
+
 // ── Artigos relacionados ──────────────────────────────────────────────────────
 
 export async function getArtigosRelacionados(

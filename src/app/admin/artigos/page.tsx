@@ -96,9 +96,7 @@ export default async function ArtigosPage({ searchParams }: Props) {
                     </span>
                   </td>
                   <td className="px-4 py-3 text-gray-400 text-xs hidden lg:table-cell">
-                    {article.published_at
-                      ? formatDateShort(article.published_at)
-                      : formatDateShort(article.created_at)}
+                    {article.published_at ? formatDateShort(article.published_at) : '—'}
                   </td>
                   <td className="px-4 py-3 text-right">
                     <Link

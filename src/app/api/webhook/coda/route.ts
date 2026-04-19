@@ -46,23 +46,22 @@ export async function POST(request: Request) {
     return Response.json({ error: 'JSON inválido' }, { status: 400 })
   }
 
-  const { title, slug, content, excerpt, featured_image_url, coda_image_url, category_slug, published_at, status } = body as {
-    title?: string
-    slug?: string
-    content?: string
-    excerpt?: string
-    featured_image_url?: string
-    coda_image_url?: string
-    category_slug?: string
-    published_at?: string
-    status?: string
-  }
+  // Limpa title/slug de aspas que o n8n pode inserir ao montar JSON
+  const title = ((body.title as string | undefined) ?? '').replace(/^"+|"+$/g, '').trim()
+  const slug  = ((body.slug  as string | undefined) ?? '').replace(/^"+|"+$/g, '').trim()
+  const content            = body.content            as string | undefined
+  const excerpt            = body.excerpt            as string | undefined
+  const featured_image_url = body.featured_image_url as string | undefined
+  const coda_image_url    = body.coda_image_url    as string | undefined
+  const category_slug     = body.category_slug     as string | undefined
+  const published_at       = body.published_at       as string | undefined
+  const status             = body.status             as string | undefined
 
   if (!title || !slug) {
     return Response.json({ error: 'Campos obrigatórios: title, slug' }, { status: 400 })
   }
 
-  const imageUrl   = await resolveImage(coda_image_url as string | undefined, featured_image_url as string | undefined)
+  const imageUrl   = await resolveImage(coda_image_url, featured_image_url)
   const contentObj = { rendered: content ?? '' }
   const mins       = readingTime(content ?? '')
   const articleStatus = (status === 'published' ? 'published' : 'draft') as 'published' | 'draft'

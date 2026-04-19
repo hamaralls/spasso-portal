@@ -10,7 +10,7 @@ import { timeAgo } from '@/lib/format'
 export const runtime = 'edge'
 
 export default async function Home() {
-  const [recentes, sumare, regiao, brasil, saude, politica, economia, educacao, cultura, opiniao] = await Promise.all([
+  const [recentes, sumare, regiao, brasil, saude, politica, economia, educacao, cultura, esporte, eventos, opiniao] = await Promise.all([
     getArtigosRecentes(13),
     getArtigosPorCategorias(['sumare'], 3),
     getArtigosPorCategorias(['hortolandia', 'nova-odessa', 'campinas', 'paulinia', 'monte-mor'], 3),
@@ -20,6 +20,8 @@ export default async function Home() {
     getArtigosPorCategorias(['economia'], 3),
     getArtigosPorCategorias(['educacao'], 3),
     getArtigosPorCategorias(['cultura-e-lazer'], 3),
+    getArtigosPorCategorias(['esporte'], 3),
+    getArtigosPorCategorias(['eventos'], 3),
     getArtigosPorCategorias(['opiniao'], 3),
   ])
 
@@ -184,6 +186,30 @@ export default async function Home() {
             <SectionHeader title="Cultura e Lazer" href="/cultura-e-lazer" />
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
               {cultura.map((article) => (
+                <ArticleCard key={article.id} article={article} />
+              ))}
+            </div>
+          </section>
+        )}
+
+        {/* Esporte */}
+        {esporte.length > 0 && (
+          <section>
+            <SectionHeader title="Esporte" href="/esporte" />
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+              {esporte.map((article) => (
+                <ArticleCard key={article.id} article={article} />
+              ))}
+            </div>
+          </section>
+        )}
+
+        {/* Eventos */}
+        {eventos.length > 0 && (
+          <section>
+            <SectionHeader title="Eventos" href="/eventos" />
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+              {eventos.map((article) => (
                 <ArticleCard key={article.id} article={article} />
               ))}
             </div>

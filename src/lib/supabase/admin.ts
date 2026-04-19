@@ -62,7 +62,7 @@ export async function deleteArticle(id: string) {
   if (error) throw error
 }
 
-export async function listArticles(page = 1, perPage = 20, status?: string) {
+export async function listArticles(page = 1, perPage = 20, status?: string, category?: string) {
   const sb   = getAdminClient()
   const from = (page - 1) * perPage
   const to   = from + perPage - 1
@@ -74,6 +74,7 @@ export async function listArticles(page = 1, perPage = 20, status?: string) {
     .range(from, to)
 
   if (status && status !== 'all') query = query.eq('status', status)
+  if (category && category !== 'all') query = query.eq('category_slug', category)
 
   const { data, count, error } = await query
   if (error) throw error

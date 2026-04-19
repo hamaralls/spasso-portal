@@ -21,17 +21,31 @@ const STATUS_COLOR: Record<string, string> = {
   archived: 'bg-red-100 text-red-700',
 }
 
+const CATEGORIAS = [
+  'sumare','hortolandia','nova-odessa','campinas','paulinia','monte-mor',
+  'santa-barbara-doeste','outras-cidades','rmc','brasil','saude','politica',
+  'economia','educacao','cultura-e-lazer','esporte','eventos','meio-ambiente',
+  'seguranca','empregos','tecnologia','infraestrutura','estilo-de-vida','opiniao',
+]
+
 interface Props {
-  searchParams: Promise<{ status?: string; page?: string }>
+  searchParams: Promise<{ status?: string; page?: string; cat?: string }>
 }
 
 export default async function ArtigosPage({ searchParams }: Props) {
-  const { status = 'all', page: pageStr = '1' } = await searchParams
+  const { status = 'all', page: pageStr = '1', cat = 'all' } = await searchParams
   const page = Math.max(1, parseInt(pageStr, 10))
 
-  await createClient() // garante sessão válida
-  const { articles, total } = await listArticles(page, 200, status)
+  await createClient()
+  const { articles, total } = await listArticles(page, 200, status, cat)
   const totalPages = Math.ceil(total / 200)
+
+  function filterHref(params: { status?: string; cat?: string; page?: number }) {
+    const s = params.status ?? status
+    const c = params.cat ?? cat
+    const p = params.page ?? 1
+    return `/admin/artigos?status=${s}&cat=${c}&page=${p}`
+  }
 
   return (
     <div className="p-6">
@@ -48,12 +62,12 @@ export default async function ArtigosPage({ searchParams }: Props) {
         </Link>
       </div>
 
-      {/* Filtros */}
-      <div className="flex gap-2 mb-4 flex-wrap">
+      {/* Filtro status */}
+      <div className="flex gap-2 mb-3 flex-wrap">
         {['all', 'published', 'draft', 'archived'].map((s) => (
           <Link
             key={s}
-            href={`/admin/artigos?status=${s}`}
+            href={filterHref({ status: s })}
             className={`px-3 py-1.5 rounded-full text-xs font-semibold transition-colors ${
               status === s
                 ? 'bg-[#dd8500] text-white'
@@ -61,6 +75,33 @@ export default async function ArtigosPage({ searchParams }: Props) {
             }`}
           >
             {s === 'all' ? 'Todos' : STATUS_LABEL[s]}
+          </Link>
+        ))}
+      </div>
+
+      {/* Filtro categoria */}
+      <div className="flex gap-2 mb-4 flex-wrap">
+        <Link
+          href={filterHref({ cat: 'all' })}
+          className={`px-3 py-1.5 rounded-full text-xs font-semibold transition-colors ${
+            cat === 'all'
+              ? 'bg-gray-700 text-white'
+              : 'bg-white border border-gray-200 text-gray-600 hover:border-gray-400'
+          }`}
+        >
+          Todas categorias
+        </Link>
+        {CATEGORIAS.map((c) => (
+          <Link
+            key={c}
+            href={filterHref({ cat: c })}
+            className={`px-3 py-1.5 rounded-full text-xs font-semibold transition-colors capitalize ${
+              cat === c
+                ? 'bg-gray-700 text-white'
+                : 'bg-white border border-gray-200 text-gray-500 hover:border-gray-400'
+            }`}
+          >
+            {c.replace(/-/g, ' ')}
           </Link>
         ))}
       </div>
@@ -75,7 +116,7 @@ export default async function ArtigosPage({ searchParams }: Props) {
           <table className="w-full text-sm">
             <thead className="bg-gray-50 border-b border-gray-100">
               <tr>
-                <th className="px-4 py-3 font-medium text-gray-500 hidden md:table-cell w-16">Capa</th>
+                <th className="px-4 py-3 font-medium text-gray-500 hidden md:table-cell">Capa</th>
                 <th className="text-left px-4 py-3 font-medium text-gray-500">Título</th>
                 <th className="text-left px-4 py-3 font-medium text-gray-500 hidden md:table-cell">Categoria</th>
                 <th className="text-left px-4 py-3 font-medium text-gray-500">Status</th>
@@ -103,7 +144,7 @@ export default async function ArtigosPage({ searchParams }: Props) {
                   </td>
                   <td className="px-4 py-3">
                     <p className="font-medium text-gray-900 line-clamp-1">{article.title}</p>
-                    <p className="text-xs text-gray-400 mt-0.5">/{article.slug}/</p>
+                    <p className="text-xs text-gray-400 mt-0.5">/{article.slug}</p>
                   </td>
                   <td className="px-4 py-3 text-gray-500 hidden md:table-cell">
                     {article.category_slug ?? '—'}
@@ -136,14 +177,14 @@ export default async function ArtigosPage({ searchParams }: Props) {
       {totalPages > 1 && (
         <div className="flex justify-center gap-2 mt-6">
           {page > 1 && (
-            <Link href={`/admin/artigos?status=${status}&page=${page - 1}`}
+            <Link href={filterHref({ page: page - 1 })}
               className="px-4 py-2 rounded border text-sm">← Anterior</Link>
           )}
           <span className="px-4 py-2 text-sm text-gray-500">
             {page} / {totalPages}
           </span>
           {page < totalPages && (
-            <Link href={`/admin/artigos?status=${status}&page=${page + 1}`}
+            <Link href={filterHref({ page: page + 1 })}
               className="px-4 py-2 rounded border text-sm">Próxima →</Link>
           )}
         </div>

@@ -69,7 +69,7 @@ export async function listArticles(page = 1, perPage = 20, status?: string) {
 
   let query = sb
     .from('articles')
-    .select('id, slug, title, status, category_slug, published_at, created_at, views', { count: 'exact' })
+    .select('id, slug, title, status, category_slug, published_at, created_at, views, featured_image_url', { count: 'exact' })
     .order('published_at', { ascending: false })
     .range(from, to)
 

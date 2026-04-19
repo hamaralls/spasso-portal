@@ -1,4 +1,5 @@
 import Link from 'next/link'
+import Image from 'next/image'
 import { createClient } from '@/lib/supabase/server'
 import { listArticles } from '@/lib/supabase/admin'
 import { formatDateShort } from '@/lib/format'
@@ -28,8 +29,8 @@ export default async function ArtigosPage({ searchParams }: Props) {
   const page = Math.max(1, parseInt(pageStr, 10))
 
   await createClient() // garante sessão válida
-  const { articles, total } = await listArticles(page, 20, status)
-  const totalPages = Math.ceil(total / 20)
+  const { articles, total } = await listArticles(page, 200, status)
+  const totalPages = Math.ceil(total / 200)
 
   return (
     <div className="p-6">
@@ -73,6 +74,7 @@ export default async function ArtigosPage({ searchParams }: Props) {
           <table className="w-full text-sm">
             <thead className="bg-gray-50 border-b border-gray-100">
               <tr>
+                <th className="px-4 py-3 font-medium text-gray-500 hidden md:table-cell w-16">Capa</th>
                 <th className="text-left px-4 py-3 font-medium text-gray-500">Título</th>
                 <th className="text-left px-4 py-3 font-medium text-gray-500 hidden md:table-cell">Categoria</th>
                 <th className="text-left px-4 py-3 font-medium text-gray-500">Status</th>
@@ -83,6 +85,20 @@ export default async function ArtigosPage({ searchParams }: Props) {
             <tbody className="divide-y divide-gray-50">
               {articles.map((article) => (
                 <tr key={article.id} className="hover:bg-gray-50 transition-colors">
+                  <td className="px-4 py-2 hidden md:table-cell w-16">
+                    {article.featured_image_url ? (
+                      <Image
+                        src={article.featured_image_url}
+                        alt=""
+                        width={56}
+                        height={40}
+                        className="rounded object-cover w-14 h-10"
+                        unoptimized
+                      />
+                    ) : (
+                      <div className="w-14 h-10 rounded bg-gray-100 flex items-center justify-center text-gray-300 text-xs">sem foto</div>
+                    )}
+                  </td>
                   <td className="px-4 py-3">
                     <p className="font-medium text-gray-900 line-clamp-1">{article.title}</p>
                     <p className="text-xs text-gray-400 mt-0.5">/{article.slug}/</p>

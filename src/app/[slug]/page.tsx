@@ -209,11 +209,11 @@ export default async function SlugPage({ params, searchParams }: Props) {
         <div className="max-w-3xl mx-auto px-4 py-8">
           {/* Breadcrumb */}
           <nav className="text-xs text-gray-400 mb-4 flex items-center gap-1.5">
-            <Link href="/" className="hover:text-[#dd8500]">Home</Link>
+            <Link href="/" className="hover:text-[#f5821f]">Home</Link>
             {categoriaArtigo && (
               <>
                 <span>/</span>
-                <Link href={`${categoriaArtigo.url_prefix}`} className="hover:text-[#dd8500]">
+                <Link href={`${categoriaArtigo.url_prefix}`} className="hover:text-[#f5821f]">
                   {categoriaArtigo.name}
                 </Link>
               </>

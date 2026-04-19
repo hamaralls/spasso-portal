@@ -162,14 +162,14 @@
 .prose-spasso ol { list-style-type: decimal; }
 .prose-spasso li { margin-bottom: 0.35rem; }
 .prose-spasso a {
-  color: #dd8500;
+  color: #f5821f;
   text-decoration: none;
 }
 .prose-spasso a:hover { text-decoration: underline; }
 .prose-spasso strong { font-weight: 700; }
 .prose-spasso em { font-style: italic; }
 .prose-spasso blockquote {
-  border-left: 4px solid #dd8500;
+  border-left: 4px solid #f5821f;
   padding: 0.75rem 1rem;
   margin: 1.5rem 0;
   background: #fdf8f0;

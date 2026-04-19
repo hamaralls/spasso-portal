@@ -56,7 +56,7 @@ export default async function ArtigosPage({ searchParams }: Props) {
         </div>
         <Link
           href="/admin/artigos/novo"
-          className="px-4 py-2 bg-[#dd8500] text-white text-sm font-semibold rounded-lg hover:bg-[#c87800] transition-colors"
+          className="px-4 py-2 bg-[#f5821f] text-white text-sm font-semibold rounded-lg hover:bg-[#c87800] transition-colors"
         >
           + Novo artigo
         </Link>
@@ -70,8 +70,8 @@ export default async function ArtigosPage({ searchParams }: Props) {
             href={filterHref({ status: s })}
             className={`px-3 py-1.5 rounded-full text-xs font-semibold transition-colors ${
               status === s
-                ? 'bg-[#dd8500] text-white'
-                : 'bg-white border border-gray-200 text-gray-600 hover:border-[#dd8500]'
+                ? 'bg-[#f5821f] text-white'
+                : 'bg-white border border-gray-200 text-gray-600 hover:border-[#f5821f]'
             }`}
           >
             {s === 'all' ? 'Todos' : STATUS_LABEL[s]}
@@ -160,7 +160,7 @@ export default async function ArtigosPage({ searchParams }: Props) {
                   <td className="px-4 py-3 text-right whitespace-nowrap">
                     <Link
                       href={`/admin/artigos/${article.id}/editar`}
-                      className="text-xs font-medium text-[#dd8500] hover:underline"
+                      className="text-xs font-medium text-[#f5821f] hover:underline"
                     >
                       Editar
                     </Link>

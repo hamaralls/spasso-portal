@@ -12,7 +12,7 @@ export default function SobrePage() {
   return (
     <div className="max-w-2xl mx-auto px-4 py-12">
       <h1 className="text-3xl font-extrabold mb-2 text-[#1a1a1a]">Sobre o Spasso Cidades</h1>
-      <p className="text-[#dd8500] font-semibold mb-8">O diário digital de Sumaré e região</p>
+      <p className="text-[#f5821f] font-semibold mb-8">O diário digital de Sumaré e região</p>
 
       <div className="prose-spasso space-y-6">
         <p>
@@ -52,7 +52,7 @@ export default function SobrePage() {
           <p><strong>Fundadora e Diretora Executiva:</strong> Elaine Amaral</p>
           <p><strong>Razão Social:</strong> Elaine Cristina Batista do Amaral ME</p>
           <p><strong>E-mail:</strong>{' '}
-            <a href="mailto:contato@jornalspassocidades.com.br" className="text-[#dd8500] hover:underline">
+            <a href="mailto:contato@jornalspassocidades.com.br" className="text-[#f5821f] hover:underline">
               contato@jornalspassocidades.com.br
             </a>
           </p>
@@ -61,17 +61,17 @@ export default function SobrePage() {
         <h2 className="text-xl font-bold text-[#1a1a1a] mt-8 mb-3">Fale com a redação</h2>
         <p>
           Sugestões de pauta, press releases e informações:{' '}
-          <a href="mailto:redacao@jornalspassocidades.com.br" className="text-[#dd8500] hover:underline">
+          <a href="mailto:redacao@jornalspassocidades.com.br" className="text-[#f5821f] hover:underline">
             redacao@jornalspassocidades.com.br
           </a>
         </p>
         <p>
           Para anúncios e publicidade:{' '}
-          <a href="/anuncie/" className="text-[#dd8500] hover:underline">
+          <a href="/anuncie/" className="text-[#f5821f] hover:underline">
             acesse nossa página Anuncie
           </a>
           {' '}ou envie para{' '}
-          <a href="mailto:comercial@jornalspassocidades.com.br" className="text-[#dd8500] hover:underline">
+          <a href="mailto:comercial@jornalspassocidades.com.br" className="text-[#f5821f] hover:underline">
             comercial@jornalspassocidades.com.br
           </a>
         </p>

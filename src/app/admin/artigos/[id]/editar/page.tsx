@@ -37,14 +37,14 @@ export default async function EditarArtigoPage({ params }: Props) {
   return (
     <div className="flex flex-col h-screen">
       <div className="flex items-center gap-3 px-4 py-3 border-b border-gray-100 bg-white shrink-0">
-        <a href="/admin/artigos" className="text-sm text-gray-500 hover:text-[#dd8500]">← Artigos</a>
+        <a href="/admin/artigos" className="text-sm text-gray-500 hover:text-[#f5821f]">← Artigos</a>
         <span className="text-gray-300">/</span>
         <h1 className="text-sm font-semibold text-gray-800 truncate max-w-sm">{article.title}</h1>
         <a
           href={`/${article.slug}/`}
           target="_blank"
           rel="noopener noreferrer"
-          className="ml-auto text-xs text-[#dd8500] hover:underline shrink-0"
+          className="ml-auto text-xs text-[#f5821f] hover:underline shrink-0"
         >
           Ver no portal ↗
         </a>

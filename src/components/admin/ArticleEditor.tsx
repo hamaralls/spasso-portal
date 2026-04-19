@@ -170,7 +170,7 @@ export default function ArticleEditor({ categories, initial }: Props) {
 
   const toolbarBtn = useCallback((active: boolean) =>
     `px-2 py-1 text-xs rounded font-medium transition-colors ${
-      active ? 'bg-[#dd8500] text-white' : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+      active ? 'bg-[#f5821f] text-white' : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
     }`, [])
 
   return (
@@ -226,7 +226,7 @@ export default function ArticleEditor({ categories, initial }: Props) {
           <button
             onClick={() => save('published')}
             disabled={saving}
-            className="w-full py-2 bg-[#dd8500] text-white font-semibold text-sm rounded-lg hover:bg-[#c87800] transition-colors disabled:opacity-60"
+            className="w-full py-2 bg-[#f5821f] text-white font-semibold text-sm rounded-lg hover:bg-[#c87800] transition-colors disabled:opacity-60"
           >
             {saving ? 'Salvando...' : isEditing ? 'Atualizar e publicar' : 'Publicar'}
           </button>
@@ -288,7 +288,7 @@ export default function ArticleEditor({ categories, initial }: Props) {
             {coverUrl && (
               <img src={coverUrl} alt="capa" className="w-full aspect-video object-cover rounded mb-2" />
             )}
-            <label className={`block w-full text-center py-2 text-xs font-medium rounded border border-dashed border-gray-300 cursor-pointer hover:border-[#dd8500] transition-colors ${uploadingCover ? 'opacity-60' : ''}`}>
+            <label className={`block w-full text-center py-2 text-xs font-medium rounded border border-dashed border-gray-300 cursor-pointer hover:border-[#f5821f] transition-colors ${uploadingCover ? 'opacity-60' : ''}`}>
               {uploadingCover ? 'Enviando...' : 'Selecionar imagem'}
               <input type="file" accept="image/*" onChange={handleCoverUpload} className="hidden" disabled={uploadingCover} />
             </label>
@@ -330,5 +330,5 @@ function Field({ label, children }: { label: string; children: React.ReactNode }
   )
 }
 
-const inputCls = 'w-full px-3 py-2 border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-[#dd8500]/40'
+const inputCls = 'w-full px-3 py-2 border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-[#f5821f]/40'
 const selectCls = `${inputCls} bg-white`

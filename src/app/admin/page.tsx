@@ -35,7 +35,7 @@ export default async function AdminDashboard() {
       <div className="bg-white rounded-xl border border-gray-100 overflow-hidden">
         <div className="px-5 py-4 border-b border-gray-100 flex items-center justify-between">
           <h2 className="font-bold text-gray-900 text-sm">Top 10 por Visualizações</h2>
-          <Link href="/admin/artigos" className="text-xs text-[#dd8500] hover:underline">Ver todos →</Link>
+          <Link href="/admin/artigos" className="text-xs text-[#f5821f] hover:underline">Ver todos →</Link>
         </div>
         {stats.topViews.length === 0 ? (
           <div className="px-5 py-8 text-center text-gray-400 text-sm">
@@ -60,7 +60,7 @@ export default async function AdminDashboard() {
                     <Link
                       href={`/${article.slug}/`}
                       target="_blank"
-                      className="font-medium text-gray-900 hover:text-[#dd8500] line-clamp-1 transition-colors"
+                      className="font-medium text-gray-900 hover:text-[#f5821f] line-clamp-1 transition-colors"
                     >
                       {article.title}
                     </Link>
@@ -72,7 +72,7 @@ export default async function AdminDashboard() {
                     {article.published_at ? formatDateShort(article.published_at) : '—'}
                   </td>
                   <td className="px-5 py-3 text-right">
-                    <span className="font-bold text-[#dd8500]">
+                    <span className="font-bold text-[#f5821f]">
                       {article.views.toLocaleString('pt-BR')}
                     </span>
                   </td>
@@ -89,20 +89,20 @@ export default async function AdminDashboard() {
         <div className="flex flex-wrap gap-3">
           <Link
             href="/admin/artigos/novo"
-            className="px-4 py-2 bg-[#dd8500] text-white text-sm font-semibold rounded-lg hover:bg-[#c87800] transition-colors"
+            className="px-4 py-2 bg-[#f5821f] text-white text-sm font-semibold rounded-lg hover:bg-[#c87800] transition-colors"
           >
             + Novo artigo
           </Link>
           <Link
             href="/admin/artigos?status=draft"
-            className="px-4 py-2 bg-white border border-gray-200 text-gray-700 text-sm font-semibold rounded-lg hover:border-[#dd8500] transition-colors"
+            className="px-4 py-2 bg-white border border-gray-200 text-gray-700 text-sm font-semibold rounded-lg hover:border-[#f5821f] transition-colors"
           >
             Ver rascunhos
           </Link>
           <Link
             href="/"
             target="_blank"
-            className="px-4 py-2 bg-white border border-gray-200 text-gray-700 text-sm font-semibold rounded-lg hover:border-[#dd8500] transition-colors"
+            className="px-4 py-2 bg-white border border-gray-200 text-gray-700 text-sm font-semibold rounded-lg hover:border-[#f5821f] transition-colors"
           >
             Abrir portal ↗
           </Link>

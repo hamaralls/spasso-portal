@@ -54,7 +54,7 @@ export default function ResetPasswordPage() {
     <div className="min-h-screen bg-[#f5f5f5] flex items-center justify-center px-4">
       <div className="w-full max-w-sm bg-white rounded-xl shadow-sm border border-gray-100 p-8">
         <div className="text-center mb-8">
-          <h1 className="text-2xl font-extrabold text-[#dd8500]">SPASSO CIDADES</h1>
+          <h1 className="text-2xl font-extrabold text-[#f5821f]">SPASSO CIDADES</h1>
           <p className="text-sm text-gray-500 mt-1">Redefinir senha</p>
         </div>
 
@@ -66,7 +66,7 @@ export default function ResetPasswordPage() {
           <div className="text-center space-y-4">
             <p className="text-sm text-red-600 bg-red-50 px-3 py-3 rounded-lg">{error}</p>
             <button onClick={() => router.push('/login')}
-              className="text-sm text-gray-500 hover:text-[#dd8500] transition-colors">
+              className="text-sm text-gray-500 hover:text-[#f5821f] transition-colors">
               Voltar ao login
             </button>
           </div>
@@ -78,19 +78,19 @@ export default function ResetPasswordPage() {
               <label className="block text-sm font-medium text-gray-700 mb-1">Nova senha</label>
               <input type="password" value={password} onChange={(e) => setPassword(e.target.value)}
                 required minLength={8}
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-[#dd8500] focus:border-transparent"
+                className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-[#f5821f] focus:border-transparent"
                 placeholder="Mínimo 8 caracteres" />
             </div>
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">Confirmar senha</label>
               <input type="password" value={confirm} onChange={(e) => setConfirm(e.target.value)}
                 required
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-[#dd8500] focus:border-transparent"
+                className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-[#f5821f] focus:border-transparent"
                 placeholder="Repita a nova senha" />
             </div>
             {error && <p className="text-sm text-red-600 bg-red-50 px-3 py-2 rounded-lg">{error}</p>}
             <button type="submit" disabled={loading}
-              className="w-full py-2.5 bg-[#dd8500] text-white font-semibold rounded-lg hover:bg-[#c87800] transition-colors disabled:opacity-60 disabled:cursor-not-allowed">
+              className="w-full py-2.5 bg-[#f5821f] text-white font-semibold rounded-lg hover:bg-[#c87800] transition-colors disabled:opacity-60 disabled:cursor-not-allowed">
               {loading ? 'Salvando...' : 'Salvar nova senha'}
             </button>
           </form>

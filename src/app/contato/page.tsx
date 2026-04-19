@@ -27,7 +27,7 @@ export default function ContatoPage() {
           <div className="border border-gray-200 rounded-xl p-5">
             <h2 className="text-base font-bold text-[#1a1a1a] mb-1">Redação</h2>
             <p className="text-sm text-gray-500 mb-2">Sugestões de pauta, press releases e informações</p>
-            <a href="mailto:redacao@jornalspassocidades.com.br" className="text-[#dd8500] hover:underline text-sm font-medium">
+            <a href="mailto:redacao@jornalspassocidades.com.br" className="text-[#f5821f] hover:underline text-sm font-medium">
               redacao@jornalspassocidades.com.br
             </a>
           </div>
@@ -35,11 +35,11 @@ export default function ContatoPage() {
           <div className="border border-gray-200 rounded-xl p-5">
             <h2 className="text-base font-bold text-[#1a1a1a] mb-1">Comercial e Publicidade</h2>
             <p className="text-sm text-gray-500 mb-2">Anúncios, banners e conteúdo patrocinado</p>
-            <a href="mailto:comercial@jornalspassocidades.com.br" className="text-[#dd8500] hover:underline text-sm font-medium">
+            <a href="mailto:comercial@jornalspassocidades.com.br" className="text-[#f5821f] hover:underline text-sm font-medium">
               comercial@jornalspassocidades.com.br
             </a>
             <div className="mt-2">
-              <a href="/anuncie/" className="text-sm text-gray-400 hover:text-[#dd8500] underline">
+              <a href="/anuncie/" className="text-sm text-gray-400 hover:text-[#f5821f] underline">
                 Ver formatos e preços →
               </a>
             </div>
@@ -48,7 +48,7 @@ export default function ContatoPage() {
           <div className="border border-gray-200 rounded-xl p-5">
             <h2 className="text-base font-bold text-[#1a1a1a] mb-1">Privacidade e LGPD</h2>
             <p className="text-sm text-gray-500 mb-2">Solicitações relacionadas a dados pessoais</p>
-            <a href="mailto:privacidade@jornalspassocidades.com.br" className="text-[#dd8500] hover:underline text-sm font-medium">
+            <a href="mailto:privacidade@jornalspassocidades.com.br" className="text-[#f5821f] hover:underline text-sm font-medium">
               privacidade@jornalspassocidades.com.br
             </a>
           </div>

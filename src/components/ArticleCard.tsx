@@ -25,7 +25,7 @@ export default function ArticleCard({ article, size = 'default' }: ArticleCardPr
               sizes="(max-width: 768px) 100vw, 50vw"
             />
           ) : (
-            <div className="absolute inset-0 bg-gradient-to-br from-[#dd8500]/20 to-[#dd8500]/5" />
+            <div className="absolute inset-0 bg-gradient-to-br from-[#f5821f]/20 to-[#f5821f]/5" />
           )}
         </div>
         <div className="mt-3">
@@ -34,7 +34,7 @@ export default function ArticleCard({ article, size = 'default' }: ArticleCardPr
               <Badge name={category_name} color={badge_color} />
             </div>
           )}
-          <h3 className="text-lg font-bold text-[#1a1a1a] leading-snug group-hover:text-[#dd8500] transition-colors line-clamp-3">
+          <h3 className="text-lg font-bold text-[#1a1a1a] leading-snug group-hover:text-[#f5821f] transition-colors line-clamp-3">
             {title}
           </h3>
           {excerpt && (
@@ -71,7 +71,7 @@ export default function ArticleCard({ article, size = 'default' }: ArticleCardPr
               <Badge name={category_name} color={badge_color} />
             </div>
           )}
-          <h3 className="text-sm font-bold text-[#1a1a1a] leading-snug group-hover:text-[#dd8500] transition-colors line-clamp-2">
+          <h3 className="text-sm font-bold text-[#1a1a1a] leading-snug group-hover:text-[#f5821f] transition-colors line-clamp-2">
             {title}
           </h3>
           <span className="text-xs text-gray-400">{timeAgo(published_at)}</span>
@@ -102,7 +102,7 @@ export default function ArticleCard({ article, size = 'default' }: ArticleCardPr
             <Badge name={category_name} color={badge_color} />
           </div>
         )}
-        <h3 className="font-bold text-[#1a1a1a] leading-snug group-hover:text-[#dd8500] transition-colors line-clamp-2">
+        <h3 className="font-bold text-[#1a1a1a] leading-snug group-hover:text-[#f5821f] transition-colors line-clamp-2">
           {title}
         </h3>
         <div className="mt-2 flex items-center gap-2 text-xs text-gray-400">

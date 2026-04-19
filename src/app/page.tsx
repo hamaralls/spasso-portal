@@ -46,7 +46,7 @@ export default async function Home() {
                     sizes="100vw"
                   />
                 ) : (
-                  <div className="absolute inset-0 bg-gradient-to-br from-[#dd8500]/30 to-[#dd8500]/10" />
+                  <div className="absolute inset-0 bg-gradient-to-br from-[#f5821f]/30 to-[#f5821f]/10" />
                 )}
                 <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent" />
                 <div className="absolute bottom-0 left-0 right-0 p-6 md:p-8">

@@ -2,7 +2,7 @@ export const runtime = 'edge'
 
 export default function ManutencaoPage() {
   return (
-    <div className="min-h-screen bg-[#dd8500] flex items-center justify-center px-4">
+    <div className="min-h-screen bg-[#f5821f] flex items-center justify-center px-4">
       <div className="text-center text-white max-w-lg">
         <h1 className="text-4xl font-extrabold mb-4 tracking-tight">SPASSO CIDADES</h1>
         <p className="text-xl font-semibold mb-2">Em atualização</p>

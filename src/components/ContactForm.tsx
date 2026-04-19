@@ -63,7 +63,7 @@ export default function ContactForm() {
             type="text"
             required
             placeholder="Seu nome"
-            className="w-full border border-gray-200 rounded-lg px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-[#dd8500] focus:border-transparent"
+            className="w-full border border-gray-200 rounded-lg px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-[#f5821f] focus:border-transparent"
           />
         </div>
         <div>
@@ -75,7 +75,7 @@ export default function ContactForm() {
             type="email"
             required
             placeholder="seu@email.com"
-            className="w-full border border-gray-200 rounded-lg px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-[#dd8500] focus:border-transparent"
+            className="w-full border border-gray-200 rounded-lg px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-[#f5821f] focus:border-transparent"
           />
         </div>
       </div>
@@ -88,7 +88,7 @@ export default function ContactForm() {
           name="assunto"
           type="text"
           placeholder="Ex: Sugestão de pauta"
-          className="w-full border border-gray-200 rounded-lg px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-[#dd8500] focus:border-transparent"
+          className="w-full border border-gray-200 rounded-lg px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-[#f5821f] focus:border-transparent"
         />
       </div>
 
@@ -101,14 +101,14 @@ export default function ContactForm() {
           required
           rows={5}
           placeholder="Escreva sua mensagem..."
-          className="w-full border border-gray-200 rounded-lg px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-[#dd8500] focus:border-transparent resize-none"
+          className="w-full border border-gray-200 rounded-lg px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-[#f5821f] focus:border-transparent resize-none"
         />
       </div>
 
       <button
         type="submit"
         disabled={state === 'loading'}
-        className="w-full sm:w-auto bg-[#dd8500] text-white font-bold px-8 py-3 rounded-lg text-sm hover:bg-[#c47600] transition-colors disabled:opacity-60"
+        className="w-full sm:w-auto bg-[#f5821f] text-white font-bold px-8 py-3 rounded-lg text-sm hover:bg-[#c47600] transition-colors disabled:opacity-60"
       >
         {state === 'loading' ? 'Enviando...' : 'Enviar mensagem'}
       </button>

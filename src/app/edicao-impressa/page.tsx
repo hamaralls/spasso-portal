@@ -12,7 +12,7 @@ export default function EdicaoImpressaPage() {
   return (
     <div className="max-w-2xl mx-auto px-4 py-12">
       <h1 className="text-3xl font-extrabold mb-2 text-[#1a1a1a]">Edição Impressa</h1>
-      <p className="text-[#dd8500] font-semibold mb-8">5.000 exemplares semanais — distribuição gratuita</p>
+      <p className="text-[#f5821f] font-semibold mb-8">5.000 exemplares semanais — distribuição gratuita</p>
 
       <div className="prose-spasso space-y-4">
         <p>
@@ -31,7 +31,7 @@ export default function EdicaoImpressaPage() {
           </p>
           <a
             href="/anuncie/"
-            className="inline-block bg-[#dd8500] text-white font-bold px-6 py-2 rounded-lg text-sm hover:bg-[#c47600] transition-colors"
+            className="inline-block bg-[#f5821f] text-white font-bold px-6 py-2 rounded-lg text-sm hover:bg-[#c47600] transition-colors"
           >
             Ver formatos e preços →
           </a>

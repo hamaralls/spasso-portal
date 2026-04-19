@@ -79,7 +79,7 @@ export default function PrivacidadePage() {
         <h2 className="text-xl font-bold text-[#1a1a1a] mt-8 mb-3">Contato</h2>
         <p>
           Dúvidas sobre privacidade ou para exercer seus direitos:{' '}
-          <a href="mailto:privacidade@jornalspassocidades.com.br" className="text-[#dd8500] hover:underline">
+          <a href="mailto:privacidade@jornalspassocidades.com.br" className="text-[#f5821f] hover:underline">
             privacidade@jornalspassocidades.com.br
           </a>
         </p>

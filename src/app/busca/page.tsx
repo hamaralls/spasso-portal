@@ -17,7 +17,7 @@ function highlight(text: string, query: string): React.ReactNode {
   const parts = text.split(regex)
   return parts.map((part, i) =>
     regex.test(part)
-      ? <mark key={i} className="bg-[#dd8500]/20 text-[#dd8500] font-semibold rounded px-0.5">{part}</mark>
+      ? <mark key={i} className="bg-[#f5821f]/20 text-[#f5821f] font-semibold rounded px-0.5">{part}</mark>
       : part
   )
 }
@@ -50,11 +50,11 @@ export default async function BuscaPage({ searchParams }: Props) {
           defaultValue={query}
           placeholder="Buscar notícias..."
           autoFocus
-          className="flex-1 border border-gray-300 rounded-lg px-4 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#dd8500] focus:border-transparent"
+          className="flex-1 border border-gray-300 rounded-lg px-4 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#f5821f] focus:border-transparent"
         />
         <button
           type="submit"
-          className="bg-[#dd8500] text-white font-bold px-5 py-2 rounded-lg text-sm hover:bg-[#c47600] transition-colors"
+          className="bg-[#f5821f] text-white font-bold px-5 py-2 rounded-lg text-sm hover:bg-[#c47600] transition-colors"
         >
           Buscar
         </button>
@@ -91,7 +91,7 @@ export default async function BuscaPage({ searchParams }: Props) {
                     </div>
                   )}
                   <div className="flex-1 min-w-0">
-                    <p className="font-semibold text-[#1a1a1a] group-hover:text-[#dd8500] leading-snug line-clamp-2 transition-colors">
+                    <p className="font-semibold text-[#1a1a1a] group-hover:text-[#f5821f] leading-snug line-clamp-2 transition-colors">
                       {highlight(article.title, query)}
                     </p>
                     <div className="flex items-center gap-2 mt-1 text-xs text-gray-400">

@@ -71,7 +71,7 @@ export default function TermosPage() {
         <h2 className="text-xl font-bold text-[#1a1a1a] mt-8 mb-3">Contato</h2>
         <p>
           Dúvidas sobre estes termos:{' '}
-          <a href="mailto:contato@jornalspassocidades.com.br" className="text-[#dd8500] hover:underline">
+          <a href="mailto:contato@jornalspassocidades.com.br" className="text-[#f5821f] hover:underline">
             contato@jornalspassocidades.com.br
           </a>
         </p>

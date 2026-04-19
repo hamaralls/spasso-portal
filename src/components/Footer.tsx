@@ -43,6 +43,7 @@ export default function Footer() {
                 { name: 'Sobre', href: '/sobre/' },
                 { name: 'Contato', href: '/contato/' },
                 { name: 'Política de Privacidade', href: '/privacidade/' },
+                { name: 'Termos de Uso', href: '/termos-de-uso/' },
               ].map((item) => (
                 <li key={item.href}>
                   <Link href={item.href} className="text-sm text-white/80 hover:text-white transition-colors">
@@ -60,7 +61,7 @@ export default function Footer() {
           </p>
           <div className="flex gap-4">
             <a
-              href="https://www.facebook.com/spassocidades"
+              href="https://www.facebook.com/jornalspassocidades"
               target="_blank"
               rel="noopener noreferrer"
               className="text-white/70 hover:text-white text-sm transition-colors"

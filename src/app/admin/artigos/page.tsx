@@ -85,18 +85,19 @@ export default async function ArtigosPage({ searchParams }: Props) {
             <tbody className="divide-y divide-gray-50">
               {articles.map((article) => (
                 <tr key={article.id} className="hover:bg-gray-50 transition-colors">
-                  <td className="px-4 py-2 hidden md:table-cell w-16">
+                  <td className="px-4 py-2 hidden md:table-cell" style={{width:'144px'}}>
                     {article.featured_image_url ? (
                       <Image
                         src={article.featured_image_url}
                         alt=""
-                        width={56}
-                        height={40}
-                        className="rounded object-cover w-14 h-10"
+                        width={128}
+                        height={72}
+                        className="rounded object-cover"
+                        style={{width:'128px',height:'72px'}}
                         unoptimized
                       />
                     ) : (
-                      <div className="w-14 h-10 rounded bg-gray-100 flex items-center justify-center text-gray-300 text-xs">sem foto</div>
+                      <div className="rounded bg-gray-100 flex items-center justify-center text-gray-300 text-xs" style={{width:'128px',height:'72px'}}>sem foto</div>
                     )}
                   </td>
                   <td className="px-4 py-3">

@@ -112,10 +112,13 @@ export default async function Home() {
         {regiao.length > 0 && (
           <section>
             <SectionHeader title="Região Metropolitana" href="/rmc" color="#8dc63f" />
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-              {regiao.map((article) => (
-                <ArticleCard key={article.id} article={article} />
-              ))}
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <ArticleCard article={regiao[0]} size="featured" />
+              <div className="flex flex-col gap-4">
+                {regiao.slice(1).map((article) => (
+                  <ArticleCard key={article.id} article={article} />
+                ))}
+              </div>
             </div>
           </section>
         )}
@@ -124,10 +127,13 @@ export default async function Home() {
         {brasil.length > 0 && (
           <section>
             <SectionHeader title="Brasil" href="/brasil" color="#ec3535" />
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-              {brasil.map((article) => (
-                <ArticleCard key={article.id} article={article} />
-              ))}
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <ArticleCard article={brasil[0]} size="featured" />
+              <div className="flex flex-col gap-4">
+                {brasil.slice(1).map((article) => (
+                  <ArticleCard key={article.id} article={article} />
+                ))}
+              </div>
             </div>
           </section>
         )}
@@ -136,7 +142,7 @@ export default async function Home() {
         {saude.length > 0 && (
           <section>
             <SectionHeader title="Saúde" href="/saude" color="#0891b2" />
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+            <div className="grid grid-cols-2 lg:grid-cols-3 gap-4">
               {saude.map((article) => (
                 <ArticleCard key={article.id} article={article} />
               ))}
@@ -148,7 +154,7 @@ export default async function Home() {
         {politica.length > 0 && (
           <section>
             <SectionHeader title="Política" href="/politica" color="#7c3aed" />
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+            <div className="grid grid-cols-2 lg:grid-cols-3 gap-4">
               {politica.map((article) => (
                 <ArticleCard key={article.id} article={article} />
               ))}
@@ -160,7 +166,7 @@ export default async function Home() {
         {economia.length > 0 && (
           <section>
             <SectionHeader title="Economia" href="/economia" color="#16a34a" />
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+            <div className="grid grid-cols-2 lg:grid-cols-3 gap-4">
               {economia.map((article) => (
                 <ArticleCard key={article.id} article={article} />
               ))}
@@ -172,7 +178,7 @@ export default async function Home() {
         {educacao.length > 0 && (
           <section>
             <SectionHeader title="Educação" href="/educacao" color="#d97706" />
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+            <div className="grid grid-cols-2 lg:grid-cols-3 gap-4">
               {educacao.map((article) => (
                 <ArticleCard key={article.id} article={article} />
               ))}
@@ -184,7 +190,7 @@ export default async function Home() {
         {cultura.length > 0 && (
           <section>
             <SectionHeader title="Cultura e Lazer" href="/cultura-e-lazer" color="#db2777" />
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+            <div className="grid grid-cols-2 lg:grid-cols-3 gap-4">
               {cultura.map((article) => (
                 <ArticleCard key={article.id} article={article} />
               ))}
@@ -196,7 +202,7 @@ export default async function Home() {
         {esporte.length > 0 && (
           <section>
             <SectionHeader title="Esporte" href="/esporte" color="#059669" />
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+            <div className="grid grid-cols-2 lg:grid-cols-3 gap-4">
               {esporte.map((article) => (
                 <ArticleCard key={article.id} article={article} />
               ))}
@@ -208,7 +214,7 @@ export default async function Home() {
         {eventos.length > 0 && (
           <section>
             <SectionHeader title="Eventos" href="/eventos" color="#ea580c" />
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+            <div className="grid grid-cols-2 lg:grid-cols-3 gap-4">
               {eventos.map((article) => (
                 <ArticleCard key={article.id} article={article} />
               ))}

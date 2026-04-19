@@ -3,6 +3,7 @@ import Image from 'next/image'
 import Badge from '@/components/Badge'
 import ArticleCard from '@/components/ArticleCard'
 import SectionHeader from '@/components/SectionHeader'
+import { AdUnit } from '@/components/AdUnit'
 import { getArtigosRecentes, getArtigosPorCategorias } from '@/lib/supabase/queries'
 import { timeAgo } from '@/lib/format'
 
@@ -81,6 +82,9 @@ export default async function Home() {
           </section>
         )}
 
+        {/* Banner home — entre últimas e Sumaré */}
+        <AdUnit slot="home-leaderboard" format="leaderboard" className="flex justify-center" />
+
         {/* Sumaré */}
         {sumare.length > 0 && (
           <section>
@@ -121,6 +125,9 @@ export default async function Home() {
             </div>
           </section>
         )}
+
+        {/* Banner home — antes de Opinião */}
+        <AdUnit slot="home-leaderboard-2" format="leaderboard" className="flex justify-center" />
 
         {/* Opinião */}
         {opiniao.length > 0 && (

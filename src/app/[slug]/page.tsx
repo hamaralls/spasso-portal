@@ -6,6 +6,7 @@ import Badge from '@/components/Badge'
 import ArticleCard from '@/components/ArticleCard'
 import SectionHeader from '@/components/SectionHeader'
 import ShareButtons from '@/components/ShareButtons'
+import { AdUnit } from '@/components/AdUnit'
 import {
   getCategoria,
   getArtigosPorCategoria,
@@ -37,19 +38,27 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   if (!artigo) return {}
 
   const title = artigo.seo_title || artigo.title
-  const description = artigo.seo_description || artigo.excerpt?.replace(/<[^>]+>/g, '') || ''
+  const description = (artigo.seo_description || artigo.excerpt || '').replace(/<[^>]+>/g, '').slice(0, 160)
   const image = artigo.featured_image_url
+  const authorRaw = artigo.author as unknown
+  const authorName = Array.isArray(authorRaw)
+    ? (authorRaw[0] as { name: string } | undefined)?.name
+    : (authorRaw as { name: string } | null)?.name
 
   return {
     title,
     description,
     alternates: { canonical: `/${slug}/` },
+    ...(authorName ? { authors: [{ name: authorName }] } : {}),
     openGraph: {
       title,
       description,
       type: 'article',
       publishedTime: artigo.published_at ?? undefined,
-      images: image ? [{ url: image, width: 1200, height: 630 }] : [],
+      modifiedTime: artigo.updated_at ?? undefined,
+      images: image
+        ? [{ url: image, width: 1200, height: 630, alt: title }]
+        : [{ url: '/og-default.jpg', width: 1200, height: 630 }],
     },
   }
 }
@@ -126,18 +135,37 @@ export default async function SlugPage({ params, searchParams }: Props) {
   const tempoLeitura = artigo.reading_time_min ?? readingTime(htmlContent)
   const url = `https://jornalspassocidades.com.br/${artigo.slug}/`
 
+  const authorRaw = artigo.author as unknown
+  const authorName = Array.isArray(authorRaw)
+    ? (authorRaw[0] as { name: string } | undefined)?.name
+    : (authorRaw as { name: string } | null)?.name
+  const description = (artigo.seo_description || artigo.excerpt || '').replace(/<[^>]+>/g, '').slice(0, 300)
+
   const jsonLd = {
     '@context': 'https://schema.org',
     '@type': 'NewsArticle',
+    mainEntityOfPage: { '@type': 'WebPage', '@id': url },
     headline: artigo.title,
+    description,
     datePublished: artigo.published_at,
     dateModified: artigo.updated_at,
-    image: artigo.featured_image_url ? [artigo.featured_image_url] : [],
-    url,
+    image: artigo.featured_image_url
+      ? [{ '@type': 'ImageObject', url: artigo.featured_image_url }]
+      : [{ '@type': 'ImageObject', url: 'https://jornalspassocidades.com.br/og-default.jpg' }],
+    author: {
+      '@type': authorName ? 'Person' : 'Organization',
+      name: authorName ?? 'Spasso Cidades',
+    },
     publisher: {
-      '@type': 'Organization',
+      '@type': 'NewsMediaOrganization',
       name: 'Spasso Cidades',
       url: 'https://jornalspassocidades.com.br',
+      logo: {
+        '@type': 'ImageObject',
+        url: 'https://jornalspassocidades.com.br/og-default.jpg',
+        width: 1200,
+        height: 630,
+      },
     },
   }
 
@@ -200,6 +228,9 @@ export default async function SlugPage({ params, searchParams }: Props) {
             </div>
           )}
 
+          {/* Banner meio-artigo */}
+          <AdUnit slot="artigo-meio" format="rectangle" className="flex justify-center my-6" />
+
           {/* Conteúdo */}
           <div
             className="prose-spasso"
@@ -215,6 +246,9 @@ export default async function SlugPage({ params, searchParams }: Props) {
               <p>{artigo.origin_badge}</p>
             </div>
           )}
+
+          {/* Banner fim-artigo */}
+          <AdUnit slot="artigo-fim" format="rectangle" className="flex justify-center my-6" />
 
           {/* Compartilhar */}
           <div className="mt-8 pt-6 border-t border-gray-100">

@@ -58,7 +58,8 @@ export async function getArtigoCompleto(slug: string) {
       category_slug, author_id, published_at, updated_at,
       views, reading_time_min,
       seo_title, seo_description, seo_keywords,
-      wp_post_id
+      wp_post_id,
+      author:users!author_id(name)
     `)
     .eq('slug', slug)
     .eq('status', 'published')

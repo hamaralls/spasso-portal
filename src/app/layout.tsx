@@ -40,7 +40,30 @@ export const metadata: Metadata = {
   },
 }
 
+const websiteJsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'WebSite',
+  name: 'Spasso Cidades',
+  url: 'https://jornalspassocidades.com.br',
+  description: 'O diário digital de Sumaré e região',
+}
+
+const orgJsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'NewsMediaOrganization',
+  name: 'Spasso Cidades',
+  url: 'https://jornalspassocidades.com.br',
+  logo: {
+    '@type': 'ImageObject',
+    url: 'https://jornalspassocidades.com.br/og-default.jpg',
+    width: 1200,
+    height: 630,
+  },
+}
+
 export default function RootLayout({ children }: { children: React.ReactNode }) {
+  const gamEnabled = !!process.env.NEXT_PUBLIC_GAM_NETWORK_CODE
+
   return (
     <html lang="pt-BR" className={`${inter.variable} h-full`}>
       <body className="min-h-full flex flex-col bg-[#f5f5f5] text-[#1a1a1a] antialiased">
@@ -49,6 +72,15 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <main className="flex-1">{children}</main>
         <Footer />
       </body>
+
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(websiteJsonLd) }}
+      />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(orgJsonLd) }}
+      />
 
       {/* GA4 */}
       <Script
@@ -63,6 +95,14 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           gtag('config', 'G-WMZFHJHV10');
         `}
       </Script>
+
+      {/* Google Ad Manager — ativo só quando NEXT_PUBLIC_GAM_NETWORK_CODE estiver configurado */}
+      {gamEnabled && (
+        <Script
+          src="https://securepubads.g.doubleclick.net/tag/js/gpt.js"
+          strategy="afterInteractive"
+        />
+      )}
     </html>
   )
 }

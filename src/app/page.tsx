@@ -11,11 +11,14 @@ export const runtime = 'edge'
 
 const hasAds = !!process.env.NEXT_PUBLIC_GAM_NETWORK_CODE
 
-function BannerPlaceholder({ w, h, label, fill }: { w: number; h: number; label: string; fill?: boolean }) {
+function BannerPlaceholder({ w, h, label, fill, minH }: { w: number; h: number; label: string; fill?: boolean; minH?: number }) {
   if (hasAds) return null
   if (fill) {
     return (
-      <div className="w-full flex-1 min-h-[400px] bg-gray-50 border border-dashed border-gray-300 flex items-center justify-center text-xs text-gray-400">
+      <div
+        className="w-full flex-1 bg-gray-50 border border-dashed border-gray-300 flex items-center justify-center text-xs text-gray-400"
+        style={{ minHeight: minH ?? 150 }}
+      >
         {label}
       </div>
     )
@@ -70,13 +73,20 @@ function DestaqueGrid({ articles }: { articles: ArticlePublico[] }) {
   )
 }
 
-// Layout Metrópoles — 15 artigos por seção
-// Col 1+2: featured tall + 2 compact + 2 compact
-// Col 3: 4 stacked
-// + 2 linhas de 3 cards (full width, artigos 9-14)
-function MetropolesGrid({ articles }: { articles: ArticlePublico[] }) {
+// extraRows: 0 = só topo, 1 = +1 linha, 2 = +2 linhas (padrão RMC)
+// col3Count: quantos cards empilhados na col 3 (padrão 5)
+function MetropolesGrid({
+  articles,
+  extraRows = 2,
+  col3Count = 5,
+}: {
+  articles: ArticlePublico[]
+  extraRows?: number
+  col3Count?: number
+}) {
   const a = articles
   if (a.length === 0) return null
+  const col3End = 5 + col3Count
 
   return (
     <div className="space-y-4">
@@ -86,27 +96,19 @@ function MetropolesGrid({ articles }: { articles: ArticlePublico[] }) {
 
         {/* Col 1+2 */}
         <div className="lg:col-span-2 flex flex-col gap-4">
-
-          {/* Featured: imagem esq (aspect 4:3) + badge + título dir */}
           {a[0] && (
             <Link href={`/${a[0].slug}`} className="group flex gap-4">
               <div className="relative w-[48%] aspect-[4/3] shrink-0 overflow-hidden bg-gray-200">
                 {a[0].featured_image_url ? (
-                  <Image
-                    src={a[0].featured_image_url}
-                    alt={a[0].title}
-                    fill
+                  <Image src={a[0].featured_image_url} alt={a[0].title} fill
                     className="object-cover group-hover:scale-[1.02] transition-transform duration-300"
-                    sizes="(max-width: 1024px) 50vw, 28vw"
-                  />
+                    sizes="(max-width: 1024px) 50vw, 28vw" />
                 ) : (
                   <div className="absolute inset-0 bg-gradient-to-br from-gray-100 to-gray-200" />
                 )}
               </div>
               <div className="flex-1 min-w-0 pt-1">
-                {a[0].category_name && (
-                  <Badge name={a[0].category_name} color={a[0].badge_color} size="sm" />
-                )}
+                {a[0].category_name && <Badge name={a[0].category_name} color={a[0].badge_color} size="sm" />}
                 <h3 className="text-xl font-bold leading-snug mt-2 group-hover:text-[#f5821f] transition-colors line-clamp-4 text-[#1a1a1a]">
                   {a[0].title}
                 </h3>
@@ -118,47 +120,37 @@ function MetropolesGrid({ articles }: { articles: ArticlePublico[] }) {
               </div>
             </Link>
           )}
-
-          {/* Compact row 1: artigos 1 e 2 */}
           {a.length >= 3 && (
             <div className="grid grid-cols-2 gap-4">
-              {a.slice(1, 3).map(art => (
-                <ArticleCard key={art.id} article={art} size="compact" />
-              ))}
+              {a.slice(1, 3).map(art => <ArticleCard key={art.id} article={art} size="compact" />)}
             </div>
           )}
-
-          {/* Compact row 2: artigos 3 e 4 (com foto) */}
           {a.length >= 5 && (
             <div className="grid grid-cols-2 gap-4">
-              {a.slice(3, 5).map(art => (
-                <ArticleCard key={art.id} article={art} size="compact" />
-              ))}
+              {a.slice(3, 5).map(art => <ArticleCard key={art.id} article={art} size="compact" />)}
             </div>
           )}
         </div>
 
-        {/* Col 3: 5 stacked sem dividers — preenche altura da col 1+2 */}
+        {/* Col 3: stacked — quantidade controlada por col3Count */}
         <div className="hidden lg:flex flex-col gap-3">
-          {a.slice(5, 10).map(art => (
+          {a.slice(5, col3End).map(art => (
             <ArticleCard key={art.id} article={art} size="compact" />
           ))}
         </div>
       </div>
 
-      {/* Linha extra 1: 3 cards (artigos 10-12) */}
-      {a.length >= 11 && (
+      {extraRows >= 1 && a.length >= col3End + 1 && (
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-          {a.slice(10, 13).map(art => (
+          {a.slice(col3End, col3End + 3).map(art => (
             <ArticleCard key={art.id} article={art} size="compact" />
           ))}
         </div>
       )}
 
-      {/* Linha extra 2: 3 cards (artigos 13-15) */}
-      {a.length >= 14 && (
+      {extraRows >= 2 && a.length >= col3End + 4 && (
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-          {a.slice(13, 16).map(art => (
+          {a.slice(col3End + 3, col3End + 6).map(art => (
             <ArticleCard key={art.id} article={art} size="compact" />
           ))}
         </div>
@@ -172,11 +164,11 @@ export default async function Home() {
   const [recentes, regiao, culturaELazer, brasil, saude, politica, economia, opiniao, colunistas] = await Promise.all([
     getArtigosRecentes(17),
     getArtigosPorCategorias(['sumare', 'hortolandia', 'nova-odessa', 'campinas', 'paulinia', 'monte-mor', 'santa-barbara-doeste', 'outras-cidades', 'rmc'], 16),
-    getArtigosPorCategorias(['estilo-de-vida', 'cultura-e-lazer', 'eventos'], 16),
-    getArtigosPorCategorias(['brasil'], 16),
-    getArtigosPorCategorias(['saude'], 16),
+    getArtigosPorCategorias(['estilo-de-vida', 'cultura-e-lazer', 'eventos'], 10),
+    getArtigosPorCategorias(['brasil'], 10),
+    getArtigosPorCategorias(['saude'], 10),
     getArtigosPorCategorias(['politica'], 6),
-    getArtigosPorCategorias(['economia'], 16),
+    getArtigosPorCategorias(['economia'], 7),
     getArtigosPorCategorias(['colunistas'], 4),
     getColunistas(),
   ])
@@ -329,49 +321,49 @@ export default async function Home() {
           </section>
         )}
 
-        {/* ── 4. Brasil — MetropolesGrid Grande ── */}
+        {/* ── 4. Brasil — MetropolesGrid, sem extras ── */}
         {brasil.length > 0 && (
           <section>
             <SectionHeader title="Brasil" href="/brasil" color="#ec3535" />
             <div className="grid grid-cols-1 lg:grid-cols-4 gap-4 items-stretch">
               <div className="lg:col-span-3">
-                <MetropolesGrid articles={brasil} />
+                <MetropolesGrid articles={brasil} extraRows={0} />
               </div>
               <aside className="hidden lg:flex flex-col">
                 <AdUnit slot="brasil-sidebar" format="rectangle" />
-                <BannerPlaceholder w={300} h={300} label="Banner 300×600" fill />
+                <BannerPlaceholder w={300} h={300} label="Banner 300×400" fill minH={300} />
               </aside>
             </div>
           </section>
         )}
 
-        {/* ── 5. Cultura e Lazer — MetropolesGrid Grande ── */}
+        {/* ── 5. Cultura e Lazer — MetropolesGrid, sem extras ── */}
         {culturaELazer.length > 0 && (
           <section>
             <SectionHeader title="Cultura e Lazer" href="/cultura-e-lazer" color="#db2777" />
             <div className="grid grid-cols-1 lg:grid-cols-4 gap-4 items-stretch">
               <div className="lg:col-span-3">
-                <MetropolesGrid articles={culturaELazer} />
+                <MetropolesGrid articles={culturaELazer} extraRows={0} />
               </div>
               <aside className="hidden lg:flex flex-col">
                 <AdUnit slot="cultura-sidebar" format="rectangle" />
-                <BannerPlaceholder w={300} h={300} label="Banner 300×600" fill />
+                <BannerPlaceholder w={300} h={300} label="Banner 300×400" fill minH={300} />
               </aside>
             </div>
           </section>
         )}
 
-        {/* ── 6. Saúde — MetropolesGrid Adaptativo ── */}
+        {/* ── 6. Saúde — MetropolesGrid, sem extras ── */}
         {saude.length >= 3 && (
           <section>
             <SectionHeader title="Saúde" href="/saude" color="#0891b2" />
             <div className="grid grid-cols-1 lg:grid-cols-4 gap-4 items-stretch">
               <div className="lg:col-span-3">
-                <MetropolesGrid articles={saude} />
+                <MetropolesGrid articles={saude} extraRows={0} />
               </div>
               <aside className="hidden lg:flex flex-col">
                 <AdUnit slot="saude-sidebar" format="rectangle" />
-                <BannerPlaceholder w={300} h={300} label="Banner 300×600" fill />
+                <BannerPlaceholder w={300} h={300} label="Banner 300×400" fill minH={300} />
               </aside>
             </div>
           </section>
@@ -385,17 +377,17 @@ export default async function Home() {
           </section>
         )}
 
-        {/* ── 8. Economia — MetropolesGrid Adaptativo ── */}
+        {/* ── 8. Economia — MetropolesGrid compacto (col3=2, sem extras) ── */}
         {economia.length >= 3 && (
           <section>
             <SectionHeader title="Economia" href="/economia" color="#16a34a" />
             <div className="grid grid-cols-1 lg:grid-cols-4 gap-4 items-stretch">
               <div className="lg:col-span-3">
-                <MetropolesGrid articles={economia} />
+                <MetropolesGrid articles={economia} extraRows={0} col3Count={2} />
               </div>
               <aside className="hidden lg:flex flex-col">
                 <AdUnit slot="economia-sidebar" format="rectangle" />
-                <BannerPlaceholder w={300} h={300} label="Banner 300×600" fill />
+                <BannerPlaceholder w={300} h={250} label="Banner 300×250" fill minH={200} />
               </aside>
             </div>
           </section>

@@ -2,7 +2,7 @@
 
 import Link from 'next/link'
 import Image from 'next/image'
-import { useState } from 'react'
+import { useState, useRef } from 'react'
 import { Menu, X, Search, ChevronDown } from 'lucide-react'
 
 // Cidades com foco editorial — links diretos no nav desktop (sem Campinas)
@@ -78,9 +78,100 @@ const MOBILE_ITEMS = [
 const NAV_LINK = 'whitespace-nowrap text-[#333] text-[13px] font-medium hover:text-[#f5821f] transition-colors'
 
 function formatDate() {
-  return new Date().toLocaleDateString('pt-BR', {
+  const raw = new Date().toLocaleDateString('pt-BR', {
     weekday: 'long', day: 'numeric', month: 'long', year: 'numeric',
   })
+  // Capitaliza só o primeiro caractere, mantém o resto como veio
+  return raw.charAt(0).toUpperCase() + raw.slice(1)
+}
+
+// Dropdown posicionado com position:fixed para não ser clipado pelo overflow-x-auto do nav
+function NavDropdown({
+  label,
+  href,
+  items,
+  cols = 1,
+}: {
+  label: string
+  href?: string
+  items: { name: string; href: string }[] | { col1: { name: string; href: string }[]; col2: { name: string; href: string }[] }
+  cols?: 1 | 2
+}) {
+  const [open, setOpen] = useState(false)
+  const [pos, setPos] = useState({ top: 0, left: 0 })
+  const ref = useRef<HTMLDivElement>(null)
+
+  const handleEnter = () => {
+    if (ref.current) {
+      const rect = ref.current.getBoundingClientRect()
+      setPos({ top: rect.bottom, left: rect.left })
+    }
+    setOpen(true)
+  }
+
+  const itemList = Array.isArray(items) ? items : null
+  const col1 = !Array.isArray(items) ? items.col1 : null
+  const col2 = !Array.isArray(items) ? items.col2 : null
+
+  return (
+    <div
+      ref={ref}
+      className="relative h-full flex items-center"
+      onMouseEnter={handleEnter}
+      onMouseLeave={() => setOpen(false)}
+    >
+      {href ? (
+        <Link href={href} className={`${NAV_LINK} flex items-center gap-0.5`}>
+          {label}
+          <ChevronDown size={11} className={`opacity-50 transition-opacity ${open ? 'opacity-100' : ''}`} />
+        </Link>
+      ) : (
+        <button className={`${NAV_LINK} flex items-center gap-0.5 bg-transparent border-none cursor-pointer`}>
+          {label}
+          <ChevronDown size={11} className={`opacity-50 transition-opacity ${open ? 'opacity-100' : ''}`} />
+        </button>
+      )}
+
+      {open && (
+        <div
+          style={{ position: 'fixed', top: pos.top, left: pos.left, zIndex: 9999 }}
+          className={`bg-white shadow-lg rounded-lg border border-gray-100 py-2 ${cols === 2 ? 'min-w-[300px]' : 'min-w-[200px]'}`}
+          onMouseEnter={() => setOpen(true)}
+          onMouseLeave={() => setOpen(false)}
+        >
+          {cols === 1 && itemList && itemList.map(item => (
+            <Link key={item.href} href={item.href}
+              onClick={() => setOpen(false)}
+              className="block px-4 py-2 text-[13px] text-[#333] hover:text-[#f5821f] hover:bg-gray-50 transition-colors whitespace-nowrap">
+              {item.name}
+            </Link>
+          ))}
+          {cols === 2 && col1 && col2 && (
+            <div className="grid grid-cols-2">
+              <div>
+                {col1.map(item => (
+                  <Link key={item.href} href={item.href}
+                    onClick={() => setOpen(false)}
+                    className="block px-4 py-2 text-[13px] text-[#333] hover:text-[#f5821f] hover:bg-gray-50 transition-colors whitespace-nowrap">
+                    {item.name}
+                  </Link>
+                ))}
+              </div>
+              <div>
+                {col2.map(item => (
+                  <Link key={item.href} href={item.href}
+                    onClick={() => setOpen(false)}
+                    className="block px-4 py-2 text-[13px] text-[#333] hover:text-[#f5821f] hover:bg-gray-50 transition-colors whitespace-nowrap">
+                    {item.name}
+                  </Link>
+                ))}
+              </div>
+            </div>
+          )}
+        </div>
+      )}
+    </div>
+  )
 }
 
 export default function Header() {
@@ -102,7 +193,7 @@ export default function Header() {
             >
               {mobileOpen ? <X size={24} /> : <Menu size={24} />}
             </button>
-            <span className="hidden lg:block text-[11px] text-gray-400 leading-tight capitalize">
+            <span className="hidden lg:block text-[11px] text-gray-500 leading-tight">
               {formatDate()}
             </span>
           </div>
@@ -119,10 +210,10 @@ export default function Header() {
             />
           </Link>
 
-          {/* Direita: busca com texto */}
+          {/* Direita: busca */}
           <div className="w-28 lg:w-44 shrink-0 flex justify-end">
             <Link href="/busca" aria-label="Buscar"
-              className="flex items-center gap-1 text-gray-400 hover:text-[#f5821f] transition-colors p-1">
+              className="flex items-center gap-1 text-gray-500 hover:text-[#f5821f] transition-colors p-1">
               <Search size={18} />
               <span className="hidden lg:inline text-[12px] font-medium">Busca</span>
             </Link>
@@ -130,81 +221,39 @@ export default function Header() {
         </div>
       </div>
 
-      {/* ── NavBar (desktop) ── */}
+      {/* ── NavBar (desktop) — overflow-x-auto APENAS para scroll; dropdowns usam position:fixed ── */}
       <nav className="hidden lg:block border-t border-gray-100">
         <div className="overflow-x-auto [&::-webkit-scrollbar]:hidden [scrollbar-width:none]">
           <div className="flex items-center justify-center gap-5 h-11 min-w-max px-4 mx-auto max-w-7xl">
 
-            {/* Últimas Notícias */}
             <Link href="/" className={NAV_LINK}>Últimas Notícias</Link>
 
-            {/* Cidades editoriais */}
             {CIDADES_NAV.map((item) => (
               <Link key={item.href} href={item.href} className={NAV_LINK}>
                 {item.name}
               </Link>
             ))}
 
-            {/* RMC dropdown */}
-            <div className="relative group h-full flex items-center">
-              <Link href="/rmc" className={`${NAV_LINK} flex items-center gap-0.5`}>
-                RMC
-                <ChevronDown size={11} className="opacity-50 group-hover:opacity-100 transition-opacity" />
-              </Link>
-              <div className="absolute top-full left-0 hidden group-hover:block bg-white shadow-lg rounded-lg border border-gray-100 py-2 min-w-[200px] z-50">
-                {RMC_ITEMS.map(item => (
-                  <Link key={item.href} href={item.href}
-                    className="block px-4 py-2 text-[13px] text-[#333] hover:text-[#f5821f] hover:bg-gray-50 transition-colors whitespace-nowrap">
-                    {item.name}
-                  </Link>
-                ))}
-              </div>
-            </div>
+            <NavDropdown label="RMC" href="/rmc" items={RMC_ITEMS} cols={1} />
 
-            {/* Brasil */}
             <Link href="/brasil" className={NAV_LINK}>Brasil</Link>
 
-            {/* Temas flat */}
             {TEMAS_FLAT.map((item) => (
               <Link key={item.href} href={item.href} className={NAV_LINK}>
                 {item.name}
               </Link>
             ))}
 
-            {/* Categorias dropdown */}
-            <div className="relative group h-full flex items-center">
-              <button className={`${NAV_LINK} flex items-center gap-0.5 bg-transparent border-none cursor-pointer`}>
-                Categorias
-                <ChevronDown size={11} className="opacity-50 group-hover:opacity-100 transition-opacity" />
-              </button>
-              <div className="absolute top-full right-0 hidden group-hover:block bg-white shadow-lg rounded-lg border border-gray-100 py-2 min-w-[300px] z-50">
-                <div className="grid grid-cols-2">
-                  <div>
-                    {CATEGORIAS_COL1.map(item => (
-                      <Link key={item.href} href={item.href}
-                        className="block px-4 py-2 text-[13px] text-[#333] hover:text-[#f5821f] hover:bg-gray-50 transition-colors whitespace-nowrap">
-                        {item.name}
-                      </Link>
-                    ))}
-                  </div>
-                  <div>
-                    {CATEGORIAS_COL2.map(item => (
-                      <Link key={item.href} href={item.href}
-                        className="block px-4 py-2 text-[13px] text-[#333] hover:text-[#f5821f] hover:bg-gray-50 transition-colors whitespace-nowrap">
-                        {item.name}
-                      </Link>
-                    ))}
-                  </div>
-                </div>
-              </div>
-            </div>
+            <NavDropdown
+              label="Categorias"
+              items={{ col1: CATEGORIAS_COL1, col2: CATEGORIAS_COL2 }}
+              cols={2}
+            />
 
-            {/* Colunistas — fim da barra */}
             <Link href="/colunistas" className={NAV_LINK}>Colunistas</Link>
 
           </div>
         </div>
-        {/* Linha gradiente laranja → verde limão */}
         <div className="h-0.5 bg-gradient-to-r from-[#f5821f] to-[#8dc63f]" />
       </nav>
 

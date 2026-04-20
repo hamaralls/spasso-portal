@@ -42,7 +42,7 @@ export default async function Home() {
               {/* Artigo principal */}
               <Link href={`/${recentes[0].slug}`}
                 className="group lg:col-span-2 flex flex-col sm:flex-row gap-4">
-                <div className="sm:w-[55%] relative aspect-[4/3] overflow-hidden rounded-lg bg-gray-200 shrink-0">
+                <div className="sm:w-[55%] relative aspect-video overflow-hidden rounded-lg bg-gray-200 shrink-0">
                   {recentes[0].featured_image_url && (
                     <Image
                       src={recentes[0].featured_image_url}
@@ -66,16 +66,15 @@ export default async function Home() {
                       {recentes[0].excerpt.replace(/<[^>]+>/g, '')}
                     </p>
                   )}
-                  <div className="mt-auto pt-3 text-xs text-gray-400">
-                    {recentes[0].author_name && <span>{recentes[0].author_name} · </span>}
-                    {timeAgo(recentes[0].published_at)}
-                  </div>
+                  {recentes[0].author_name && (
+                    <p className="mt-auto pt-3 text-xs text-gray-400">{recentes[0].author_name}</p>
+                  )}
                 </div>
               </Link>
 
               {/* Artigo secundário */}
               <Link href={`/${recentes[1].slug}`} className="group flex flex-col">
-                <div className="relative aspect-[4/3] overflow-hidden rounded-lg bg-gray-200">
+                <div className="relative aspect-video overflow-hidden rounded-lg bg-gray-200">
                   {recentes[1].featured_image_url && (
                     <Image
                       src={recentes[1].featured_image_url}
@@ -100,8 +99,18 @@ export default async function Home() {
               <div className="grid grid-cols-1 sm:grid-cols-3 gap-x-6 gap-y-3 pt-4 border-t border-gray-200">
                 {recentes.slice(2, 5).map((article) => (
                   <Link key={article.id} href={`/${article.slug}`}
-                    className="group flex items-start gap-2">
-                    <span className="w-2.5 h-2.5 rounded-sm bg-[#f5821f] shrink-0 mt-[3px]" />
+                    className="group flex items-start gap-3">
+                    <div className="relative w-16 h-12 shrink-0 overflow-hidden rounded bg-gray-200">
+                      {article.featured_image_url && (
+                        <Image
+                          src={article.featured_image_url}
+                          alt={article.title}
+                          fill
+                          className="object-cover"
+                          sizes="64px"
+                        />
+                      )}
+                    </div>
                     <p className="text-sm font-semibold leading-snug group-hover:text-[#f5821f] transition-colors line-clamp-2 text-[#1a1a1a]">
                       {article.title}
                     </p>

@@ -67,9 +67,6 @@ export default function ArticleCard({ article, size = 'default' }: ArticleCardPr
               {excerpt.replace(/<[^>]+>/g, '')}
             </p>
           )}
-          <div className="mt-1.5 text-xs text-gray-400">
-            {timeAgo(published_at)}
-          </div>
         </div>
       </Link>
     )
@@ -115,7 +112,6 @@ export default function ArticleCard({ article, size = 'default' }: ArticleCardPr
         <h3 className="text-sm font-bold text-[#1a1a1a] leading-snug mt-1 group-hover:text-[#f5821f] transition-colors line-clamp-3">
           {title}
         </h3>
-        <div className="mt-1 text-xs text-gray-400">{timeAgo(published_at)}</div>
       </div>
     </Link>
   )

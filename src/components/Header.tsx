@@ -195,10 +195,10 @@ export default function Header() {
           <div className="w-20 lg:w-44 shrink-0">
             <button
               onClick={() => setMobileOpen(!mobileOpen)}
-              className="lg:hidden flex items-center gap-1 text-[#1a1a1a] p-1"
+              className="lg:hidden flex items-center gap-1 text-gray-500 hover:text-[#f5821f] transition-colors p-1"
               aria-label="Menu"
             >
-              {mobileOpen ? <X size={22} /> : <Menu size={22} />}
+              {mobileOpen ? <X size={20} /> : <Menu size={20} />}
               <span className="text-[11px] font-medium">{mobileOpen ? 'Fechar' : 'Menu'}</span>
             </button>
             <span className={`hidden lg:block text-gray-500 leading-tight transition-all duration-300 ${scrolled ? 'text-[10px]' : 'text-[11px]'}`}>
@@ -214,7 +214,7 @@ export default function Header() {
               width={520}
               height={104}
               priority
-              className={`h-auto transition-all duration-300 ${scrolled ? 'w-[160px] lg:w-[280px]' : 'w-[200px] lg:w-[480px]'}`}
+              className={`h-auto transition-all duration-300 ${scrolled ? 'w-[200px] lg:w-[280px]' : 'w-[320px] lg:w-[480px]'}`}
             />
           </Link>
 

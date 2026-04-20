@@ -29,9 +29,9 @@ export default async function Home() {
     getArtigosPorCategorias(['sumare', 'hortolandia', 'nova-odessa', 'campinas', 'paulinia', 'monte-mor', 'santa-barbara-doeste', 'outras-cidades', 'rmc'], 4),
     getArtigosPorCategorias(['estilo-de-vida', 'cultura-e-lazer', 'eventos'], 4),
     getArtigosPorCategorias(['brasil'], 4),
-    getArtigosPorCategorias(['saude'], 3),
-    getArtigosPorCategorias(['politica'], 3),
-    getArtigosPorCategorias(['economia'], 3),
+    getArtigosPorCategorias(['saude'], 7),
+    getArtigosPorCategorias(['politica'], 7),
+    getArtigosPorCategorias(['economia'], 7),
     getArtigosPorCategorias(['colunistas'], 4),
     getColunistas(),
   ])
@@ -235,66 +235,35 @@ export default async function Home() {
           </section>
         )}
 
-        {/* ── 6. Saúde (min 3 artigos) ── */}
-        {/* Layout: 3 cols conteúdo + 1 col banner aside */}
-        {saude.length >= 3 && (
-          <section>
-            <SectionHeader title="Saúde" href="/saude" color="#0891b2" />
+        {/* ── 6–8. Saúde / Política / Economia ── */}
+        {/* Layout: 1 featured esq + grade 2×3 compact dir + banner aside */}
+        {[
+          { data: saude,    title: 'Saúde',    href: '/saude',    color: '#0891b2', slot: 'saude-sidebar' },
+          { data: politica, title: 'Política', href: '/politica', color: '#7c3aed', slot: 'politica-sidebar' },
+          { data: economia, title: 'Economia', href: '/economia', color: '#16a34a', slot: 'economia-sidebar' },
+        ].map(({ data, title, href, color, slot }) => data.length >= 3 && (
+          <section key={slot}>
+            <SectionHeader title={title} href={href} color={color} />
             <div className="grid grid-cols-1 lg:grid-cols-4 gap-4 items-start">
               <div className="lg:col-span-3">
-                <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-                  {saude.map((article) => (
-                    <ArticleCard key={article.id} article={article} />
-                  ))}
+                <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
+                  {/* Featured médio — esquerda */}
+                  <ArticleCard article={data[0]} size="featured" />
+                  {/* Grade compact — direita (2 colunas × até 3 linhas) */}
+                  <div className="col-span-2 grid grid-cols-2 gap-3">
+                    {data.slice(1).map((article) => (
+                      <ArticleCard key={article.id} article={article} size="compact" />
+                    ))}
+                  </div>
                 </div>
               </div>
               <aside className="hidden lg:flex flex-col items-center pt-1">
-                <AdUnit slot="saude-sidebar" format="rectangle" />
+                <AdUnit slot={slot} format="rectangle" />
                 <BannerPlaceholder w={300} h={250} label="Banner 300×250" />
               </aside>
             </div>
           </section>
-        )}
-
-        {/* ── 7. Política (min 3 artigos) ── */}
-        {politica.length >= 3 && (
-          <section>
-            <SectionHeader title="Política" href="/politica" color="#7c3aed" />
-            <div className="grid grid-cols-1 lg:grid-cols-4 gap-4 items-start">
-              <div className="lg:col-span-3">
-                <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-                  {politica.map((article) => (
-                    <ArticleCard key={article.id} article={article} />
-                  ))}
-                </div>
-              </div>
-              <aside className="hidden lg:flex flex-col items-center pt-1">
-                <AdUnit slot="politica-sidebar" format="rectangle" />
-                <BannerPlaceholder w={300} h={250} label="Banner 300×250" />
-              </aside>
-            </div>
-          </section>
-        )}
-
-        {/* ── 8. Economia (min 3 artigos) ── */}
-        {economia.length >= 3 && (
-          <section>
-            <SectionHeader title="Economia" href="/economia" color="#16a34a" />
-            <div className="grid grid-cols-1 lg:grid-cols-4 gap-4 items-start">
-              <div className="lg:col-span-3">
-                <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-                  {economia.map((article) => (
-                    <ArticleCard key={article.id} article={article} />
-                  ))}
-                </div>
-              </div>
-              <aside className="hidden lg:flex flex-col items-center pt-1">
-                <AdUnit slot="economia-sidebar" format="rectangle" />
-                <BannerPlaceholder w={300} h={250} label="Banner 300×250" />
-              </aside>
-            </div>
-          </section>
-        )}
+        ))}
 
         {/* ── 9. Últimas Notícias ── */}
         {/* Layout: 3 cols conteúdo + 1 col banner aside */}

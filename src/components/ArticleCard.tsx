@@ -74,17 +74,17 @@ export default function ArticleCard({ article, size = 'default' }: ArticleCardPr
 
   if (size === 'compact') {
     return (
-      <Link href={`/${slug}`} className="group flex gap-3 items-start bg-white p-2 shadow-sm hover:shadow-md transition-shadow">
-        <div className="relative w-[90px] h-[80px] flex-shrink-0 overflow-hidden bg-gray-200">
+      <Link href={`/${slug}`} className="group flex gap-2 items-start bg-white p-2 shadow-sm hover:shadow-md transition-shadow">
+        <div className="relative w-[80px] h-[72px] flex-shrink-0 overflow-hidden bg-gray-200">
           {featured_image_url && (
             <Image src={featured_image_url} alt={title} fill className="object-cover" sizes="80px" />
           )}
         </div>
         <div className="flex-1 min-w-0">
-          <h3 className="text-sm font-bold text-[#1a1a1a] leading-snug group-hover:text-[#f5821f] transition-colors line-clamp-2">
+          {category_name && <Badge name={category_name} color={badge_color} size="sm" />}
+          <h3 className="text-xs font-bold text-[#1a1a1a] leading-snug mt-0.5 group-hover:text-[#f5821f] transition-colors line-clamp-2">
             {title}
           </h3>
-          <span className="text-xs text-gray-400">{timeAgo(published_at)}</span>
         </div>
       </Link>
     )

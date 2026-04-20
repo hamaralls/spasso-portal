@@ -11,8 +11,15 @@ export const runtime = 'edge'
 
 const hasAds = !!process.env.NEXT_PUBLIC_GAM_NETWORK_CODE
 
-function BannerPlaceholder({ w, h, label }: { w: number; h: number; label: string }) {
+function BannerPlaceholder({ w, h, label, fill }: { w: number; h: number; label: string; fill?: boolean }) {
   if (hasAds) return null
+  if (fill) {
+    return (
+      <div className="w-full flex-1 min-h-[400px] bg-gray-50 border border-dashed border-gray-300 flex items-center justify-center text-xs text-gray-400">
+        {label}
+      </div>
+    )
+  }
   return (
     <div
       style={{ width: w, height: h }}
@@ -23,88 +30,99 @@ function BannerPlaceholder({ w, h, label }: { w: number; h: number; label: strin
   )
 }
 
-// Layout Metrópoles por seção:
-// [col 1+2] featured: imagem tall esq + título dir
-// [col 1+2] 2 compact lado a lado
-// [col 1+2] 2 text-only lado a lado
-// [col 3  ] 4 compact empilhados com dividers
-// Total: 9 artigos
+// Layout Metrópoles — 15 artigos por seção
+// Col 1+2: featured tall + 2 compact + 2 compact
+// Col 3: 4 stacked
+// + 2 linhas de 3 cards (full width, artigos 9-14)
 function MetropolesGrid({ articles }: { articles: ArticlePublico[] }) {
   const a = articles
   if (a.length === 0) return null
 
   return (
-    <div className="grid grid-cols-1 lg:grid-cols-3 gap-x-6 gap-y-0 items-start">
+    <div className="space-y-4">
 
-      {/* Col 1+2: featured + compact row + text-only row */}
-      <div className="lg:col-span-2 flex flex-col">
+      {/* Topo: col 1+2 (featured + compacts) + col 3 (stacked) */}
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-x-6 gap-y-4 items-start">
 
-        {/* Featured: imagem esq (aspect 4:3) + badge + título dir */}
-        {a[0] && (
-          <Link href={`/${a[0].slug}`} className="group flex gap-4 pb-4">
-            <div className="relative w-[48%] aspect-[4/3] shrink-0 overflow-hidden bg-gray-200">
-              {a[0].featured_image_url ? (
-                <Image
-                  src={a[0].featured_image_url}
-                  alt={a[0].title}
-                  fill
-                  className="object-cover group-hover:scale-[1.02] transition-transform duration-300"
-                  sizes="(max-width: 1024px) 50vw, 28vw"
-                />
-              ) : (
-                <div className="absolute inset-0 bg-gradient-to-br from-gray-100 to-gray-200" />
-              )}
-            </div>
-            <div className="flex-1 min-w-0 pt-1">
-              {a[0].category_name && (
-                <Badge name={a[0].category_name} color={a[0].badge_color} size="sm" />
-              )}
-              <h3 className="text-xl font-bold leading-snug mt-2 group-hover:text-[#f5821f] transition-colors line-clamp-4 text-[#1a1a1a]">
-                {a[0].title}
-              </h3>
-              {a[0].excerpt && (
-                <p className="text-sm text-gray-500 mt-2 line-clamp-3 leading-relaxed">
-                  {a[0].excerpt.replace(/<[^>]+>/g, '')}
-                </p>
-              )}
-            </div>
-          </Link>
-        )}
+        {/* Col 1+2 */}
+        <div className="lg:col-span-2 flex flex-col gap-4">
 
-        {/* Compact row: artigos 1 e 2 */}
-        {a.length >= 3 && (
-          <div className="grid grid-cols-2 gap-4 py-4 border-t border-gray-100">
-            {a.slice(1, 3).map(art => (
-              <ArticleCard key={art.id} article={art} size="compact" />
-            ))}
-          </div>
-        )}
-
-        {/* Text-only row: artigos 3 e 4 */}
-        {a.length >= 5 && (
-          <div className="grid grid-cols-2 gap-4 pt-4 border-t border-gray-100">
-            {a.slice(3, 5).map(art => (
-              <Link key={art.id} href={`/${art.slug}`} className="group block">
-                {art.category_name && (
-                  <Badge name={art.category_name} color={art.badge_color} size="sm" />
+          {/* Featured: imagem esq (aspect 4:3) + badge + título dir */}
+          {a[0] && (
+            <Link href={`/${a[0].slug}`} className="group flex gap-4">
+              <div className="relative w-[48%] aspect-[4/3] shrink-0 overflow-hidden bg-gray-200">
+                {a[0].featured_image_url ? (
+                  <Image
+                    src={a[0].featured_image_url}
+                    alt={a[0].title}
+                    fill
+                    className="object-cover group-hover:scale-[1.02] transition-transform duration-300"
+                    sizes="(max-width: 1024px) 50vw, 28vw"
+                  />
+                ) : (
+                  <div className="absolute inset-0 bg-gradient-to-br from-gray-100 to-gray-200" />
                 )}
-                <h3 className="text-sm font-bold text-[#1a1a1a] leading-snug mt-0.5 group-hover:text-[#f5821f] transition-colors line-clamp-3">
-                  {art.title}
+              </div>
+              <div className="flex-1 min-w-0 pt-1">
+                {a[0].category_name && (
+                  <Badge name={a[0].category_name} color={a[0].badge_color} size="sm" />
+                )}
+                <h3 className="text-xl font-bold leading-snug mt-2 group-hover:text-[#f5821f] transition-colors line-clamp-4 text-[#1a1a1a]">
+                  {a[0].title}
                 </h3>
-              </Link>
-            ))}
-          </div>
-        )}
+                {a[0].excerpt && (
+                  <p className="text-sm text-gray-500 mt-2 line-clamp-3 leading-relaxed">
+                    {a[0].excerpt.replace(/<[^>]+>/g, '')}
+                  </p>
+                )}
+              </div>
+            </Link>
+          )}
+
+          {/* Compact row 1: artigos 1 e 2 */}
+          {a.length >= 3 && (
+            <div className="grid grid-cols-2 gap-4">
+              {a.slice(1, 3).map(art => (
+                <ArticleCard key={art.id} article={art} size="compact" />
+              ))}
+            </div>
+          )}
+
+          {/* Compact row 2: artigos 3 e 4 (com foto) */}
+          {a.length >= 5 && (
+            <div className="grid grid-cols-2 gap-4">
+              {a.slice(3, 5).map(art => (
+                <ArticleCard key={art.id} article={art} size="compact" />
+              ))}
+            </div>
+          )}
+        </div>
+
+        {/* Col 3: 4 stacked sem dividers */}
+        <div className="hidden lg:flex flex-col gap-3">
+          {a.slice(5, 9).map(art => (
+            <ArticleCard key={art.id} article={art} size="compact" />
+          ))}
+        </div>
       </div>
 
-      {/* Col 3: 4 compact empilhados com dividers */}
-      <div className="hidden lg:flex flex-col divide-y divide-gray-100">
-        {a.slice(5, 9).map(art => (
-          <div key={art.id} className="py-3 first:pt-0 last:pb-0">
-            <ArticleCard article={art} size="compact" />
-          </div>
-        ))}
-      </div>
+      {/* Linha extra 1: 3 cards (artigos 9-11) */}
+      {a.length >= 10 && (
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+          {a.slice(9, 12).map(art => (
+            <ArticleCard key={art.id} article={art} size="compact" />
+          ))}
+        </div>
+      )}
+
+      {/* Linha extra 2: 3 cards (artigos 12-14) */}
+      {a.length >= 13 && (
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+          {a.slice(12, 15).map(art => (
+            <ArticleCard key={art.id} article={art} size="compact" />
+          ))}
+        </div>
+      )}
 
     </div>
   )
@@ -113,12 +131,12 @@ function MetropolesGrid({ articles }: { articles: ArticlePublico[] }) {
 export default async function Home() {
   const [recentes, regiao, culturaELazer, brasil, saude, politica, economia, opiniao, colunistas] = await Promise.all([
     getArtigosRecentes(17),
-    getArtigosPorCategorias(['sumare', 'hortolandia', 'nova-odessa', 'campinas', 'paulinia', 'monte-mor', 'santa-barbara-doeste', 'outras-cidades', 'rmc'], 9),
+    getArtigosPorCategorias(['sumare', 'hortolandia', 'nova-odessa', 'campinas', 'paulinia', 'monte-mor', 'santa-barbara-doeste', 'outras-cidades', 'rmc'], 15),
     getArtigosPorCategorias(['estilo-de-vida', 'cultura-e-lazer', 'eventos'], 4),
     getArtigosPorCategorias(['brasil'], 4),
-    getArtigosPorCategorias(['saude'], 9),
-    getArtigosPorCategorias(['politica'], 9),
-    getArtigosPorCategorias(['economia'], 9),
+    getArtigosPorCategorias(['saude'], 15),
+    getArtigosPorCategorias(['politica'], 15),
+    getArtigosPorCategorias(['economia'], 15),
     getArtigosPorCategorias(['colunistas'], 4),
     getColunistas(),
   ])
@@ -213,13 +231,13 @@ export default async function Home() {
         {regiao.length > 0 && (
           <section>
             <SectionHeader title="Região Metropolitana de Campinas" href="/rmc" color="#8dc63f" />
-            <div className="grid grid-cols-1 lg:grid-cols-4 gap-4 items-start">
+            <div className="grid grid-cols-1 lg:grid-cols-4 gap-4 items-stretch">
               <div className="lg:col-span-3">
                 <MetropolesGrid articles={regiao} />
               </div>
-              <aside className="hidden lg:flex flex-col items-center pt-1">
+              <aside className="hidden lg:flex flex-col">
                 <AdUnit slot="rmc-sidebar" format="rectangle" />
-                <BannerPlaceholder w={300} h={250} label="Banner 300×250" />
+                <BannerPlaceholder w={300} h={300} label="Banner 300×600" fill />
               </aside>
             </div>
           </section>
@@ -319,13 +337,13 @@ export default async function Home() {
         ].map(({ data, title, href, color, slot }) => data.length >= 3 && (
           <section key={slot}>
             <SectionHeader title={title} href={href} color={color} />
-            <div className="grid grid-cols-1 lg:grid-cols-4 gap-4 items-start">
+            <div className="grid grid-cols-1 lg:grid-cols-4 gap-4 items-stretch">
               <div className="lg:col-span-3">
                 <MetropolesGrid articles={data} />
               </div>
-              <aside className="hidden lg:flex flex-col items-center pt-1">
+              <aside className="hidden lg:flex flex-col">
                 <AdUnit slot={slot} format="rectangle" />
-                <BannerPlaceholder w={300} h={250} label="Banner 300×250" />
+                <BannerPlaceholder w={300} h={300} label="Banner 300×600" fill />
               </aside>
             </div>
           </section>

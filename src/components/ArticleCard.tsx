@@ -75,7 +75,7 @@ export default function ArticleCard({ article, size = 'default' }: ArticleCardPr
   if (size === 'compact') {
     return (
       <Link href={`/${slug}`} className="group flex gap-3 items-start bg-white p-2 shadow-sm hover:shadow-md transition-shadow">
-        <div className="relative w-20 h-14 flex-shrink-0 overflow-hidden bg-gray-200">
+        <div className="relative w-[90px] h-[80px] flex-shrink-0 overflow-hidden bg-gray-200">
           {featured_image_url && (
             <Image src={featured_image_url} alt={title} fill className="object-cover" sizes="80px" />
           )}
@@ -90,11 +90,11 @@ export default function ArticleCard({ article, size = 'default' }: ArticleCardPr
     )
   }
 
-  // default — horizontal: imagem esq, badge acima do título
+  // default — horizontal: imagem esq (10:9), badge acima do título
   return (
     <Link href={`/${slug}`}
       className="group flex gap-3 items-start bg-white p-2 shadow-sm hover:shadow-md transition-shadow">
-      <div className="relative w-20 h-20 sm:w-24 sm:h-24 shrink-0 overflow-hidden bg-gray-200">
+      <div className="relative w-[100px] h-[90px] shrink-0 overflow-hidden bg-gray-200">
         {featured_image_url ? (
           <Image
             src={featured_image_url}

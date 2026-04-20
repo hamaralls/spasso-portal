@@ -9,10 +9,9 @@ import { getArtigosRecentes, getArtigosPorCategorias, getColunistas } from '@/li
 export const runtime = 'edge'
 
 export default async function Home() {
-  const [recentes, regiao, sumare, estiloDeVida, brasil, saude, politica, economia, opiniao, colunistas] = await Promise.all([
+  const [recentes, regiao, culturaELazer, brasil, saude, politica, economia, opiniao, colunistas] = await Promise.all([
     getArtigosRecentes(21),
-    getArtigosPorCategorias(['hortolandia', 'nova-odessa', 'campinas', 'paulinia', 'monte-mor', 'santa-barbara-doeste', 'outras-cidades', 'rmc'], 6),
-    getArtigosPorCategorias(['sumare'], 4),
+    getArtigosPorCategorias(['sumare', 'hortolandia', 'nova-odessa', 'campinas', 'paulinia', 'monte-mor', 'santa-barbara-doeste', 'outras-cidades', 'rmc'], 8),
     getArtigosPorCategorias(['estilo-de-vida', 'cultura-e-lazer', 'eventos'], 6),
     getArtigosPorCategorias(['brasil'], 4),
     getArtigosPorCategorias(['saude'], 4),
@@ -128,7 +127,7 @@ export default async function Home() {
         {regiao.length > 0 && (
           <section>
             <SectionHeader title="Região Metropolitana de Campinas" href="/rmc" color="#8dc63f" />
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
               {regiao.map((article) => (
                 <ArticleCard key={article.id} article={article} size="featured" />
               ))}
@@ -136,89 +135,9 @@ export default async function Home() {
           </section>
         )}
 
-        {/* ── 3. Sumaré ── */}
-        {sumare.length > 0 && (
-          <section>
-            <SectionHeader title="Sumaré" href="/sp/sumare" color="#8dc63f" />
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <ArticleCard article={sumare[0]} size="featured" />
-              <div className="flex flex-col gap-4">
-                {sumare.slice(1).map((article) => (
-                  <ArticleCard key={article.id} article={article} />
-                ))}
-              </div>
-            </div>
-          </section>
-        )}
-
         <AdUnit slot="home-leaderboard" format="leaderboard" className="flex justify-center" />
 
-        {/* ── 4. Estilo de Vida ── */}
-        {estiloDeVida.length > 0 && (
-          <section>
-            <SectionHeader title="Estilo de Vida" href="/estilo-de-vida" color="#f5821f" />
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-              {estiloDeVida.map((article) => (
-                <ArticleCard key={article.id} article={article} size="featured" />
-              ))}
-            </div>
-          </section>
-        )}
-
-        {/* ── 5. Brasil ── */}
-        {brasil.length > 0 && (
-          <section>
-            <SectionHeader title="Brasil" href="/brasil" color="#ec3535" />
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <ArticleCard article={brasil[0]} size="featured" />
-              <div className="flex flex-col gap-4">
-                {brasil.slice(1).map((article) => (
-                  <ArticleCard key={article.id} article={article} />
-                ))}
-              </div>
-            </div>
-          </section>
-        )}
-
-        <AdUnit slot="home-leaderboard-2" format="leaderboard" className="flex justify-center" />
-
-        {/* ── 6. Saúde (min 4 artigos) ── */}
-        {saude.length >= 4 && (
-          <section>
-            <SectionHeader title="Saúde" href="/saude" color="#0891b2" />
-            <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
-              {saude.map((article) => (
-                <ArticleCard key={article.id} article={article} />
-              ))}
-            </div>
-          </section>
-        )}
-
-        {/* ── 7. Política (min 4 artigos) ── */}
-        {politica.length >= 4 && (
-          <section>
-            <SectionHeader title="Política" href="/politica" color="#7c3aed" />
-            <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
-              {politica.map((article) => (
-                <ArticleCard key={article.id} article={article} />
-              ))}
-            </div>
-          </section>
-        )}
-
-        {/* ── 8. Economia (min 4 artigos) ── */}
-        {economia.length >= 4 && (
-          <section>
-            <SectionHeader title="Economia" href="/economia" color="#16a34a" />
-            <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
-              {economia.map((article) => (
-                <ArticleCard key={article.id} article={article} />
-              ))}
-            </div>
-          </section>
-        )}
-
-        {/* ── 9. Colunistas ── */}
+        {/* ── 3. Colunistas ── */}
         {(opiniao.length > 0 || colunistas.length > 0) && (
           <section>
             <SectionHeader title="Colunistas" href="/colunistas" color="#7c3aed" />
@@ -263,7 +182,73 @@ export default async function Home() {
           </section>
         )}
 
-        {/* ── 10. Últimas Notícias ── */}
+        {/* ── 4. Brasil ── */}
+        {brasil.length > 0 && (
+          <section>
+            <SectionHeader title="Brasil" href="/brasil" color="#ec3535" />
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <ArticleCard article={brasil[0]} size="featured" />
+              <div className="flex flex-col gap-4">
+                {brasil.slice(1).map((article) => (
+                  <ArticleCard key={article.id} article={article} />
+                ))}
+              </div>
+            </div>
+          </section>
+        )}
+
+        {/* ── 5. Cultura e Lazer ── */}
+        {culturaELazer.length > 0 && (
+          <section>
+            <SectionHeader title="Cultura e Lazer" href="/cultura-e-lazer" color="#db2777" />
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+              {culturaELazer.map((article) => (
+                <ArticleCard key={article.id} article={article} size="featured" />
+              ))}
+            </div>
+          </section>
+        )}
+
+        <AdUnit slot="home-leaderboard-2" format="leaderboard" className="flex justify-center" />
+
+        {/* ── 6. Saúde (min 4 artigos) ── */}
+        {saude.length >= 4 && (
+          <section>
+            <SectionHeader title="Saúde" href="/saude" color="#0891b2" />
+            <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+              {saude.map((article) => (
+                <ArticleCard key={article.id} article={article} />
+              ))}
+            </div>
+          </section>
+        )}
+
+        {/* ── 7. Política (min 4 artigos) ── */}
+        {politica.length >= 4 && (
+          <section>
+            <SectionHeader title="Política" href="/politica" color="#7c3aed" />
+            <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+              {politica.map((article) => (
+                <ArticleCard key={article.id} article={article} />
+              ))}
+            </div>
+          </section>
+        )}
+
+        {/* ── 8. Economia (min 4 artigos) ── */}
+        {economia.length >= 4 && (
+          <section>
+            <SectionHeader title="Economia" href="/economia" color="#16a34a" />
+            <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+              {economia.map((article) => (
+                <ArticleCard key={article.id} article={article} />
+              ))}
+            </div>
+          </section>
+        )}
+
+        {/* ── 9. Últimas Notícias ── */}
+
         {ultimas.length > 0 && (
           <section>
             <SectionHeader title="Últimas Notícias" color="#f5821f" />

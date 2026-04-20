@@ -97,6 +97,20 @@ export async function getColunistas() {
   return (data ?? []) as { id: string; name: string; slug: string; type: string; avatar_url: string | null; bio: string | null; active: boolean }[]
 }
 
+// ── Destaques: top artigos por views (últimos 7 dias) ────────────────────────
+
+export async function getArtigosDestaque(limit = 3): Promise<ArticlePublico[]> {
+  const desde = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString()
+  const { data } = await getSupabase()
+    .from('artigos_publicados')
+    .select('*')
+    .gte('published_at', desde)
+    .order('views', { ascending: false })
+    .order('published_at', { ascending: false })
+    .limit(limit)
+  return data ?? []
+}
+
 // ── Artigos relacionados ──────────────────────────────────────────────────────
 
 export async function getArtigosRelacionados(

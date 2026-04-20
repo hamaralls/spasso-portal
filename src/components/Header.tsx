@@ -5,41 +5,45 @@ import Image from 'next/image'
 import { useState } from 'react'
 import { Menu, X, Search, ChevronDown } from 'lucide-react'
 
-// Cidades com foco editorial — links diretos no nav desktop
+// Cidades com foco editorial — links diretos no nav desktop (sem Campinas)
 const CIDADES_NAV = [
   { name: 'Sumaré',      href: '/sp/sumare' },
   { name: 'Hortolândia', href: '/sp/hortolandia' },
   { name: 'Nova Odessa', href: '/sp/nova-odessa' },
-  { name: 'Campinas',    href: '/sp/campinas' },
   { name: 'Paulínia',    href: '/sp/paulinia' },
   { name: 'Monte Mor',   href: '/sp/monte-mor' },
 ]
 
-// Dropdown RMC — todas as cidades da região
+// Dropdown RMC — todas as cidades da região (inclui Campinas)
 const RMC_ITEMS = [
-  { name: 'Hortolândia',          href: '/sp/hortolandia' },
-  { name: 'Nova Odessa',          href: '/sp/nova-odessa' },
-  { name: 'Campinas',             href: '/sp/campinas' },
-  { name: 'Paulínia',             href: '/sp/paulinia' },
-  { name: 'Monte Mor',            href: '/sp/monte-mor' },
-  { name: "Sta. Bárbara d'Oeste", href: '/sp/santa-barbara-doeste' },
-  { name: 'Interior SP',          href: '/rmc' },
+  { name: 'Hortolândia',           href: '/sp/hortolandia' },
+  { name: 'Nova Odessa',           href: '/sp/nova-odessa' },
+  { name: 'Campinas',              href: '/sp/campinas' },
+  { name: 'Paulínia',              href: '/sp/paulinia' },
+  { name: 'Monte Mor',             href: '/sp/monte-mor' },
+  { name: "Sta. Bárbara d'Oeste",  href: '/sp/santa-barbara-doeste' },
+  { name: 'Interior SP',           href: '/rmc' },
 ]
 
-// Dropdown Categorias — 2 colunas (col1: maior volume; col2: menor volume)
-const CATEGORIAS_COL1 = [
-  { name: 'Saúde',         href: '/saude' },
-  { name: 'Política',      href: '/politica' },
-  { name: 'Economia',      href: '/economia' },
-  { name: 'Educação',      href: '/educacao' },
+// Temas flat — alto volume editorial
+const TEMAS_FLAT = [
+  { name: 'Política',        href: '/politica' },
+  { name: 'Saúde',           href: '/saude' },
+  { name: 'Educação',        href: '/educacao' },
+  { name: 'Economia',        href: '/economia' },
   { name: 'Cultura e Lazer', href: '/cultura-e-lazer' },
 ]
+
+// Dropdown Categorias — temas secundários
+const CATEGORIAS_COL1 = [
+  { name: 'Esporte',        href: '/esporte' },
+  { name: 'Tecnologia',     href: '/tecnologia' },
+  { name: 'Meio Ambiente',  href: '/meio-ambiente' },
+]
 const CATEGORIAS_COL2 = [
-  { name: 'Esporte',       href: '/esporte' },
-  { name: 'Tecnologia',    href: '/tecnologia' },
-  { name: 'Meio Ambiente', href: '/meio-ambiente' },
-  { name: 'Empregos',      href: '/empregos' },
+  { name: 'Empregos',       href: '/empregos' },
   { name: 'Estilo de Vida', href: '/estilo-de-vida' },
+  { name: 'Entretenimento', href: '/eventos' },
 ]
 
 // Menu mobile completo
@@ -54,17 +58,17 @@ const MOBILE_ITEMS = [
   { name: "Sta. Bárbara d'Oeste",  href: '/sp/santa-barbara-doeste' },
   { name: 'RMC',                   href: '/rmc' },
   { name: 'Brasil',                href: '/brasil' },
-  { name: 'Entretenimento',        href: '/eventos' },
   { name: 'Política',              href: '/politica' },
   { name: 'Saúde',                 href: '/saude' },
-  { name: 'Economia',              href: '/economia' },
   { name: 'Educação',              href: '/educacao' },
-  { name: 'Esporte',               href: '/esporte' },
+  { name: 'Economia',              href: '/economia' },
   { name: 'Cultura e Lazer',       href: '/cultura-e-lazer' },
+  { name: 'Esporte',               href: '/esporte' },
   { name: 'Tecnologia',            href: '/tecnologia' },
   { name: 'Meio Ambiente',         href: '/meio-ambiente' },
   { name: 'Empregos',              href: '/empregos' },
   { name: 'Estilo de Vida',        href: '/estilo-de-vida' },
+  { name: 'Entretenimento',        href: '/eventos' },
   { name: 'Colunistas',            href: '/colunistas' },
   { name: 'Ed. Impressa',          href: '/edicao-impressa' },
   { name: 'Anuncie',               href: '/anuncie' },
@@ -126,7 +130,7 @@ export default function Header() {
         </div>
       </div>
 
-      {/* ── NavBar flat + dropdowns (desktop) ── */}
+      {/* ── NavBar (desktop) ── */}
       <nav className="hidden lg:block border-t border-gray-100">
         <div className="overflow-x-auto [&::-webkit-scrollbar]:hidden [scrollbar-width:none]">
           <div className="flex items-center justify-center gap-5 h-11 min-w-max px-4 mx-auto max-w-7xl">
@@ -143,8 +147,7 @@ export default function Header() {
 
             {/* RMC dropdown */}
             <div className="relative group h-full flex items-center">
-              <Link href="/rmc"
-                className={`${NAV_LINK} flex items-center gap-0.5`}>
+              <Link href="/rmc" className={`${NAV_LINK} flex items-center gap-0.5`}>
                 RMC
                 <ChevronDown size={11} className="opacity-50 group-hover:opacity-100 transition-opacity" />
               </Link>
@@ -158,12 +161,17 @@ export default function Header() {
               </div>
             </div>
 
-            {/* Brasil + Entretenimento + Colunistas */}
+            {/* Brasil */}
             <Link href="/brasil" className={NAV_LINK}>Brasil</Link>
-            <Link href="/eventos" className={NAV_LINK}>Entretenimento</Link>
-            <Link href="/colunistas" className={NAV_LINK}>Colunistas</Link>
 
-            {/* Categorias dropdown — 2 colunas */}
+            {/* Temas flat */}
+            {TEMAS_FLAT.map((item) => (
+              <Link key={item.href} href={item.href} className={NAV_LINK}>
+                {item.name}
+              </Link>
+            ))}
+
+            {/* Categorias dropdown */}
             <div className="relative group h-full flex items-center">
               <button className={`${NAV_LINK} flex items-center gap-0.5 bg-transparent border-none cursor-pointer`}>
                 Categorias
@@ -190,6 +198,9 @@ export default function Header() {
                 </div>
               </div>
             </div>
+
+            {/* Colunistas — fim da barra */}
+            <Link href="/colunistas" className={NAV_LINK}>Colunistas</Link>
 
           </div>
         </div>

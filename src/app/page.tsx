@@ -4,16 +4,17 @@ import Badge from '@/components/Badge'
 import ArticleCard from '@/components/ArticleCard'
 import SectionHeader from '@/components/SectionHeader'
 import { AdUnit } from '@/components/AdUnit'
-import { getArtigosRecentes, getArtigosPorCategorias, getColunistas } from '@/lib/supabase/queries'
+import { getArtigosRecentes, getArtigosPorCategorias, getColunistas, getArtigosDestaque } from '@/lib/supabase/queries'
 import { timeAgo } from '@/lib/format'
 
 export const runtime = 'edge'
 
 export default async function Home() {
-  const [recentes, sumare, regiao, brasil, saude, politica, economia, educacao, cultura, esporte, eventos, opiniao, colunistas] = await Promise.all([
+  const [recentes, destaques, regiao, sumare, brasil, saude, politica, economia, educacao, cultura, esporte, eventos, opiniao, colunistas] = await Promise.all([
     getArtigosRecentes(13),
+    getArtigosDestaque(3),
+    getArtigosPorCategorias(['hortolandia', 'nova-odessa', 'campinas', 'paulinia', 'monte-mor', 'santa-barbara-doeste'], 4),
     getArtigosPorCategorias(['sumare'], 3),
-    getArtigosPorCategorias(['hortolandia', 'nova-odessa', 'campinas', 'paulinia', 'monte-mor'], 3),
     getArtigosPorCategorias(['brasil'], 3),
     getArtigosPorCategorias(['saude'], 4),
     getArtigosPorCategorias(['politica'], 4),
@@ -31,6 +32,20 @@ export default async function Home() {
 
   return (
     <>
+      {/* Banner estreito — artigo em destaque */}
+      {hero && (
+        <div className="bg-[#f5821f] text-white py-2 px-4">
+          <div className="max-w-7xl mx-auto flex items-center gap-3 text-sm">
+            <span className="font-bold uppercase tracking-widest text-[11px] bg-white/20 px-2 py-0.5 rounded shrink-0">
+              Em Destaque
+            </span>
+            <Link href={`/${hero.slug}`} className="truncate hover:underline font-medium">
+              {hero.title}
+            </Link>
+          </div>
+        </div>
+      )}
+
       {/* Hero */}
       {hero ? (
         <section className="bg-white">
@@ -78,6 +93,19 @@ export default async function Home() {
       )}
 
       <div className="max-w-7xl mx-auto px-4 py-8 space-y-12">
+
+        {/* Mais Lidos — top 3 por views (últimos 7 dias) */}
+        {destaques.length > 0 && (
+          <section>
+            <SectionHeader title="Mais Lidos" color="#f5821f" />
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+              {destaques.map((article) => (
+                <ArticleCard key={article.id} article={article} size="featured" />
+              ))}
+            </div>
+          </section>
+        )}
+
         {/* Últimas notícias */}
         {gridArticles.length > 0 && (
           <section>
@@ -100,6 +128,21 @@ export default async function Home() {
         )}
 
         <AdUnit slot="home-leaderboard" format="leaderboard" className="flex justify-center" />
+
+        {/* Região Metropolitana de Campinas */}
+        {regiao.length > 0 && (
+          <section>
+            <SectionHeader title="Região Metropolitana de Campinas" href="/rmc" color="#8dc63f" />
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <ArticleCard article={regiao[0]} size="featured" />
+              <div className="flex flex-col gap-4">
+                {regiao.slice(1).map((article) => (
+                  <ArticleCard key={article.id} article={article} />
+                ))}
+              </div>
+            </div>
+          </section>
+        )}
 
         {/* Sumaré */}
         {sumare.length > 0 && (
@@ -159,21 +202,6 @@ export default async function Home() {
               {colunistas.length === 0 && opiniao.map((article) => (
                 <ArticleCard key={article.id} article={article} size="columnist" />
               ))}
-            </div>
-          </section>
-        )}
-
-        {/* Região */}
-        {regiao.length > 0 && (
-          <section>
-            <SectionHeader title="Região Metropolitana" href="/rmc" color="#8dc63f" />
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <ArticleCard article={regiao[0]} size="featured" />
-              <div className="flex flex-col gap-4">
-                {regiao.slice(1).map((article) => (
-                  <ArticleCard key={article.id} article={article} />
-                ))}
-              </div>
             </div>
           </section>
         )}
@@ -268,7 +296,7 @@ export default async function Home() {
         {/* Eventos */}
         {eventos.length > 0 && (
           <section>
-            <SectionHeader title="Eventos" href="/eventos" color="#ea580c" />
+            <SectionHeader title="Entretenimento" href="/eventos" color="#ea580c" />
             <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
               {eventos.map((article) => (
                 <ArticleCard key={article.id} article={article} />

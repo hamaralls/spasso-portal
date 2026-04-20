@@ -98,27 +98,27 @@ function MetropolesGrid({ articles }: { articles: ArticlePublico[] }) {
           )}
         </div>
 
-        {/* Col 3: 4 stacked sem dividers */}
+        {/* Col 3: 5 stacked sem dividers — preenche altura da col 1+2 */}
         <div className="hidden lg:flex flex-col gap-3">
-          {a.slice(5, 9).map(art => (
+          {a.slice(5, 10).map(art => (
             <ArticleCard key={art.id} article={art} size="compact" />
           ))}
         </div>
       </div>
 
-      {/* Linha extra 1: 3 cards (artigos 9-11) */}
-      {a.length >= 10 && (
+      {/* Linha extra 1: 3 cards (artigos 10-12) */}
+      {a.length >= 11 && (
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-          {a.slice(9, 12).map(art => (
+          {a.slice(10, 13).map(art => (
             <ArticleCard key={art.id} article={art} size="compact" />
           ))}
         </div>
       )}
 
-      {/* Linha extra 2: 3 cards (artigos 12-14) */}
-      {a.length >= 13 && (
+      {/* Linha extra 2: 3 cards (artigos 13-15) */}
+      {a.length >= 14 && (
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-          {a.slice(12, 15).map(art => (
+          {a.slice(13, 16).map(art => (
             <ArticleCard key={art.id} article={art} size="compact" />
           ))}
         </div>
@@ -131,12 +131,12 @@ function MetropolesGrid({ articles }: { articles: ArticlePublico[] }) {
 export default async function Home() {
   const [recentes, regiao, culturaELazer, brasil, saude, politica, economia, opiniao, colunistas] = await Promise.all([
     getArtigosRecentes(17),
-    getArtigosPorCategorias(['sumare', 'hortolandia', 'nova-odessa', 'campinas', 'paulinia', 'monte-mor', 'santa-barbara-doeste', 'outras-cidades', 'rmc'], 15),
+    getArtigosPorCategorias(['sumare', 'hortolandia', 'nova-odessa', 'campinas', 'paulinia', 'monte-mor', 'santa-barbara-doeste', 'outras-cidades', 'rmc'], 16),
     getArtigosPorCategorias(['estilo-de-vida', 'cultura-e-lazer', 'eventos'], 4),
     getArtigosPorCategorias(['brasil'], 4),
-    getArtigosPorCategorias(['saude'], 15),
-    getArtigosPorCategorias(['politica'], 15),
-    getArtigosPorCategorias(['economia'], 15),
+    getArtigosPorCategorias(['saude'], 16),
+    getArtigosPorCategorias(['politica'], 16),
+    getArtigosPorCategorias(['economia'], 16),
     getArtigosPorCategorias(['colunistas'], 4),
     getColunistas(),
   ])

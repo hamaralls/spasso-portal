@@ -110,7 +110,7 @@ export default function ArticleCard({ article, size = 'default' }: ArticleCardPr
         </div>
         <div className="flex-1 min-w-0">
           {category_name && <Badge name={category_name} color={badge_color} size="sm" />}
-          <h3 className="text-xs font-bold text-[#1a1a1a] leading-snug mt-0.5 group-hover:text-[#f5821f] transition-colors line-clamp-2">
+          <h3 className="text-xs font-bold text-[#1a1a1a] leading-snug mt-0.5 group-hover:text-[#f5821f] transition-colors line-clamp-3">
             {title}
           </h3>
         </div>

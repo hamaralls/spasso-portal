@@ -8,20 +8,35 @@ import { getArtigosRecentes, getArtigosPorCategorias, getColunistas } from '@/li
 
 export const runtime = 'edge'
 
+const hasAds = !!process.env.NEXT_PUBLIC_GAM_NETWORK_CODE
+
+// Placeholder visual do espaço de banner (só aparece quando GAM não está configurado)
+function BannerPlaceholder({ w, h, label }: { w: number; h: number; label: string }) {
+  if (hasAds) return null
+  return (
+    <div
+      style={{ width: w, height: h }}
+      className="bg-gray-50 border border-dashed border-gray-300 flex items-center justify-center text-xs text-gray-400 mx-auto"
+    >
+      {label}
+    </div>
+  )
+}
+
 export default async function Home() {
   const [recentes, regiao, culturaELazer, brasil, saude, politica, economia, opiniao, colunistas] = await Promise.all([
-    getArtigosRecentes(21),
-    getArtigosPorCategorias(['sumare', 'hortolandia', 'nova-odessa', 'campinas', 'paulinia', 'monte-mor', 'santa-barbara-doeste', 'outras-cidades', 'rmc'], 8),
-    getArtigosPorCategorias(['estilo-de-vida', 'cultura-e-lazer', 'eventos'], 5),
+    getArtigosRecentes(17),
+    getArtigosPorCategorias(['sumare', 'hortolandia', 'nova-odessa', 'campinas', 'paulinia', 'monte-mor', 'santa-barbara-doeste', 'outras-cidades', 'rmc'], 4),
+    getArtigosPorCategorias(['estilo-de-vida', 'cultura-e-lazer', 'eventos'], 4),
     getArtigosPorCategorias(['brasil'], 4),
-    getArtigosPorCategorias(['saude'], 4),
-    getArtigosPorCategorias(['politica'], 4),
-    getArtigosPorCategorias(['economia'], 4),
+    getArtigosPorCategorias(['saude'], 3),
+    getArtigosPorCategorias(['politica'], 3),
+    getArtigosPorCategorias(['economia'], 3),
     getArtigosPorCategorias(['colunistas'], 4),
     getColunistas(),
   ])
 
-  const ultimas = recentes.slice(5, 21)
+  const ultimas = recentes.slice(5, 17)
 
   return (
     <>
@@ -31,20 +46,14 @@ export default async function Home() {
           <div className="max-w-7xl mx-auto px-4 py-6">
 
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-5">
-
-              {/* Artigo principal */}
+              {/* Principal */}
               <Link href={`/${recentes[0].slug}`}
                 className="group lg:col-span-2 flex flex-col sm:flex-row gap-4">
                 <div className="sm:w-[55%] relative aspect-video overflow-hidden bg-gray-200 shrink-0">
                   {recentes[0].featured_image_url && (
-                    <Image
-                      src={recentes[0].featured_image_url}
-                      alt={recentes[0].title}
-                      fill
-                      priority
-                      className="object-cover group-hover:scale-[1.02] transition-transform duration-300"
-                      sizes="(max-width: 640px) 100vw, 40vw"
-                    />
+                    <Image src={recentes[0].featured_image_url} alt={recentes[0].title}
+                      fill priority className="object-cover group-hover:scale-[1.02] transition-transform duration-300"
+                      sizes="(max-width: 640px) 100vw, 40vw" />
                   )}
                 </div>
                 <div className="sm:w-[45%] flex flex-col justify-start pt-1">
@@ -65,17 +74,13 @@ export default async function Home() {
                 </div>
               </Link>
 
-              {/* Artigo secundário */}
+              {/* Secundário */}
               <Link href={`/${recentes[1].slug}`} className="group flex flex-col">
                 <div className="relative aspect-video overflow-hidden bg-gray-200">
                   {recentes[1].featured_image_url && (
-                    <Image
-                      src={recentes[1].featured_image_url}
-                      alt={recentes[1].title}
-                      fill
-                      className="object-cover group-hover:scale-[1.02] transition-transform duration-300"
-                      sizes="(max-width: 640px) 100vw, 25vw"
-                    />
+                    <Image src={recentes[1].featured_image_url} alt={recentes[1].title}
+                      fill className="object-cover group-hover:scale-[1.02] transition-transform duration-300"
+                      sizes="(max-width: 640px) 100vw, 25vw" />
                   )}
                 </div>
                 <p className="text-[#f5821f] text-xs font-bold mt-2 uppercase tracking-wide truncate">
@@ -91,17 +96,11 @@ export default async function Home() {
             {recentes.length >= 5 && (
               <div className="grid grid-cols-1 sm:grid-cols-3 gap-x-6 gap-y-3 pt-4 border-t border-gray-200">
                 {recentes.slice(2, 5).map((article) => (
-                  <Link key={article.id} href={`/${article.slug}`}
-                    className="group flex items-start gap-3">
+                  <Link key={article.id} href={`/${article.slug}`} className="group flex items-start gap-3">
                     <div className="relative w-16 h-12 shrink-0 overflow-hidden bg-gray-200">
                       {article.featured_image_url && (
-                        <Image
-                          src={article.featured_image_url}
-                          alt={article.title}
-                          fill
-                          className="object-cover"
-                          sizes="64px"
-                        />
+                        <Image src={article.featured_image_url} alt={article.title}
+                          fill className="object-cover" sizes="64px" />
                       )}
                     </div>
                     <p className="text-sm font-semibold leading-snug group-hover:text-[#f5821f] transition-colors line-clamp-2 text-[#1a1a1a]">
@@ -124,18 +123,36 @@ export default async function Home() {
       <div className="max-w-7xl mx-auto px-4 py-8 space-y-12">
 
         {/* ── 2. Região Metropolitana de Campinas ── */}
+        {/* Layout: 3 cols conteúdo + 1 col banner aside */}
         {regiao.length > 0 && (
           <section>
             <SectionHeader title="Região Metropolitana de Campinas" href="/rmc" color="#8dc63f" />
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-              {regiao.map((article) => (
-                <ArticleCard key={article.id} article={article} size="featured" />
-              ))}
+            <div className="grid grid-cols-1 lg:grid-cols-4 gap-4 items-start">
+              <div className="lg:col-span-3">
+                <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
+                  {/* Primeiro artigo: featured grande (col-span-2) */}
+                  <div className="lg:col-span-2">
+                    <ArticleCard article={regiao[0]} size="featured" />
+                  </div>
+                  {/* Restantes: default (imagem esq, tag + título dir) */}
+                  {regiao.slice(1).map((article) => (
+                    <ArticleCard key={article.id} article={article} />
+                  ))}
+                </div>
+              </div>
+              <aside className="hidden lg:flex flex-col items-center pt-1">
+                <AdUnit slot="rmc-sidebar" format="rectangle" />
+                <BannerPlaceholder w={300} h={250} label="Banner 300×250" />
+              </aside>
             </div>
           </section>
         )}
 
-        <AdUnit slot="home-leaderboard" format="leaderboard" className="flex justify-center" />
+        {/* ── Leaderboard entre RMC e Colunistas ── */}
+        <div className="flex justify-center">
+          <AdUnit slot="home-leaderboard" format="leaderboard" />
+          <BannerPlaceholder w={728} h={90} label="Banner 728×90" />
+        </div>
 
         {/* ── 3. Colunistas ── */}
         {(opiniao.length > 0 || colunistas.length > 0) && (
@@ -143,19 +160,14 @@ export default async function Home() {
             <SectionHeader title="Colunistas" href="/colunistas" color="#7c3aed" />
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
               {colunistas.map(col => {
-                const initials = col.name
-                  .split(' ').filter(Boolean)
-                  .map((n: string) => n[0].toUpperCase())
-                  .slice(0, 2).join('')
+                const initials = col.name.split(' ').filter(Boolean)
+                  .map((n: string) => n[0].toUpperCase()).slice(0, 2).join('')
                 const latestArticle = opiniao.find(a =>
                   a.author_name === col.name || a.origin_badge === col.name
                 ) ?? opiniao[0]
                 return (
-                  <Link
-                    key={col.id}
-                    href="/colunistas"
-                    className="group bg-white rounded-xl p-5 shadow-sm hover:shadow-md transition-shadow flex items-center gap-4"
-                  >
+                  <Link key={col.id} href="/colunistas"
+                    className="group bg-white rounded-xl p-5 shadow-sm hover:shadow-md transition-shadow flex items-center gap-4">
                     <div className="w-14 h-14 rounded-full overflow-hidden flex items-center justify-center shrink-0"
                       style={{ background: col.type === 'person' && col.avatar_url ? undefined : '#7c3aed1a' }}>
                       {col.type === 'person' && col.avatar_url ? (
@@ -182,7 +194,7 @@ export default async function Home() {
           </section>
         )}
 
-        {/* ── 4. Brasil — L-shape: featured 2/3 + 3 lista 1/3 ── */}
+        {/* ── 4. Brasil — L-shape sem banner (layout assimétrico) ── */}
         {brasil.length > 0 && (
           <section>
             <SectionHeader title="Brasil" href="/brasil" color="#ec3535" />
@@ -199,68 +211,108 @@ export default async function Home() {
           </section>
         )}
 
-        {/* ── 5. Cultura e Lazer — destaque col-span-2 + 3 regulares ── */}
+        {/* ── 5. Cultura e Lazer ── */}
+        {/* Layout: 3 cols conteúdo (destaque col-span-2 + 3 featured) + 1 col banner aside */}
         {culturaELazer.length > 0 && (
           <section>
             <SectionHeader title="Cultura e Lazer" href="/cultura-e-lazer" color="#db2777" />
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-              <div className="sm:col-span-2">
-                <ArticleCard article={culturaELazer[0]} size="featured" />
+            <div className="grid grid-cols-1 lg:grid-cols-4 gap-4 items-start">
+              <div className="lg:col-span-3">
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+                  <div className="sm:col-span-2">
+                    <ArticleCard article={culturaELazer[0]} size="featured" />
+                  </div>
+                  {culturaELazer.slice(1).map((article) => (
+                    <ArticleCard key={article.id} article={article} size="featured" />
+                  ))}
+                </div>
               </div>
-              {culturaELazer.slice(1).map((article) => (
-                <ArticleCard key={article.id} article={article} size="featured" />
-              ))}
+              <aside className="hidden lg:flex flex-col items-center pt-1">
+                <AdUnit slot="cultura-sidebar" format="rectangle" />
+                <BannerPlaceholder w={300} h={250} label="Banner 300×250" />
+              </aside>
             </div>
           </section>
         )}
 
-        <AdUnit slot="home-leaderboard-2" format="leaderboard" className="flex justify-center" />
-
-        {/* ── 6. Saúde (min 4 artigos) ── */}
-        {saude.length >= 4 && (
+        {/* ── 6. Saúde (min 3 artigos) ── */}
+        {/* Layout: 3 cols conteúdo + 1 col banner aside */}
+        {saude.length >= 3 && (
           <section>
             <SectionHeader title="Saúde" href="/saude" color="#0891b2" />
-            <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
-              {saude.map((article) => (
-                <ArticleCard key={article.id} article={article} />
-              ))}
+            <div className="grid grid-cols-1 lg:grid-cols-4 gap-4 items-start">
+              <div className="lg:col-span-3">
+                <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                  {saude.map((article) => (
+                    <ArticleCard key={article.id} article={article} />
+                  ))}
+                </div>
+              </div>
+              <aside className="hidden lg:flex flex-col items-center pt-1">
+                <AdUnit slot="saude-sidebar" format="rectangle" />
+                <BannerPlaceholder w={300} h={250} label="Banner 300×250" />
+              </aside>
             </div>
           </section>
         )}
 
-        {/* ── 7. Política (min 4 artigos) ── */}
-        {politica.length >= 4 && (
+        {/* ── 7. Política (min 3 artigos) ── */}
+        {politica.length >= 3 && (
           <section>
             <SectionHeader title="Política" href="/politica" color="#7c3aed" />
-            <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
-              {politica.map((article) => (
-                <ArticleCard key={article.id} article={article} />
-              ))}
+            <div className="grid grid-cols-1 lg:grid-cols-4 gap-4 items-start">
+              <div className="lg:col-span-3">
+                <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                  {politica.map((article) => (
+                    <ArticleCard key={article.id} article={article} />
+                  ))}
+                </div>
+              </div>
+              <aside className="hidden lg:flex flex-col items-center pt-1">
+                <AdUnit slot="politica-sidebar" format="rectangle" />
+                <BannerPlaceholder w={300} h={250} label="Banner 300×250" />
+              </aside>
             </div>
           </section>
         )}
 
-        {/* ── 8. Economia (min 4 artigos) ── */}
-        {economia.length >= 4 && (
+        {/* ── 8. Economia (min 3 artigos) ── */}
+        {economia.length >= 3 && (
           <section>
             <SectionHeader title="Economia" href="/economia" color="#16a34a" />
-            <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
-              {economia.map((article) => (
-                <ArticleCard key={article.id} article={article} />
-              ))}
+            <div className="grid grid-cols-1 lg:grid-cols-4 gap-4 items-start">
+              <div className="lg:col-span-3">
+                <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                  {economia.map((article) => (
+                    <ArticleCard key={article.id} article={article} />
+                  ))}
+                </div>
+              </div>
+              <aside className="hidden lg:flex flex-col items-center pt-1">
+                <AdUnit slot="economia-sidebar" format="rectangle" />
+                <BannerPlaceholder w={300} h={250} label="Banner 300×250" />
+              </aside>
             </div>
           </section>
         )}
 
         {/* ── 9. Últimas Notícias ── */}
-
+        {/* Layout: 3 cols conteúdo + 1 col banner aside */}
         {ultimas.length > 0 && (
           <section>
             <SectionHeader title="Últimas Notícias" color="#f5821f" />
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-              {ultimas.map((article) => (
-                <ArticleCard key={article.id} article={article} />
-              ))}
+            <div className="grid grid-cols-1 lg:grid-cols-4 gap-4 items-start">
+              <div className="lg:col-span-3">
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+                  {ultimas.map((article) => (
+                    <ArticleCard key={article.id} article={article} />
+                  ))}
+                </div>
+              </div>
+              <aside className="hidden lg:flex flex-col items-center pt-1">
+                <AdUnit slot="ultimas-sidebar" format="rectangle" />
+                <BannerPlaceholder w={300} h={250} label="Banner 300×250" />
+              </aside>
             </div>
           </section>
         )}

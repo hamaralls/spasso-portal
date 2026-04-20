@@ -74,28 +74,32 @@ function DestaqueGrid({ articles }: { articles: ArticlePublico[] }) {
 }
 
 // extraRows: 0 = só topo, 1 = +1 linha, 2 = +2 linhas (padrão RMC)
-// col3Count: quantos cards empilhados na col 3 (padrão 5)
+// col3Count: cards empilhados na col 3. 0 = sem col 3 (wideLayout)
+// wideLayout: col 1+2 ocupa 3 cols, compact rows com 3 cards — ideal para seções pequenas
 function MetropolesGrid({
   articles,
   extraRows = 2,
   col3Count = 5,
+  wideLayout = false,
 }: {
   articles: ArticlePublico[]
   extraRows?: number
   col3Count?: number
+  wideLayout?: boolean
 }) {
   const a = articles
   if (a.length === 0) return null
-  const col3End = 5 + col3Count
+  const col3End = wideLayout ? 1 : 5 + col3Count
+  const compactCols = wideLayout ? 3 : 2
+  const compactStart = 1
+  const compactRow2Start = wideLayout ? 4 : 3
 
   return (
     <div className="space-y-4">
-
-      {/* Topo: col 1+2 (featured + compacts) + col 3 (stacked) */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-x-6 gap-y-4 items-start">
 
-        {/* Col 1+2 */}
-        <div className="lg:col-span-2 flex flex-col gap-4">
+        {/* Col 1+2 (ou col-span-3 no wideLayout) */}
+        <div className={`${wideLayout ? 'lg:col-span-3' : 'lg:col-span-2'} flex flex-col gap-4`}>
           {a[0] && (
             <Link href={`/${a[0].slug}`} className="group flex gap-4">
               <div className="relative w-[48%] aspect-[4/3] shrink-0 overflow-hidden bg-gray-200">
@@ -120,24 +124,30 @@ function MetropolesGrid({
               </div>
             </Link>
           )}
-          {a.length >= 3 && (
-            <div className="grid grid-cols-2 gap-4">
-              {a.slice(1, 3).map(art => <ArticleCard key={art.id} article={art} size="compact" />)}
+          {a.length >= compactStart + 2 && (
+            <div className={`grid grid-cols-${compactCols} gap-4`}>
+              {a.slice(compactStart, compactStart + compactCols).map(art => (
+                <ArticleCard key={art.id} article={art} size="compact" />
+              ))}
             </div>
           )}
-          {a.length >= 5 && (
-            <div className="grid grid-cols-2 gap-4">
-              {a.slice(3, 5).map(art => <ArticleCard key={art.id} article={art} size="compact" />)}
+          {a.length >= compactRow2Start + 2 && (
+            <div className={`grid grid-cols-${compactCols} gap-4`}>
+              {a.slice(compactRow2Start, compactRow2Start + compactCols).map(art => (
+                <ArticleCard key={art.id} article={art} size="compact" />
+              ))}
             </div>
           )}
         </div>
 
-        {/* Col 3: stacked — quantidade controlada por col3Count */}
-        <div className="hidden lg:flex flex-col gap-3">
-          {a.slice(5, col3End).map(art => (
-            <ArticleCard key={art.id} article={art} size="compact" />
-          ))}
-        </div>
+        {/* Col 3: stacked (oculto no wideLayout) */}
+        {!wideLayout && (
+          <div className="hidden lg:flex flex-col gap-3">
+            {a.slice(5, col3End).map(art => (
+              <ArticleCard key={art.id} article={art} size="compact" />
+            ))}
+          </div>
+        )}
       </div>
 
       {extraRows >= 1 && a.length >= col3End + 1 && (
@@ -155,7 +165,6 @@ function MetropolesGrid({
           ))}
         </div>
       )}
-
     </div>
   )
 }
@@ -168,7 +177,7 @@ export default async function Home() {
     getArtigosPorCategorias(['brasil'], 10),
     getArtigosPorCategorias(['saude'], 10),
     getArtigosPorCategorias(['politica'], 6),
-    getArtigosPorCategorias(['economia'], 7),
+    getArtigosPorCategorias(['economia'], 10),
     getArtigosPorCategorias(['colunistas'], 4),
     getColunistas(),
   ])
@@ -289,26 +298,36 @@ export default async function Home() {
               {colunistas.map(col => {
                 const initials = col.name.split(' ').filter(Boolean)
                   .map((n: string) => n[0].toUpperCase()).slice(0, 2).join('')
-                const latestArticle = opiniao.find(a =>
-                  a.author_name === col.name || a.origin_badge === col.name
-                ) ?? opiniao[0]
+                const latestArticle = opiniao.find(a => a.author_name === col.name) ?? opiniao[0]
+                const href = col.slug ? `/colunistas/${col.slug}` : '/colunistas'
                 return (
-                  <Link key={col.id} href="/colunistas"
-                    className="group bg-white rounded-xl p-5 shadow-sm hover:shadow-md transition-shadow flex items-center gap-4">
-                    <div className="w-14 h-14 rounded-full overflow-hidden flex items-center justify-center shrink-0"
-                      style={{ background: col.type === 'person' && col.avatar_url ? undefined : '#7c3aed1a' }}>
-                      {col.type === 'person' && col.avatar_url ? (
-                        <Image src={col.avatar_url} alt={col.name} width={56} height={56} className="object-cover w-full h-full" />
+                  <Link key={col.id} href={href}
+                    className="group bg-white p-5 shadow-sm hover:shadow-md transition-shadow flex flex-col items-center text-center gap-3">
+                    {/* Avatar / logo — mostra imagem para qualquer tipo se tiver avatar_url */}
+                    <div className="w-20 h-20 rounded-full overflow-hidden flex items-center justify-center shrink-0"
+                      style={{ background: col.avatar_url ? undefined : '#7c3aed1a' }}>
+                      {col.avatar_url ? (
+                        <Image src={col.avatar_url} alt={col.name} width={80} height={80}
+                          className="object-cover w-full h-full" />
                       ) : (
-                        <span className="text-xl font-extrabold text-[#7c3aed]">{initials}</span>
+                        <span className="text-2xl font-extrabold text-[#7c3aed]">{initials}</span>
                       )}
                     </div>
-                    <div className="min-w-0">
-                      <p className="text-xs font-bold text-[#7c3aed] uppercase tracking-wide truncate">{col.name}</p>
+                    <div className="w-full min-w-0">
+                      <p className="text-xs font-bold text-[#7c3aed] uppercase tracking-wide truncate mb-1">
+                        {col.name}
+                      </p>
                       {latestArticle && (
-                        <p className="text-xs text-gray-500 line-clamp-2 mt-0.5 leading-snug group-hover:text-[#7c3aed] transition-colors">
-                          {latestArticle.title}
-                        </p>
+                        <>
+                          <p className="text-sm font-bold text-[#1a1a1a] leading-snug line-clamp-2 group-hover:text-[#7c3aed] transition-colors">
+                            {latestArticle.title}
+                          </p>
+                          {latestArticle.excerpt && (
+                            <p className="text-xs text-gray-500 mt-1 line-clamp-2 leading-relaxed">
+                              {latestArticle.excerpt.replace(/<[^>]+>/g, '')}
+                            </p>
+                          )}
+                        </>
                       )}
                     </div>
                   </Link>
@@ -369,25 +388,25 @@ export default async function Home() {
           </section>
         )}
 
-        {/* ── 7. Política — DestaqueGrid (seção pequena) ── */}
+        {/* ── 7. Política — MetropolesGrid wide (sem col3, seção pequena) ── */}
         {politica.length >= 2 && (
           <section>
             <SectionHeader title="Política" href="/politica" color="#7c3aed" />
-            <DestaqueGrid articles={politica} />
+            <MetropolesGrid articles={politica} extraRows={0} wideLayout={true} />
           </section>
         )}
 
-        {/* ── 8. Economia — MetropolesGrid compacto (col3=2, sem extras) ── */}
+        {/* ── 8. Economia — MetropolesGrid, sem extras ── */}
         {economia.length >= 3 && (
           <section>
             <SectionHeader title="Economia" href="/economia" color="#16a34a" />
             <div className="grid grid-cols-1 lg:grid-cols-4 gap-4 items-stretch">
               <div className="lg:col-span-3">
-                <MetropolesGrid articles={economia} extraRows={0} col3Count={2} />
+                <MetropolesGrid articles={economia} extraRows={0} />
               </div>
               <aside className="hidden lg:flex flex-col">
                 <AdUnit slot="economia-sidebar" format="rectangle" />
-                <BannerPlaceholder w={300} h={250} label="Banner 300×250" fill minH={200} />
+                <BannerPlaceholder w={300} h={300} label="Banner 300×400" fill minH={300} />
               </aside>
             </div>
           </section>

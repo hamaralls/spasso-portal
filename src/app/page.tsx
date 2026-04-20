@@ -12,7 +12,7 @@ export default async function Home() {
   const [recentes, regiao, culturaELazer, brasil, saude, politica, economia, opiniao, colunistas] = await Promise.all([
     getArtigosRecentes(21),
     getArtigosPorCategorias(['sumare', 'hortolandia', 'nova-odessa', 'campinas', 'paulinia', 'monte-mor', 'santa-barbara-doeste', 'outras-cidades', 'rmc'], 8),
-    getArtigosPorCategorias(['estilo-de-vida', 'cultura-e-lazer', 'eventos'], 6),
+    getArtigosPorCategorias(['estilo-de-vida', 'cultura-e-lazer', 'eventos'], 5),
     getArtigosPorCategorias(['brasil'], 4),
     getArtigosPorCategorias(['saude'], 4),
     getArtigosPorCategorias(['politica'], 4),
@@ -182,13 +182,15 @@ export default async function Home() {
           </section>
         )}
 
-        {/* ── 4. Brasil ── */}
+        {/* ── 4. Brasil — L-shape: featured 2/3 + 3 lista 1/3 ── */}
         {brasil.length > 0 && (
           <section>
             <SectionHeader title="Brasil" href="/brasil" color="#ec3535" />
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <ArticleCard article={brasil[0]} size="featured" />
-              <div className="flex flex-col gap-4">
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
+              <div className="lg:col-span-2">
+                <ArticleCard article={brasil[0]} size="featured" />
+              </div>
+              <div className="flex flex-col gap-3">
                 {brasil.slice(1).map((article) => (
                   <ArticleCard key={article.id} article={article} />
                 ))}
@@ -197,12 +199,15 @@ export default async function Home() {
           </section>
         )}
 
-        {/* ── 5. Cultura e Lazer ── */}
+        {/* ── 5. Cultura e Lazer — destaque col-span-2 + 3 regulares ── */}
         {culturaELazer.length > 0 && (
           <section>
             <SectionHeader title="Cultura e Lazer" href="/cultura-e-lazer" color="#db2777" />
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-              {culturaELazer.map((article) => (
+              <div className="sm:col-span-2">
+                <ArticleCard article={culturaELazer[0]} size="featured" />
+              </div>
+              {culturaELazer.slice(1).map((article) => (
                 <ArticleCard key={article.id} article={article} size="featured" />
               ))}
             </div>

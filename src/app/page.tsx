@@ -247,10 +247,10 @@ export default async function Home() {
             <div className="grid grid-cols-1 lg:grid-cols-4 gap-4 items-start">
               <div className="lg:col-span-3">
                 <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
-                  {/* Featured médio — esquerda */}
-                  <ArticleCard article={data[0]} size="featured" />
+                  {/* Card horizontal grande — esquerda (imagem esq, texto dir) */}
+                  <ArticleCard article={data[0]} size="default-lg" />
                   {/* Grade compact — direita (2 colunas × até 3 linhas) */}
-                  <div className="col-span-2 grid grid-cols-2 gap-3">
+                  <div className="col-span-2 grid grid-cols-2 gap-x-4 gap-y-3">
                     {data.slice(1).map((article) => (
                       <ArticleCard key={article.id} article={article} size="compact" />
                     ))}

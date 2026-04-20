@@ -6,7 +6,7 @@ import type { ArticlePublico } from '@/types'
 
 interface ArticleCardProps {
   article: ArticlePublico
-  size?: 'default' | 'featured' | 'compact' | 'columnist'
+  size?: 'default' | 'featured' | 'compact' | 'default-lg' | 'columnist'
 }
 
 export default function ArticleCard({ article, size = 'default' }: ArticleCardProps) {
@@ -72,9 +72,37 @@ export default function ArticleCard({ article, size = 'default' }: ArticleCardPr
     )
   }
 
+  // default-lg — horizontal grande: imagem esq ~40%, texto dir, sem card box (Metrópoles)
+  if (size === 'default-lg') {
+    return (
+      <Link href={`/${slug}`} className="group flex gap-4 items-start">
+        <div className="relative w-[130px] h-[110px] shrink-0 overflow-hidden bg-gray-200">
+          {featured_image_url ? (
+            <Image src={featured_image_url} alt={title} fill
+              className="object-cover transition-transform duration-300 group-hover:scale-105"
+              sizes="130px" />
+          ) : (
+            <div className="absolute inset-0 bg-gradient-to-br from-gray-100 to-gray-200" />
+          )}
+        </div>
+        <div className="flex-1 min-w-0 pt-0.5">
+          {category_name && <Badge name={category_name} color={badge_color} size="sm" />}
+          <h3 className="text-base font-bold text-[#1a1a1a] leading-snug mt-1 group-hover:text-[#f5821f] transition-colors line-clamp-3">
+            {title}
+          </h3>
+          {excerpt && (
+            <p className="mt-1 text-xs text-gray-500 line-clamp-2 leading-relaxed">
+              {excerpt.replace(/<[^>]+>/g, '')}
+            </p>
+          )}
+        </div>
+      </Link>
+    )
+  }
+
   if (size === 'compact') {
     return (
-      <Link href={`/${slug}`} className="group flex gap-2 items-start bg-white p-2 shadow-sm hover:shadow-md transition-shadow">
+      <Link href={`/${slug}`} className="group flex gap-2 items-start">
         <div className="relative w-[80px] h-[72px] flex-shrink-0 overflow-hidden bg-gray-200">
           {featured_image_url && (
             <Image src={featured_image_url} alt={title} fill className="object-cover" sizes="80px" />

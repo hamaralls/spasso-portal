@@ -11,7 +11,7 @@ export const runtime = 'edge'
 
 export default async function Home() {
   const [recentes, destaques, regiao, sumare, brasil, saude, politica, economia, educacao, cultura, esporte, eventos, opiniao, colunistas] = await Promise.all([
-    getArtigosRecentes(13),
+    getArtigosRecentes(17),
     getArtigosDestaque(3),
     getArtigosPorCategorias(['hortolandia', 'nova-odessa', 'campinas', 'paulinia', 'monte-mor', 'santa-barbara-doeste'], 4),
     getArtigosPorCategorias(['sumare'], 3),
@@ -27,61 +27,88 @@ export default async function Home() {
     getColunistas(),
   ])
 
-  const [hero, ...grid] = recentes
-  const gridArticles = grid.slice(0, 12)
+  const gridArticles = recentes.slice(5, 17)
 
   return (
     <>
-      {/* Banner estreito — artigo em destaque */}
-      {hero && (
-        <div className="bg-[#f5821f] text-white py-2 px-4">
-          <div className="max-w-7xl mx-auto flex items-center gap-3 text-sm">
-            <span className="font-bold uppercase tracking-widest text-[11px] bg-white/20 px-2 py-0.5 rounded shrink-0">
-              Em Destaque
-            </span>
-            <Link href={`/${hero.slug}`} className="truncate hover:underline font-medium">
-              {hero.title}
-            </Link>
-          </div>
-        </div>
-      )}
-
-      {/* Hero */}
-      {hero ? (
-        <section className="bg-white">
+      {/* ── Hero estilo Metrópoles ── */}
+      {recentes.length >= 2 ? (
+        <section className="bg-white border-b border-gray-100">
           <div className="max-w-7xl mx-auto px-4 py-6">
-            <Link href={`/${hero.slug}`} className="group block">
-              <div className="relative w-full aspect-[21/9] overflow-hidden rounded-xl bg-gray-200">
-                {hero.featured_image_url ? (
-                  <Image
-                    src={hero.featured_image_url}
-                    alt={hero.title}
-                    fill
-                    priority
-                    className="object-cover"
-                    sizes="100vw"
-                  />
-                ) : (
-                  <div className="absolute inset-0 bg-gradient-to-br from-[#f5821f]/30 to-[#f5821f]/10" />
-                )}
-                <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent" />
-                <div className="absolute bottom-0 left-0 right-0 p-6 md:p-8">
-                  {hero.category_name && (
-                    <div className="mb-3">
-                      <Badge name={hero.category_name} color={hero.badge_color} size="md" />
-                    </div>
+
+            {/* Linha principal: artigo principal (2/3) + secundário (1/3) */}
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-5">
+
+              {/* Artigo principal */}
+              <Link href={`/${recentes[0].slug}`}
+                className="group lg:col-span-2 flex flex-col sm:flex-row gap-4">
+                <div className="sm:w-[55%] relative aspect-[4/3] overflow-hidden rounded-lg bg-gray-200 shrink-0">
+                  {recentes[0].featured_image_url && (
+                    <Image
+                      src={recentes[0].featured_image_url}
+                      alt={recentes[0].title}
+                      fill
+                      priority
+                      className="object-cover group-hover:scale-[1.02] transition-transform duration-300"
+                      sizes="(max-width: 640px) 100vw, 40vw"
+                    />
                   )}
-                  <h1 className="text-white font-bold text-2xl md:text-4xl leading-tight group-hover:underline line-clamp-3 max-w-3xl">
-                    {hero.title}
+                </div>
+                <div className="sm:w-[45%] flex flex-col justify-start pt-1">
+                  {recentes[0].category_name && (
+                    <Badge name={recentes[0].category_name} color={recentes[0].badge_color} size="sm" />
+                  )}
+                  <h1 className="text-xl md:text-2xl font-bold leading-snug mt-2 group-hover:underline line-clamp-4 text-[#1a1a1a]">
+                    {recentes[0].title}
                   </h1>
-                  <div className="mt-2 flex items-center gap-3 text-white/70 text-sm">
-                    {hero.author_name && <span>{hero.author_name}</span>}
-                    <span>{timeAgo(hero.published_at)}</span>
-                    {hero.reading_time_min && <span>· {hero.reading_time_min} min</span>}
+                  {recentes[0].excerpt && (
+                    <p className="text-sm text-gray-500 mt-2 line-clamp-3 leading-relaxed">
+                      {recentes[0].excerpt.replace(/<[^>]+>/g, '')}
+                    </p>
+                  )}
+                  <div className="mt-auto pt-3 text-xs text-gray-400">
+                    {recentes[0].author_name && <span>{recentes[0].author_name} · </span>}
+                    {timeAgo(recentes[0].published_at)}
                   </div>
                 </div>
+              </Link>
+
+              {/* Artigo secundário */}
+              <Link href={`/${recentes[1].slug}`} className="group flex flex-col">
+                <div className="relative aspect-[4/3] overflow-hidden rounded-lg bg-gray-200">
+                  {recentes[1].featured_image_url && (
+                    <Image
+                      src={recentes[1].featured_image_url}
+                      alt={recentes[1].title}
+                      fill
+                      className="object-cover group-hover:scale-[1.02] transition-transform duration-300"
+                      sizes="(max-width: 640px) 100vw, 25vw"
+                    />
+                  )}
+                </div>
+                <p className="text-[#f5821f] text-xs font-bold mt-2 uppercase tracking-wide truncate">
+                  {recentes[1].author_name ?? recentes[1].category_name ?? ''}
+                </p>
+                <h2 className="text-base font-bold leading-snug mt-1 group-hover:underline line-clamp-3 text-[#1a1a1a]">
+                  {recentes[1].title}
+                </h2>
+              </Link>
+            </div>
+
+            {/* Faixa inferior — 3 títulos com bullet */}
+            {recentes.length >= 5 && (
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-x-6 gap-y-3 pt-4 border-t border-gray-200">
+                {recentes.slice(2, 5).map((article) => (
+                  <Link key={article.id} href={`/${article.slug}`}
+                    className="group flex items-start gap-2">
+                    <span className="w-2.5 h-2.5 rounded-sm bg-[#f5821f] shrink-0 mt-[3px]" />
+                    <p className="text-sm font-semibold leading-snug group-hover:text-[#f5821f] transition-colors line-clamp-2 text-[#1a1a1a]">
+                      {article.title}
+                    </p>
+                  </Link>
+                ))}
               </div>
-            </Link>
+            )}
           </div>
         </section>
       ) : (
@@ -111,15 +138,12 @@ export default async function Home() {
           <section>
             <SectionHeader title="Últimas Notícias" color="#f5821f" />
             <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
-              {/* Primeiro artigo: destaque em 2 colunas */}
               <div className="col-span-2">
                 <ArticleCard article={gridArticles[0]} size="featured" />
               </div>
-              {/* Dois artigos ao lado do destaque */}
               {gridArticles.slice(1, 3).map((article) => (
                 <ArticleCard key={article.id} article={article} size="featured" />
               ))}
-              {/* Restante em grid uniforme */}
               {gridArticles.slice(3).map((article) => (
                 <ArticleCard key={article.id} article={article} />
               ))}
@@ -293,7 +317,7 @@ export default async function Home() {
           </section>
         )}
 
-        {/* Eventos */}
+        {/* Entretenimento */}
         {eventos.length > 0 && (
           <section>
             <SectionHeader title="Entretenimento" href="/eventos" color="#ea580c" />

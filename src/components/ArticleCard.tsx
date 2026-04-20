@@ -17,7 +17,6 @@ export default function ArticleCard({ article, size = 'default' }: ArticleCardPr
     const initials = displayName
       ? displayName.split(' ').filter(Boolean).map((n: string) => n[0].toUpperCase()).slice(0, 2).join('')
       : '?'
-    // editorial = círculo colorido com inicial, person = foto real
     const isEditorial = !columnist_type || columnist_type === 'editorial'
 
     return (
@@ -26,13 +25,7 @@ export default function ArticleCard({ article, size = 'default' }: ArticleCardPr
           style={{ background: isEditorial ? '#7c3aed1a' : undefined }}
         >
           {!isEditorial && author_avatar ? (
-            <Image
-              src={author_avatar}
-              alt={displayName ?? ''}
-              width={64}
-              height={64}
-              className="object-cover w-full h-full"
-            />
+            <Image src={author_avatar} alt={displayName ?? ''} width={64} height={64} className="object-cover w-full h-full" />
           ) : (
             <span className="text-xl font-bold text-[#7c3aed]">{initials}</span>
           )}
@@ -63,14 +56,10 @@ export default function ArticleCard({ article, size = 'default' }: ArticleCardPr
           ) : (
             <div className="absolute inset-0 bg-gradient-to-br from-[#f5821f]/20 to-[#f5821f]/5" />
           )}
-          {category_name && (
-            <div className="absolute bottom-2 left-2">
-              <Badge name={category_name} color={badge_color} />
-            </div>
-          )}
         </div>
         <div className="p-3">
-          <h3 className="font-bold text-[#1a1a1a] leading-snug group-hover:text-[#f5821f] transition-colors line-clamp-3">
+          {category_name && <Badge name={category_name} color={badge_color} size="sm" />}
+          <h3 className="font-bold text-[#1a1a1a] leading-snug group-hover:text-[#f5821f] transition-colors line-clamp-3 mt-1.5">
             {title}
           </h3>
           {excerpt && (
@@ -91,18 +80,7 @@ export default function ArticleCard({ article, size = 'default' }: ArticleCardPr
       <Link href={`/${slug}`} className="group flex gap-3 items-start bg-white rounded-lg p-2 shadow-sm hover:shadow-md transition-shadow">
         <div className="relative w-20 h-14 flex-shrink-0 overflow-hidden rounded bg-gray-200">
           {featured_image_url && (
-            <Image
-              src={featured_image_url}
-              alt={title}
-              fill
-              className="object-cover"
-              sizes="80px"
-            />
-          )}
-          {category_name && (
-            <div className="absolute bottom-1 left-1">
-              <Badge name={category_name} color={badge_color} />
-            </div>
+            <Image src={featured_image_url} alt={title} fill className="object-cover" sizes="80px" />
           )}
         </div>
         <div className="flex-1 min-w-0">
@@ -115,34 +93,29 @@ export default function ArticleCard({ article, size = 'default' }: ArticleCardPr
     )
   }
 
-  // default card
+  // default — horizontal, thumbnail quadrado, badge acima do título
   return (
-    <Link href={`/${slug}`} className="group block bg-white rounded-lg overflow-hidden shadow-sm hover:shadow-md transition-shadow">
-      <div className="relative aspect-video w-full overflow-hidden bg-gray-200">
+    <Link href={`/${slug}`}
+      className="group flex gap-3 items-start bg-white rounded-lg p-2 shadow-sm hover:shadow-md transition-shadow">
+      <div className="relative w-20 h-20 sm:w-24 sm:h-24 shrink-0 overflow-hidden rounded-md bg-gray-200">
         {featured_image_url ? (
           <Image
             src={featured_image_url}
             alt={title}
             fill
             className="object-cover transition-transform duration-300 group-hover:scale-105"
-            sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
+            sizes="96px"
           />
         ) : (
           <div className="absolute inset-0 bg-gradient-to-br from-gray-100 to-gray-200" />
         )}
-        {category_name && (
-          <div className="absolute bottom-2 left-2">
-            <Badge name={category_name} color={badge_color} />
-          </div>
-        )}
       </div>
-      <div className="p-3">
-        <h3 className="text-sm font-bold text-[#1a1a1a] leading-snug group-hover:text-[#f5821f] transition-colors line-clamp-2">
+      <div className="flex-1 min-w-0 pt-0.5">
+        {category_name && <Badge name={category_name} color={badge_color} size="sm" />}
+        <h3 className="text-sm font-bold text-[#1a1a1a] leading-snug mt-1 group-hover:text-[#f5821f] transition-colors line-clamp-3">
           {title}
         </h3>
-        <div className="mt-1.5 text-xs text-gray-400">
-          {timeAgo(published_at)}
-        </div>
+        <div className="mt-1 text-xs text-gray-400">{timeAgo(published_at)}</div>
       </div>
     </Link>
   )

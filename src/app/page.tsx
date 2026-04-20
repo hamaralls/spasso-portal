@@ -30,6 +30,46 @@ function BannerPlaceholder({ w, h, label, fill }: { w: number; h: number; label:
   )
 }
 
+// Layout Destaque — seções pequenas (< 8 artigos)
+// 1 featured vertical (col 1) + lista de compacts (col 2+3)
+function DestaqueGrid({ articles }: { articles: ArticlePublico[] }) {
+  const a = articles
+  if (a.length === 0) return null
+  return (
+    <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 items-start">
+      <div>
+        <Link href={`/${a[0].slug}`} className="group block">
+          <div className="relative aspect-video overflow-hidden bg-gray-200">
+            {a[0].featured_image_url ? (
+              <Image src={a[0].featured_image_url} alt={a[0].title} fill
+                className="object-cover group-hover:scale-[1.02] transition-transform duration-300"
+                sizes="(max-width: 1024px) 100vw, 25vw" />
+            ) : (
+              <div className="absolute inset-0 bg-gradient-to-br from-gray-100 to-gray-200" />
+            )}
+          </div>
+          <div className="pt-2">
+            {a[0].category_name && <Badge name={a[0].category_name} color={a[0].badge_color} size="sm" />}
+            <h3 className="text-base font-bold text-[#1a1a1a] leading-snug mt-1 group-hover:text-[#f5821f] transition-colors line-clamp-3">
+              {a[0].title}
+            </h3>
+            {a[0].excerpt && (
+              <p className="text-xs text-gray-500 mt-1 line-clamp-2 leading-relaxed">
+                {a[0].excerpt.replace(/<[^>]+>/g, '')}
+              </p>
+            )}
+          </div>
+        </Link>
+      </div>
+      <div className="lg:col-span-2 flex flex-col gap-3">
+        {a.slice(1).map(art => (
+          <ArticleCard key={art.id} article={art} size="compact" />
+        ))}
+      </div>
+    </div>
+  )
+}
+
 // Layout Metrópoles — 15 artigos por seção
 // Col 1+2: featured tall + 2 compact + 2 compact
 // Col 3: 4 stacked
@@ -132,10 +172,10 @@ export default async function Home() {
   const [recentes, regiao, culturaELazer, brasil, saude, politica, economia, opiniao, colunistas] = await Promise.all([
     getArtigosRecentes(17),
     getArtigosPorCategorias(['sumare', 'hortolandia', 'nova-odessa', 'campinas', 'paulinia', 'monte-mor', 'santa-barbara-doeste', 'outras-cidades', 'rmc'], 16),
-    getArtigosPorCategorias(['estilo-de-vida', 'cultura-e-lazer', 'eventos'], 4),
-    getArtigosPorCategorias(['brasil'], 4),
+    getArtigosPorCategorias(['estilo-de-vida', 'cultura-e-lazer', 'eventos'], 16),
+    getArtigosPorCategorias(['brasil'], 16),
     getArtigosPorCategorias(['saude'], 16),
-    getArtigosPorCategorias(['politica'], 16),
+    getArtigosPorCategorias(['politica'], 6),
     getArtigosPorCategorias(['economia'], 16),
     getArtigosPorCategorias(['colunistas'], 4),
     getColunistas(),
@@ -289,65 +329,77 @@ export default async function Home() {
           </section>
         )}
 
-        {/* ── 4. Brasil — L-shape ── */}
+        {/* ── 4. Brasil — MetropolesGrid Grande ── */}
         {brasil.length > 0 && (
           <section>
             <SectionHeader title="Brasil" href="/brasil" color="#ec3535" />
-            <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
-              <div className="lg:col-span-2">
-                <ArticleCard article={brasil[0]} size="featured" />
-              </div>
-              <div className="flex flex-col gap-3">
-                {brasil.slice(1).map((article) => (
-                  <ArticleCard key={article.id} article={article} />
-                ))}
-              </div>
-            </div>
-          </section>
-        )}
-
-        {/* ── 5. Cultura e Lazer ── */}
-        {culturaELazer.length > 0 && (
-          <section>
-            <SectionHeader title="Cultura e Lazer" href="/cultura-e-lazer" color="#db2777" />
-            <div className="grid grid-cols-1 lg:grid-cols-4 gap-4 items-start">
-              <div className="lg:col-span-3">
-                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-                  <div className="sm:col-span-2">
-                    <ArticleCard article={culturaELazer[0]} size="featured" />
-                  </div>
-                  {culturaELazer.slice(1).map((article) => (
-                    <ArticleCard key={article.id} article={article} size="featured" />
-                  ))}
-                </div>
-              </div>
-              <aside className="hidden lg:flex flex-col items-center pt-1">
-                <AdUnit slot="cultura-sidebar" format="rectangle" />
-                <BannerPlaceholder w={300} h={250} label="Banner 300×250" />
-              </aside>
-            </div>
-          </section>
-        )}
-
-        {/* ── 6–8. Saúde / Política / Economia ── */}
-        {[
-          { data: saude,    title: 'Saúde',    href: '/saude',    color: '#0891b2', slot: 'saude-sidebar' },
-          { data: politica, title: 'Política', href: '/politica', color: '#7c3aed', slot: 'politica-sidebar' },
-          { data: economia, title: 'Economia', href: '/economia', color: '#16a34a', slot: 'economia-sidebar' },
-        ].map(({ data, title, href, color, slot }) => data.length >= 3 && (
-          <section key={slot}>
-            <SectionHeader title={title} href={href} color={color} />
             <div className="grid grid-cols-1 lg:grid-cols-4 gap-4 items-stretch">
               <div className="lg:col-span-3">
-                <MetropolesGrid articles={data} />
+                <MetropolesGrid articles={brasil} />
               </div>
               <aside className="hidden lg:flex flex-col">
-                <AdUnit slot={slot} format="rectangle" />
+                <AdUnit slot="brasil-sidebar" format="rectangle" />
                 <BannerPlaceholder w={300} h={300} label="Banner 300×600" fill />
               </aside>
             </div>
           </section>
-        ))}
+        )}
+
+        {/* ── 5. Cultura e Lazer — MetropolesGrid Grande ── */}
+        {culturaELazer.length > 0 && (
+          <section>
+            <SectionHeader title="Cultura e Lazer" href="/cultura-e-lazer" color="#db2777" />
+            <div className="grid grid-cols-1 lg:grid-cols-4 gap-4 items-stretch">
+              <div className="lg:col-span-3">
+                <MetropolesGrid articles={culturaELazer} />
+              </div>
+              <aside className="hidden lg:flex flex-col">
+                <AdUnit slot="cultura-sidebar" format="rectangle" />
+                <BannerPlaceholder w={300} h={300} label="Banner 300×600" fill />
+              </aside>
+            </div>
+          </section>
+        )}
+
+        {/* ── 6. Saúde — MetropolesGrid Adaptativo ── */}
+        {saude.length >= 3 && (
+          <section>
+            <SectionHeader title="Saúde" href="/saude" color="#0891b2" />
+            <div className="grid grid-cols-1 lg:grid-cols-4 gap-4 items-stretch">
+              <div className="lg:col-span-3">
+                <MetropolesGrid articles={saude} />
+              </div>
+              <aside className="hidden lg:flex flex-col">
+                <AdUnit slot="saude-sidebar" format="rectangle" />
+                <BannerPlaceholder w={300} h={300} label="Banner 300×600" fill />
+              </aside>
+            </div>
+          </section>
+        )}
+
+        {/* ── 7. Política — DestaqueGrid (seção pequena) ── */}
+        {politica.length >= 2 && (
+          <section>
+            <SectionHeader title="Política" href="/politica" color="#7c3aed" />
+            <DestaqueGrid articles={politica} />
+          </section>
+        )}
+
+        {/* ── 8. Economia — MetropolesGrid Adaptativo ── */}
+        {economia.length >= 3 && (
+          <section>
+            <SectionHeader title="Economia" href="/economia" color="#16a34a" />
+            <div className="grid grid-cols-1 lg:grid-cols-4 gap-4 items-stretch">
+              <div className="lg:col-span-3">
+                <MetropolesGrid articles={economia} />
+              </div>
+              <aside className="hidden lg:flex flex-col">
+                <AdUnit slot="economia-sidebar" format="rectangle" />
+                <BannerPlaceholder w={300} h={300} label="Banner 300×600" fill />
+              </aside>
+            </div>
+          </section>
+        )}
 
         {/* ── 9. Últimas Notícias ── */}
         {ultimas.length > 0 && (

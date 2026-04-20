@@ -2,7 +2,7 @@
 
 import Link from 'next/link'
 import Image from 'next/image'
-import { useState, useRef } from 'react'
+import { useState, useRef, useEffect } from 'react'
 import { Menu, X, Search, ChevronDown } from 'lucide-react'
 
 // Cidades com foco editorial — links diretos no nav desktop (sem Campinas)
@@ -81,8 +81,8 @@ function formatDate() {
   const raw = new Date().toLocaleDateString('pt-BR', {
     weekday: 'long', day: 'numeric', month: 'long', year: 'numeric',
   })
-  // Capitaliza só o primeiro caractere, mantém o resto como veio
-  return raw.charAt(0).toUpperCase() + raw.slice(1)
+  const sem_feira = raw.replace('-feira', '')
+  return sem_feira.charAt(0).toUpperCase() + sem_feira.slice(1)
 }
 
 // Dropdown posicionado com position:fixed para não ser clipado pelo overflow-x-auto do nav
@@ -176,24 +176,32 @@ function NavDropdown({
 
 export default function Header() {
   const [mobileOpen, setMobileOpen] = useState(false)
+  const [scrolled, setScrolled] = useState(false)
+
+  useEffect(() => {
+    const onScroll = () => setScrolled(window.scrollY > 60)
+    window.addEventListener('scroll', onScroll, { passive: true })
+    return () => window.removeEventListener('scroll', onScroll)
+  }, [])
 
   return (
     <header className="bg-white sticky top-0 z-50 shadow-sm">
 
       {/* ── Masthead: data + logo centralizado + busca ── */}
       <div className="max-w-7xl mx-auto px-4">
-        <div className="relative flex items-center justify-between py-5 lg:py-8">
+        <div className={`relative flex items-center justify-between transition-all duration-300 ${scrolled ? 'py-2 lg:py-3' : 'py-5 lg:py-8'}`}>
 
           {/* Esquerda: hamburguer (mobile) / data (desktop) */}
-          <div className="w-28 lg:w-44 shrink-0">
+          <div className="w-20 lg:w-44 shrink-0">
             <button
               onClick={() => setMobileOpen(!mobileOpen)}
-              className="lg:hidden text-[#1a1a1a] p-1"
+              className="lg:hidden flex items-center gap-1 text-[#1a1a1a] p-1"
               aria-label="Menu"
             >
-              {mobileOpen ? <X size={24} /> : <Menu size={24} />}
+              {mobileOpen ? <X size={22} /> : <Menu size={22} />}
+              <span className="text-[11px] font-medium">{mobileOpen ? 'Fechar' : 'Menu'}</span>
             </button>
-            <span className="hidden lg:block text-[11px] text-gray-500 leading-tight">
+            <span className={`hidden lg:block text-gray-500 leading-tight transition-all duration-300 ${scrolled ? 'text-[10px]' : 'text-[11px]'}`}>
               {formatDate()}
             </span>
           </div>
@@ -206,20 +214,23 @@ export default function Header() {
               width={520}
               height={104}
               priority
-              className="w-[210px] lg:w-[460px] h-auto"
+              className={`h-auto transition-all duration-300 ${scrolled ? 'w-[160px] lg:w-[280px]' : 'w-[200px] lg:w-[480px]'}`}
             />
           </Link>
 
           {/* Direita: busca */}
-          <div className="w-28 lg:w-44 shrink-0 flex justify-end">
+          <div className="w-20 lg:w-44 shrink-0 flex justify-end">
             <Link href="/busca" aria-label="Buscar"
               className="flex items-center gap-1 text-gray-500 hover:text-[#f5821f] transition-colors p-1">
               <Search size={18} />
-              <span className="hidden lg:inline text-[12px] font-medium">Busca</span>
+              <span className="text-[11px] font-medium lg:text-[12px]">Busca</span>
             </Link>
           </div>
         </div>
       </div>
+
+      {/* Linha gradiente mobile — sempre visível */}
+      <div className="lg:hidden h-0.5 bg-gradient-to-r from-[#f5821f] to-[#8dc63f]" />
 
       {/* ── NavBar (desktop) — overflow-x-auto APENAS para scroll; dropdowns usam position:fixed ── */}
       <nav className="hidden lg:block border-t border-gray-100">

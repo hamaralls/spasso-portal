@@ -4,45 +4,39 @@ import Badge from '@/components/Badge'
 import ArticleCard from '@/components/ArticleCard'
 import SectionHeader from '@/components/SectionHeader'
 import { AdUnit } from '@/components/AdUnit'
-import { getArtigosRecentes, getArtigosPorCategorias, getColunistas, getArtigosDestaque } from '@/lib/supabase/queries'
-import { timeAgo } from '@/lib/format'
+import { getArtigosRecentes, getArtigosPorCategorias, getColunistas } from '@/lib/supabase/queries'
 
 export const runtime = 'edge'
 
 export default async function Home() {
-  const [recentes, destaques, regiao, sumare, brasil, saude, politica, economia, educacao, cultura, esporte, eventos, opiniao, colunistas] = await Promise.all([
-    getArtigosRecentes(17),
-    getArtigosDestaque(3),
-    getArtigosPorCategorias(['hortolandia', 'nova-odessa', 'campinas', 'paulinia', 'monte-mor', 'santa-barbara-doeste'], 4),
-    getArtigosPorCategorias(['sumare'], 3),
-    getArtigosPorCategorias(['brasil'], 3),
+  const [recentes, regiao, sumare, estiloDeVida, brasil, saude, politica, economia, opiniao, colunistas] = await Promise.all([
+    getArtigosRecentes(21),
+    getArtigosPorCategorias(['hortolandia', 'nova-odessa', 'campinas', 'paulinia', 'monte-mor', 'santa-barbara-doeste', 'outras-cidades', 'rmc'], 6),
+    getArtigosPorCategorias(['sumare'], 4),
+    getArtigosPorCategorias(['estilo-de-vida', 'cultura-e-lazer', 'eventos'], 6),
+    getArtigosPorCategorias(['brasil'], 4),
     getArtigosPorCategorias(['saude'], 4),
     getArtigosPorCategorias(['politica'], 4),
     getArtigosPorCategorias(['economia'], 4),
-    getArtigosPorCategorias(['educacao'], 4),
-    getArtigosPorCategorias(['cultura-e-lazer'], 4),
-    getArtigosPorCategorias(['esporte'], 4),
-    getArtigosPorCategorias(['eventos'], 4),
     getArtigosPorCategorias(['colunistas'], 4),
     getColunistas(),
   ])
 
-  const gridArticles = recentes.slice(5, 17)
+  const ultimas = recentes.slice(5, 21)
 
   return (
     <>
-      {/* ── Hero estilo Metrópoles ── */}
+      {/* ── 1. Hero / Destaques ── */}
       {recentes.length >= 2 ? (
         <section className="bg-white border-b border-gray-100">
           <div className="max-w-7xl mx-auto px-4 py-6">
 
-            {/* Linha principal: artigo principal (2/3) + secundário (1/3) */}
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-5">
 
               {/* Artigo principal */}
               <Link href={`/${recentes[0].slug}`}
                 className="group lg:col-span-2 flex flex-col sm:flex-row gap-4">
-                <div className="sm:w-[55%] relative aspect-video overflow-hidden rounded-lg bg-gray-200 shrink-0">
+                <div className="sm:w-[55%] relative aspect-video overflow-hidden bg-gray-200 shrink-0">
                   {recentes[0].featured_image_url && (
                     <Image
                       src={recentes[0].featured_image_url}
@@ -74,7 +68,7 @@ export default async function Home() {
 
               {/* Artigo secundário */}
               <Link href={`/${recentes[1].slug}`} className="group flex flex-col">
-                <div className="relative aspect-video overflow-hidden rounded-lg bg-gray-200">
+                <div className="relative aspect-video overflow-hidden bg-gray-200">
                   {recentes[1].featured_image_url && (
                     <Image
                       src={recentes[1].featured_image_url}
@@ -94,13 +88,13 @@ export default async function Home() {
               </Link>
             </div>
 
-            {/* Faixa inferior — 3 títulos com bullet */}
+            {/* Faixa inferior — 3 thumbnails */}
             {recentes.length >= 5 && (
               <div className="grid grid-cols-1 sm:grid-cols-3 gap-x-6 gap-y-3 pt-4 border-t border-gray-200">
                 {recentes.slice(2, 5).map((article) => (
                   <Link key={article.id} href={`/${article.slug}`}
                     className="group flex items-start gap-3">
-                    <div className="relative w-16 h-12 shrink-0 overflow-hidden rounded bg-gray-200">
+                    <div className="relative w-16 h-12 shrink-0 overflow-hidden bg-gray-200">
                       {article.featured_image_url && (
                         <Image
                           src={article.featured_image_url}
@@ -130,62 +124,25 @@ export default async function Home() {
 
       <div className="max-w-7xl mx-auto px-4 py-8 space-y-12">
 
-        {/* Mais Lidos — top 3 por views (últimos 7 dias) */}
-        {destaques.length > 0 && (
-          <section>
-            <SectionHeader title="Mais Lidos" color="#f5821f" />
-            <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-              {destaques.map((article) => (
-                <ArticleCard key={article.id} article={article} size="featured" />
-              ))}
-            </div>
-          </section>
-        )}
-
-        {/* Últimas notícias */}
-        {gridArticles.length > 0 && (
-          <section>
-            <SectionHeader title="Últimas Notícias" color="#f5821f" />
-            <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
-              <div className="col-span-2">
-                <ArticleCard article={gridArticles[0]} size="featured" />
-              </div>
-              {gridArticles.slice(1, 3).map((article) => (
-                <ArticleCard key={article.id} article={article} size="featured" />
-              ))}
-              {gridArticles.slice(3).map((article) => (
-                <ArticleCard key={article.id} article={article} />
-              ))}
-            </div>
-          </section>
-        )}
-
-        <AdUnit slot="home-leaderboard" format="leaderboard" className="flex justify-center" />
-
-        {/* Região Metropolitana de Campinas */}
+        {/* ── 2. Região Metropolitana de Campinas ── */}
         {regiao.length > 0 && (
           <section>
             <SectionHeader title="Região Metropolitana de Campinas" href="/rmc" color="#8dc63f" />
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <ArticleCard article={regiao[0]} size="featured" />
-              <div className="flex flex-col gap-4">
-                {regiao.slice(1).map((article) => (
-                  <ArticleCard key={article.id} article={article} />
-                ))}
-              </div>
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+              {regiao.map((article) => (
+                <ArticleCard key={article.id} article={article} size="featured" />
+              ))}
             </div>
           </section>
         )}
 
-        {/* Sumaré */}
+        {/* ── 3. Sumaré ── */}
         {sumare.length > 0 && (
           <section>
             <SectionHeader title="Sumaré" href="/sp/sumare" color="#8dc63f" />
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-              <div className="md:col-span-1">
-                <ArticleCard article={sumare[0]} size="featured" />
-              </div>
-              <div className="md:col-span-2 grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <ArticleCard article={sumare[0]} size="featured" />
+              <div className="flex flex-col gap-4">
                 {sumare.slice(1).map((article) => (
                   <ArticleCard key={article.id} article={article} />
                 ))}
@@ -194,7 +151,74 @@ export default async function Home() {
           </section>
         )}
 
-        {/* Colunistas */}
+        <AdUnit slot="home-leaderboard" format="leaderboard" className="flex justify-center" />
+
+        {/* ── 4. Estilo de Vida ── */}
+        {estiloDeVida.length > 0 && (
+          <section>
+            <SectionHeader title="Estilo de Vida" href="/estilo-de-vida" color="#f5821f" />
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+              {estiloDeVida.map((article) => (
+                <ArticleCard key={article.id} article={article} size="featured" />
+              ))}
+            </div>
+          </section>
+        )}
+
+        {/* ── 5. Brasil ── */}
+        {brasil.length > 0 && (
+          <section>
+            <SectionHeader title="Brasil" href="/brasil" color="#ec3535" />
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <ArticleCard article={brasil[0]} size="featured" />
+              <div className="flex flex-col gap-4">
+                {brasil.slice(1).map((article) => (
+                  <ArticleCard key={article.id} article={article} />
+                ))}
+              </div>
+            </div>
+          </section>
+        )}
+
+        <AdUnit slot="home-leaderboard-2" format="leaderboard" className="flex justify-center" />
+
+        {/* ── 6. Saúde (min 4 artigos) ── */}
+        {saude.length >= 4 && (
+          <section>
+            <SectionHeader title="Saúde" href="/saude" color="#0891b2" />
+            <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+              {saude.map((article) => (
+                <ArticleCard key={article.id} article={article} />
+              ))}
+            </div>
+          </section>
+        )}
+
+        {/* ── 7. Política (min 4 artigos) ── */}
+        {politica.length >= 4 && (
+          <section>
+            <SectionHeader title="Política" href="/politica" color="#7c3aed" />
+            <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+              {politica.map((article) => (
+                <ArticleCard key={article.id} article={article} />
+              ))}
+            </div>
+          </section>
+        )}
+
+        {/* ── 8. Economia (min 4 artigos) ── */}
+        {economia.length >= 4 && (
+          <section>
+            <SectionHeader title="Economia" href="/economia" color="#16a34a" />
+            <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+              {economia.map((article) => (
+                <ArticleCard key={article.id} article={article} />
+              ))}
+            </div>
+          </section>
+        )}
+
+        {/* ── 9. Colunistas ── */}
         {(opiniao.length > 0 || colunistas.length > 0) && (
           <section>
             <SectionHeader title="Colunistas" href="/colunistas" color="#7c3aed" />
@@ -239,106 +263,17 @@ export default async function Home() {
           </section>
         )}
 
-        {/* Brasil */}
-        {brasil.length > 0 && (
+        {/* ── 10. Últimas Notícias ── */}
+        {ultimas.length > 0 && (
           <section>
-            <SectionHeader title="Brasil" href="/brasil" color="#ec3535" />
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <ArticleCard article={brasil[0]} size="featured" />
-              <div className="flex flex-col gap-4">
-                {brasil.slice(1).map((article) => (
-                  <ArticleCard key={article.id} article={article} />
-                ))}
-              </div>
-            </div>
-          </section>
-        )}
-
-        {/* Saúde */}
-        {saude.length > 0 && (
-          <section>
-            <SectionHeader title="Saúde" href="/saude" color="#0891b2" />
-            <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
-              {saude.map((article) => (
+            <SectionHeader title="Últimas Notícias" color="#f5821f" />
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+              {ultimas.map((article) => (
                 <ArticleCard key={article.id} article={article} />
               ))}
             </div>
           </section>
         )}
-
-        {/* Política */}
-        {politica.length > 0 && (
-          <section>
-            <SectionHeader title="Política" href="/politica" color="#7c3aed" />
-            <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
-              {politica.map((article) => (
-                <ArticleCard key={article.id} article={article} />
-              ))}
-            </div>
-          </section>
-        )}
-
-        {/* Economia */}
-        {economia.length > 0 && (
-          <section>
-            <SectionHeader title="Economia" href="/economia" color="#16a34a" />
-            <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
-              {economia.map((article) => (
-                <ArticleCard key={article.id} article={article} />
-              ))}
-            </div>
-          </section>
-        )}
-
-        {/* Educação */}
-        {educacao.length > 0 && (
-          <section>
-            <SectionHeader title="Educação" href="/educacao" color="#d97706" />
-            <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
-              {educacao.map((article) => (
-                <ArticleCard key={article.id} article={article} />
-              ))}
-            </div>
-          </section>
-        )}
-
-        {/* Cultura e Lazer */}
-        {cultura.length > 0 && (
-          <section>
-            <SectionHeader title="Cultura e Lazer" href="/cultura-e-lazer" color="#db2777" />
-            <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
-              {cultura.map((article) => (
-                <ArticleCard key={article.id} article={article} />
-              ))}
-            </div>
-          </section>
-        )}
-
-        {/* Esporte */}
-        {esporte.length > 0 && (
-          <section>
-            <SectionHeader title="Esporte" href="/esporte" color="#059669" />
-            <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
-              {esporte.map((article) => (
-                <ArticleCard key={article.id} article={article} />
-              ))}
-            </div>
-          </section>
-        )}
-
-        {/* Entretenimento */}
-        {eventos.length > 0 && (
-          <section>
-            <SectionHeader title="Entretenimento" href="/eventos" color="#ea580c" />
-            <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
-              {eventos.map((article) => (
-                <ArticleCard key={article.id} article={article} />
-              ))}
-            </div>
-          </section>
-        )}
-
-        <AdUnit slot="home-leaderboard-2" format="leaderboard" className="flex justify-center" />
 
       </div>
     </>

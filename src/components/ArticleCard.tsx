@@ -43,7 +43,7 @@ export default function ArticleCard({ article, size = 'default' }: ArticleCardPr
 
   if (size === 'featured') {
     return (
-      <Link href={`/${slug}`} className="group block bg-white rounded-lg overflow-hidden shadow-sm hover:shadow-md transition-shadow">
+      <Link href={`/${slug}`} className="group block bg-white overflow-hidden shadow-sm hover:shadow-md transition-shadow">
         <div className="relative aspect-video w-full overflow-hidden bg-gray-200">
           {featured_image_url ? (
             <Image
@@ -74,8 +74,8 @@ export default function ArticleCard({ article, size = 'default' }: ArticleCardPr
 
   if (size === 'compact') {
     return (
-      <Link href={`/${slug}`} className="group flex gap-3 items-start bg-white rounded-lg p-2 shadow-sm hover:shadow-md transition-shadow">
-        <div className="relative w-20 h-14 flex-shrink-0 overflow-hidden rounded bg-gray-200">
+      <Link href={`/${slug}`} className="group flex gap-3 items-start bg-white p-2 shadow-sm hover:shadow-md transition-shadow">
+        <div className="relative w-20 h-14 flex-shrink-0 overflow-hidden bg-gray-200">
           {featured_image_url && (
             <Image src={featured_image_url} alt={title} fill className="object-cover" sizes="80px" />
           )}
@@ -90,11 +90,11 @@ export default function ArticleCard({ article, size = 'default' }: ArticleCardPr
     )
   }
 
-  // default — horizontal, thumbnail quadrado, badge acima do título
+  // default — horizontal: imagem esq, badge acima do título
   return (
     <Link href={`/${slug}`}
-      className="group flex gap-3 items-start bg-white rounded-lg p-2 shadow-sm hover:shadow-md transition-shadow">
-      <div className="relative w-20 h-20 sm:w-24 sm:h-24 shrink-0 overflow-hidden rounded-md bg-gray-200">
+      className="group flex gap-3 items-start bg-white p-2 shadow-sm hover:shadow-md transition-shadow">
+      <div className="relative w-20 h-20 sm:w-24 sm:h-24 shrink-0 overflow-hidden bg-gray-200">
         {featured_image_url ? (
           <Image
             src={featured_image_url}

@@ -5,12 +5,12 @@ import ArticleCard from '@/components/ArticleCard'
 import SectionHeader from '@/components/SectionHeader'
 import { AdUnit } from '@/components/AdUnit'
 import { getArtigosRecentes, getArtigosPorCategorias, getColunistas } from '@/lib/supabase/queries'
+import type { ArticlePublico } from '@/types'
 
 export const runtime = 'edge'
 
 const hasAds = !!process.env.NEXT_PUBLIC_GAM_NETWORK_CODE
 
-// Placeholder visual do espaço de banner (só aparece quando GAM não está configurado)
 function BannerPlaceholder({ w, h, label }: { w: number; h: number; label: string }) {
   if (hasAds) return null
   return (
@@ -23,15 +23,102 @@ function BannerPlaceholder({ w, h, label }: { w: number; h: number; label: strin
   )
 }
 
+// Layout Metrópoles por seção:
+// [col 1+2] featured: imagem tall esq + título dir
+// [col 1+2] 2 compact lado a lado
+// [col 1+2] 2 text-only lado a lado
+// [col 3  ] 4 compact empilhados com dividers
+// Total: 9 artigos
+function MetropolesGrid({ articles }: { articles: ArticlePublico[] }) {
+  const a = articles
+  if (a.length === 0) return null
+
+  return (
+    <div className="grid grid-cols-1 lg:grid-cols-3 gap-x-6 gap-y-0 items-start">
+
+      {/* Col 1+2: featured + compact row + text-only row */}
+      <div className="lg:col-span-2 flex flex-col">
+
+        {/* Featured: imagem esq (aspect 4:3) + badge + título dir */}
+        {a[0] && (
+          <Link href={`/${a[0].slug}`} className="group flex gap-4 pb-4">
+            <div className="relative w-[48%] aspect-[4/3] shrink-0 overflow-hidden bg-gray-200">
+              {a[0].featured_image_url ? (
+                <Image
+                  src={a[0].featured_image_url}
+                  alt={a[0].title}
+                  fill
+                  className="object-cover group-hover:scale-[1.02] transition-transform duration-300"
+                  sizes="(max-width: 1024px) 50vw, 28vw"
+                />
+              ) : (
+                <div className="absolute inset-0 bg-gradient-to-br from-gray-100 to-gray-200" />
+              )}
+            </div>
+            <div className="flex-1 min-w-0 pt-1">
+              {a[0].category_name && (
+                <Badge name={a[0].category_name} color={a[0].badge_color} size="sm" />
+              )}
+              <h3 className="text-xl font-bold leading-snug mt-2 group-hover:text-[#f5821f] transition-colors line-clamp-4 text-[#1a1a1a]">
+                {a[0].title}
+              </h3>
+              {a[0].excerpt && (
+                <p className="text-sm text-gray-500 mt-2 line-clamp-3 leading-relaxed">
+                  {a[0].excerpt.replace(/<[^>]+>/g, '')}
+                </p>
+              )}
+            </div>
+          </Link>
+        )}
+
+        {/* Compact row: artigos 1 e 2 */}
+        {a.length >= 3 && (
+          <div className="grid grid-cols-2 gap-4 py-4 border-t border-gray-100">
+            {a.slice(1, 3).map(art => (
+              <ArticleCard key={art.id} article={art} size="compact" />
+            ))}
+          </div>
+        )}
+
+        {/* Text-only row: artigos 3 e 4 */}
+        {a.length >= 5 && (
+          <div className="grid grid-cols-2 gap-4 pt-4 border-t border-gray-100">
+            {a.slice(3, 5).map(art => (
+              <Link key={art.id} href={`/${art.slug}`} className="group block">
+                {art.category_name && (
+                  <Badge name={art.category_name} color={art.badge_color} size="sm" />
+                )}
+                <h3 className="text-sm font-bold text-[#1a1a1a] leading-snug mt-0.5 group-hover:text-[#f5821f] transition-colors line-clamp-3">
+                  {art.title}
+                </h3>
+              </Link>
+            ))}
+          </div>
+        )}
+      </div>
+
+      {/* Col 3: 4 compact empilhados com dividers */}
+      <div className="hidden lg:flex flex-col divide-y divide-gray-100">
+        {a.slice(5, 9).map(art => (
+          <div key={art.id} className="py-3 first:pt-0 last:pb-0">
+            <ArticleCard article={art} size="compact" />
+          </div>
+        ))}
+      </div>
+
+    </div>
+  )
+}
+
 export default async function Home() {
   const [recentes, regiao, culturaELazer, brasil, saude, politica, economia, opiniao, colunistas] = await Promise.all([
     getArtigosRecentes(17),
-    getArtigosPorCategorias(['sumare', 'hortolandia', 'nova-odessa', 'campinas', 'paulinia', 'monte-mor', 'santa-barbara-doeste', 'outras-cidades', 'rmc'], 4),
+    getArtigosPorCategorias(['sumare', 'hortolandia', 'nova-odessa', 'campinas', 'paulinia', 'monte-mor', 'santa-barbara-doeste', 'outras-cidades', 'rmc'], 9),
     getArtigosPorCategorias(['estilo-de-vida', 'cultura-e-lazer', 'eventos'], 4),
     getArtigosPorCategorias(['brasil'], 4),
-    getArtigosPorCategorias(['saude'], 7),
-    getArtigosPorCategorias(['politica'], 7),
-    getArtigosPorCategorias(['economia'], 7),
+    getArtigosPorCategorias(['saude'], 9),
+    getArtigosPorCategorias(['politica'], 9),
+    getArtigosPorCategorias(['economia'], 9),
     getArtigosPorCategorias(['colunistas'], 4),
     getColunistas(),
   ])
@@ -123,22 +210,12 @@ export default async function Home() {
       <div className="max-w-7xl mx-auto px-4 py-8 space-y-12">
 
         {/* ── 2. Região Metropolitana de Campinas ── */}
-        {/* Layout: 3 cols conteúdo + 1 col banner aside */}
         {regiao.length > 0 && (
           <section>
             <SectionHeader title="Região Metropolitana de Campinas" href="/rmc" color="#8dc63f" />
             <div className="grid grid-cols-1 lg:grid-cols-4 gap-4 items-start">
               <div className="lg:col-span-3">
-                <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
-                  {/* Primeiro artigo: featured grande (col-span-2) */}
-                  <div className="lg:col-span-2">
-                    <ArticleCard article={regiao[0]} size="featured" />
-                  </div>
-                  {/* Restantes: default (imagem esq, tag + título dir) */}
-                  {regiao.slice(1).map((article) => (
-                    <ArticleCard key={article.id} article={article} />
-                  ))}
-                </div>
+                <MetropolesGrid articles={regiao} />
               </div>
               <aside className="hidden lg:flex flex-col items-center pt-1">
                 <AdUnit slot="rmc-sidebar" format="rectangle" />
@@ -194,7 +271,7 @@ export default async function Home() {
           </section>
         )}
 
-        {/* ── 4. Brasil — L-shape sem banner (layout assimétrico) ── */}
+        {/* ── 4. Brasil — L-shape ── */}
         {brasil.length > 0 && (
           <section>
             <SectionHeader title="Brasil" href="/brasil" color="#ec3535" />
@@ -212,7 +289,6 @@ export default async function Home() {
         )}
 
         {/* ── 5. Cultura e Lazer ── */}
-        {/* Layout: 3 cols conteúdo (destaque col-span-2 + 3 featured) + 1 col banner aside */}
         {culturaELazer.length > 0 && (
           <section>
             <SectionHeader title="Cultura e Lazer" href="/cultura-e-lazer" color="#db2777" />
@@ -236,7 +312,6 @@ export default async function Home() {
         )}
 
         {/* ── 6–8. Saúde / Política / Economia ── */}
-        {/* Layout: 1 featured esq + grade 2×3 compact dir + banner aside */}
         {[
           { data: saude,    title: 'Saúde',    href: '/saude',    color: '#0891b2', slot: 'saude-sidebar' },
           { data: politica, title: 'Política', href: '/politica', color: '#7c3aed', slot: 'politica-sidebar' },
@@ -246,16 +321,7 @@ export default async function Home() {
             <SectionHeader title={title} href={href} color={color} />
             <div className="grid grid-cols-1 lg:grid-cols-4 gap-4 items-start">
               <div className="lg:col-span-3">
-                <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
-                  {/* Card horizontal grande — esquerda (imagem esq, texto dir) */}
-                  <ArticleCard article={data[0]} size="default-lg" />
-                  {/* Grade compact — direita (2 colunas × até 3 linhas) */}
-                  <div className="col-span-2 grid grid-cols-2 gap-x-4 gap-y-3">
-                    {data.slice(1).map((article) => (
-                      <ArticleCard key={article.id} article={article} size="compact" />
-                    ))}
-                  </div>
-                </div>
+                <MetropolesGrid articles={data} />
               </div>
               <aside className="hidden lg:flex flex-col items-center pt-1">
                 <AdUnit slot={slot} format="rectangle" />
@@ -266,7 +332,6 @@ export default async function Home() {
         ))}
 
         {/* ── 9. Últimas Notícias ── */}
-        {/* Layout: 3 cols conteúdo + 1 col banner aside */}
         {ultimas.length > 0 && (
           <section>
             <SectionHeader title="Últimas Notícias" color="#f5821f" />

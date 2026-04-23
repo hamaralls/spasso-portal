@@ -5,7 +5,7 @@ export const runtime = 'edge'
 export const metadata: Metadata = {
   title: 'Edição Impressa',
   description: 'Acesse as edições impressas do Spasso Cidades. Distribuição gratuita em Sumaré e região, toda semana.',
-  alternates: { canonical: '/edicao-impressa/' },
+  alternates: { canonical: '/edicao-impressa' },
 }
 
 export default function EdicaoImpressaPage() {
@@ -30,7 +30,7 @@ export default function EdicaoImpressaPage() {
             Alcance leitores de Sumaré e região com anúncios no jornal impresso.
           </p>
           <a
-            href="/anuncie/"
+            href="/anuncie"
             className="inline-block bg-[#f5821f] text-white font-bold px-6 py-2 rounded-lg text-sm hover:bg-[#c47600] transition-colors"
           >
             Ver formatos e preços →

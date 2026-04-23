@@ -5,7 +5,7 @@ export const runtime = 'edge'
 export const metadata: Metadata = {
   title: 'Termos de Uso',
   description: 'Termos e condições de uso do portal Spasso Cidades.',
-  alternates: { canonical: '/termos-de-uso/' },
+  alternates: { canonical: '/termos-de-uso' },
 }
 
 export default function TermosPage() {

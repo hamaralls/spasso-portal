@@ -5,7 +5,7 @@ export const runtime = 'edge'
 export const metadata: Metadata = {
   title: 'Sobre o Spasso Cidades',
   description: 'Conheça o Spasso Cidades — o diário digital de Sumaré e região. Jornalismo regional independente desde 2024.',
-  alternates: { canonical: '/sobre/' },
+  alternates: { canonical: '/sobre' },
 }
 
 export default function SobrePage() {
@@ -67,7 +67,7 @@ export default function SobrePage() {
         </p>
         <p>
           Para anúncios e publicidade:{' '}
-          <a href="/anuncie/" className="text-[#f5821f] hover:underline">
+          <a href="/anuncie" className="text-[#f5821f] hover:underline">
             acesse nossa página Anuncie
           </a>
           {' '}ou envie para{' '}

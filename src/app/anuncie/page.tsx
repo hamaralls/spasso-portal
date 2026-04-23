@@ -5,7 +5,7 @@ export const runtime = 'edge'
 export const metadata: Metadata = {
   title: 'Anuncie no Spasso Cidades',
   description: 'Alcance mais de 16 mil seguidores e leitores de Sumaré e da Região Metropolitana de Campinas. Anuncie no Spasso Cidades.',
-  alternates: { canonical: '/anuncie/' },
+  alternates: { canonical: '/anuncie' },
 }
 
 export default function AnunciePage() {

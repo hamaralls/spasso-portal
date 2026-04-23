@@ -5,7 +5,7 @@ export const runtime = 'edge'
 export const metadata: Metadata = {
   title: 'Política de Privacidade',
   description: 'Política de privacidade do Spasso Cidades em conformidade com a LGPD.',
-  alternates: { canonical: '/privacidade/' },
+  alternates: { canonical: '/privacidade' },
 }
 
 export default function PrivacidadePage() {

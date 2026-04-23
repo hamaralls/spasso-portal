@@ -13,6 +13,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
 
   const staticPages: MetadataRoute.Sitemap = [
     { url: BASE, lastModified: new Date(), changeFrequency: 'hourly', priority: 1 },
+    { url: `${BASE}/ultimas-noticias`, changeFrequency: 'hourly', priority: 0.9 },
     { url: `${BASE}/sobre`, changeFrequency: 'monthly', priority: 0.4 },
     { url: `${BASE}/contato`, changeFrequency: 'monthly', priority: 0.4 },
     { url: `${BASE}/anuncie`, changeFrequency: 'monthly', priority: 0.5 },
@@ -21,18 +22,22 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     { url: `${BASE}/termos-de-uso`, changeFrequency: 'yearly', priority: 0.2 },
   ]
 
-  const categoriaPages: MetadataRoute.Sitemap = categorias.map((cat) => ({
-    url: `${BASE}${cat.url_prefix}`,
-    changeFrequency: 'hourly' as const,
-    priority: 0.8,
-  }))
+  const categoriaPages: MetadataRoute.Sitemap = categorias
+    .filter((cat) => cat.url_prefix)
+    .map((cat) => ({
+      url: `${BASE}${cat.url_prefix}`,
+      changeFrequency: 'hourly' as const,
+      priority: 0.8,
+    }))
 
-  const artigoPages: MetadataRoute.Sitemap = slugs.map((item) => ({
-    url: `${BASE}/${item.slug}`,
-    lastModified: item.published_at ? new Date(item.published_at) : new Date(),
-    changeFrequency: 'weekly' as const,
-    priority: 0.6,
-  }))
+  const artigoPages: MetadataRoute.Sitemap = slugs
+    .filter((item) => item.slug)
+    .map((item) => ({
+      url: `${BASE}/${item.slug}`,
+      lastModified: item.published_at ? new Date(item.published_at) : new Date(),
+      changeFrequency: 'weekly' as const,
+      priority: 0.6,
+    }))
 
   return [...staticPages, ...categoriaPages, ...artigoPages]
 }

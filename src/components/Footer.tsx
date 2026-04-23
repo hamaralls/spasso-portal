@@ -15,8 +15,8 @@ export default function Footer() {
               <Image
                 src="/logo-branco.png"
                 alt="Spasso Cidades"
-                width={180}
-                height={36}
+                width={260}
+                height={52}
                 className="object-contain"
               />
             </Link>

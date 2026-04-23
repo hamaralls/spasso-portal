@@ -1,4 +1,5 @@
 import Link from 'next/link'
+import Image from 'next/image'
 import NewsletterSignup from '@/components/NewsletterSignup'
 
 export default function Footer() {
@@ -10,12 +11,16 @@ export default function Footer() {
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
           {/* Brand */}
           <div>
-            <p className="font-extrabold text-xl tracking-tight mb-1 text-white">
-              <span className="text-[#f5821f]">SPASSO</span>{' '}
-              <span className="text-[#8dc63f]">CIDADES</span>
-            </p>
-            <p className="text-white/60 text-xs mb-3">Portal</p>
-            <p className="text-white/70 text-sm leading-relaxed">
+            <Link href="/" className="inline-block mb-3">
+              <Image
+                src="/lgotipo SPASSO branco.png"
+                alt="Spasso Cidades"
+                width={180}
+                height={36}
+                className="object-contain"
+              />
+            </Link>
+            <p className="text-white/60 text-sm leading-relaxed">
               O diário digital de Sumaré e região. Cobertura da Região Metropolitana de Campinas.
             </p>
             <div className="mt-4">

@@ -13,7 +13,7 @@ export default function Footer() {
           <div>
             <Link href="/" className="inline-block mb-3">
               <Image
-                src="/lgotipo SPASSO branco.png"
+                src="/logo-branco.png"
                 alt="Spasso Cidades"
                 width={180}
                 height={36}

@@ -6,7 +6,7 @@ export const runtime = 'edge'
 export const metadata: Metadata = {
   title: 'Contato',
   description: 'Entre em contato com a redação do Spasso Cidades. Sugestões de pauta, press releases e informações.',
-  alternates: { canonical: '/contato/' },
+  alternates: { canonical: '/contato' },
 }
 
 export default function ContatoPage() {

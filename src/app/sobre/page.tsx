@@ -4,7 +4,7 @@ export const runtime = 'edge'
 
 export const metadata: Metadata = {
   title: 'Sobre o Spasso Cidades',
-  description: 'Conheça o Spasso Cidades — o diário digital de Sumaré e região. Jornalismo regional independente desde 2024.',
+  description: 'Conheça o Spasso Cidades — o diário digital de Sumaré e região. 20 anos de jornalismo regional independente.',
   alternates: { canonical: '/sobre' },
 }
 
@@ -16,9 +16,9 @@ export default function SobrePage() {
 
       <div className="prose-spasso space-y-6">
         <p>
-          O <strong>Spasso Cidades</strong> é um veículo de comunicação dedicado a trazer as notícias
-          mais relevantes e de interesse para a comunidade de Sumaré e da Região Metropolitana de
-          Campinas. Nascemos como jornal impresso — com tiragem semanal de 5 mil exemplares e
+          O <strong>Spasso Cidades</strong> é um veículo de comunicação com 20 anos de história dedicado
+          a trazer as notícias mais relevantes para a comunidade de Sumaré e da Região Metropolitana de
+          Campinas. Nascemos como jornal impresso em 2006 — com tiragem semanal de 5 mil exemplares e
           distribuição gratuita — e evoluímos para o digital sem abrir mão do compromisso com o
           jornalismo local.
         </p>

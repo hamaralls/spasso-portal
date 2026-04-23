@@ -11,7 +11,7 @@ export const metadata: Metadata = {
 
 export default function ContatoPage() {
   return (
-    <div className="max-w-3xl mx-auto px-4 py-12">
+    <div className="max-w-4xl mx-auto px-4 py-12">
       <h1 className="text-3xl font-extrabold mb-2 text-[#1a1a1a]">Contato</h1>
       <p className="text-gray-500 mb-10">Fale com a redação do Spasso Cidades</p>
 
@@ -24,6 +24,14 @@ export default function ContatoPage() {
 
         {/* Canais */}
         <div className="space-y-5">
+          <div className="border border-gray-200 rounded-xl p-5">
+            <h2 className="text-base font-bold text-[#1a1a1a] mb-1">Contato geral</h2>
+            <p className="text-sm text-gray-500 mb-2">Dúvidas, sugestões e mensagens gerais</p>
+            <a href="mailto:contato@jornalspassocidades.com.br" className="text-[#f5821f] hover:underline text-sm font-medium">
+              contato@jornalspassocidades.com.br
+            </a>
+          </div>
+
           <div className="border border-gray-200 rounded-xl p-5">
             <h2 className="text-base font-bold text-[#1a1a1a] mb-1">Redação</h2>
             <p className="text-sm text-gray-500 mb-2">Sugestões de pauta, press releases e informações</p>
@@ -39,7 +47,7 @@ export default function ContatoPage() {
               comercial@jornalspassocidades.com.br
             </a>
             <div className="mt-2">
-              <a href="/anuncie/" className="text-sm text-gray-400 hover:text-[#f5821f] underline">
+              <a href="/anuncie" className="text-sm text-gray-400 hover:text-[#f5821f] underline">
                 Ver formatos e preços →
               </a>
             </div>

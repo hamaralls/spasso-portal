@@ -32,6 +32,24 @@ export async function getArtigosPorCategoria(
   return { articles: data ?? [], total: count ?? 0 }
 }
 
+// ── Últimas notícias paginadas (sem filtro de categoria) ────────────────────
+
+export async function getArtigosPaginados(
+  page = 1,
+  perPage = 24
+): Promise<{ articles: ArticlePublico[]; total: number }> {
+  const from = (page - 1) * perPage
+  const to = from + perPage - 1
+
+  const { data, count } = await getSupabase()
+    .from('artigos_publicados')
+    .select('*', { count: 'exact' })
+    .order('published_at', { ascending: false })
+    .range(from, to)
+
+  return { articles: data ?? [], total: count ?? 0 }
+}
+
 // ── Home sections: múltiplas categorias ──────────────────────────────────────
 
 export async function getArtigosPorCategorias(

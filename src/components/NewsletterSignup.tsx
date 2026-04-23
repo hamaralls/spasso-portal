@@ -49,7 +49,7 @@ export default function NewsletterSignup() {
       <button
         type="submit"
         disabled={state === 'loading'}
-        className="px-4 py-2 bg-[#1a1a1a] text-white text-sm font-bold rounded-lg hover:bg-gray-800 transition-colors whitespace-nowrap disabled:opacity-60"
+        className="px-4 py-2 bg-[#8dc63f] text-white text-sm font-bold rounded-lg hover:bg-[#7ab32e] transition-colors whitespace-nowrap disabled:opacity-60"
       >
         {state === 'loading' ? '...' : 'Inscrever'}
       </button>

@@ -8,7 +8,6 @@ import SectionHeader from '@/components/SectionHeader'
 import ShareButtons from '@/components/ShareButtons'
 import { AdUnit } from '@/components/AdUnit'
 import ViewTracker from '@/components/ViewTracker'
-import ReadingProgress from '@/components/ReadingProgress'
 import {
   getCategoria,
   getArtigosPorCategoria,
@@ -204,7 +203,6 @@ export default async function SlugPage({ params, searchParams }: Props) {
       />
 
       <ViewTracker slug={artigo.slug} />
-      <ReadingProgress />
       <article className="bg-white">
         <div className="max-w-3xl mx-auto px-4 py-8">
           {/* Breadcrumb */}

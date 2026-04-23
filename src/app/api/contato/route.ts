@@ -23,7 +23,7 @@ export async function POST(request: Request) {
   const resend = new Resend(apiKey)
   const { error } = await resend.emails.send({
     from: 'Formulário Spasso <contato@jornalspassocidades.com.br>',
-    to: ['redacao@jornalspassocidades.com.br'],
+    to: ['amaralbaruck@gmail.com'],
     replyTo: email,
     subject: assunto ? `[Contato] ${assunto}` : `[Contato] Mensagem de ${nome}`,
     text: `Nome: ${nome}\nEmail: ${email}\n\nMensagem:\n${mensagem}`,

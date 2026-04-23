@@ -7,8 +7,8 @@ const BASE = 'https://jornalspassocidades.com.br'
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const [slugs, categorias] = await Promise.all([
-    getAllArtigosSlugs(),
-    getCategorias(),
+    getAllArtigosSlugs().catch(() => [] as { slug: string; published_at: string }[]),
+    getCategorias().catch(() => [] as { url_prefix: string; name: string; slug: string }[]),
   ])
 
   const staticPages: MetadataRoute.Sitemap = [

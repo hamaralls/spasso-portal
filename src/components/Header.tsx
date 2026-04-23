@@ -48,7 +48,7 @@ const CATEGORIAS_COL2 = [
 
 // Menu mobile completo
 const MOBILE_ITEMS = [
-  { name: 'Últimas Notícias',      href: '/' },
+  { name: 'Últimas Notícias',      href: '/ultimas-noticias' },
   { name: 'Sumaré',                href: '/sp/sumare' },
   { name: 'Hortolândia',           href: '/sp/hortolandia' },
   { name: 'Nova Odessa',           href: '/sp/nova-odessa' },
@@ -237,7 +237,7 @@ export default function Header() {
         <div className="overflow-x-auto [&::-webkit-scrollbar]:hidden [scrollbar-width:none]">
           <div className="flex items-center justify-center gap-5 h-11 min-w-max px-4 mx-auto max-w-7xl">
 
-            <Link href="/" className={NAV_LINK}>Últimas Notícias</Link>
+            <Link href="/ultimas-noticias" className={NAV_LINK}>Últimas Notícias</Link>
 
             {CIDADES_NAV.map((item) => (
               <Link key={item.href} href={item.href} className={NAV_LINK}>

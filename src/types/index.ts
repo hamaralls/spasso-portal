@@ -78,6 +78,9 @@ export interface ArticlePublico {
   author_name: string | null
   author_avatar: string | null
   columnist_type: string | null
+  columnist_id: string | null
+  columnist_slug: string | null
+  columnist_subtitle: string | null
 }
 
 export interface Columnist {
@@ -85,6 +88,7 @@ export interface Columnist {
   name: string
   slug: string
   bio: string | null
+  subtitle: string | null
   avatar_url: string | null
   type: 'editorial' | 'person'
   active: boolean

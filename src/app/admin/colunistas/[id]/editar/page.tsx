@@ -24,6 +24,7 @@ export default async function EditarColunistePage({ params }: Props) {
         id: col.id,
         name: col.name ?? '',
         slug: col.slug ?? '',
+        subtitle: (col as { subtitle?: string }).subtitle ?? '',
         bio: col.bio ?? '',
         type: (col.type as 'editorial' | 'person') ?? 'person',
         avatar_url: col.avatar_url ?? '',

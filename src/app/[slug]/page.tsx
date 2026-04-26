@@ -42,7 +42,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const description = (artigo.seo_description || artigo.excerpt || '').replace(/<[^>]+>/g, '').slice(0, 160)
   const image = artigo.featured_image_url
   const authorRaw = artigo.author as unknown
-  const authorName = Array.isArray(authorRaw)
+  const metaAuthorName = Array.isArray(authorRaw)
     ? (authorRaw[0] as { name: string } | undefined)?.name
     : (authorRaw as { name: string } | null)?.name
 
@@ -50,7 +50,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     title,
     description,
     alternates: { canonical: `/${slug}` },
-    ...(authorName ? { authors: [{ name: authorName }] } : {}),
+    ...(metaAuthorName ? { authors: [{ name: metaAuthorName }] } : {}),
     openGraph: {
       title,
       description,
@@ -137,9 +137,17 @@ export default async function SlugPage({ params, searchParams }: Props) {
   const url = `https://jornalspassocidades.com.br/${artigo.slug}`
 
   const authorRaw = artigo.author as unknown
-  const authorName = Array.isArray(authorRaw)
+  const userAuthorName = Array.isArray(authorRaw)
     ? (authorRaw[0] as { name: string } | undefined)?.name
     : (authorRaw as { name: string } | null)?.name
+
+  type ColumnistJoin = { name: string; slug: string; type: string; subtitle: string | null; avatar_url: string | null }
+  const colRaw = artigo.columnist as unknown
+  const colData: ColumnistJoin | null = Array.isArray(colRaw)
+    ? ((colRaw[0] as ColumnistJoin | undefined) ?? null)
+    : (colRaw as ColumnistJoin | null)
+
+  const authorName = colData?.name ?? userAuthorName ?? null
   const description = (artigo.seo_description || artigo.excerpt || '').replace(/<[^>]+>/g, '').slice(0, 300)
 
   const jsonLd = {
@@ -232,7 +240,18 @@ export default async function SlugPage({ params, searchParams }: Props) {
 
           {/* Meta */}
           <div className="flex flex-wrap items-center gap-x-4 gap-y-1 text-sm text-gray-500 mb-6 pb-4 border-b border-gray-100">
-            {authorName && <span className="font-medium text-[#1a1a1a]">{authorName}</span>}
+            {authorName && (
+              <span className="font-medium text-[#1a1a1a] flex items-center gap-1.5 flex-wrap">
+                {colData?.slug ? (
+                  <Link href={`/colunistas/${colData.slug}`} className="hover:text-[#7c3aed] transition-colors">
+                    {authorName}
+                  </Link>
+                ) : authorName}
+                {colData?.subtitle && (
+                  <span className="text-gray-400 font-normal text-xs">— {colData.subtitle}</span>
+                )}
+              </span>
+            )}
             {artigo.published_at && (
               <time dateTime={artigo.published_at}>{formatDate(artigo.published_at)}</time>
             )}

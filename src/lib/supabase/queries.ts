@@ -1,5 +1,5 @@
 import { getSupabase } from './edge'
-import type { ArticlePublico, Category } from '@/types'
+import type { ArticlePublico, Category, Columnist } from '@/types'
 
 // ── Home: últimos artigos publicados ────────────────────────────────────────
 
@@ -88,11 +88,12 @@ export async function getArtigoCompleto(slug: string) {
     .select(`
       id, slug, title, excerpt, content, featured_image_url,
       content_type, source_type, origin_badge, is_legacy_blog,
-      category_slug, author_id, published_at, updated_at,
+      category_slug, author_id, columnist_id, published_at, updated_at,
       views, reading_time_min,
       seo_title, seo_description, seo_keywords,
       wp_post_id,
-      author:users!author_id(name)
+      author:users!author_id(name),
+      columnist:columnists!columnist_id(name, slug, type, subtitle, avatar_url)
     `)
     .eq('slug', slug)
     .eq('status', 'published')
@@ -121,13 +122,69 @@ export async function getCategorias(): Promise<Category[]> {
 
 // ── Colunistas (público) ──────────────────────────────────────────────────────
 
-export async function getColunistas() {
-  const { data } = await getSupabase()
+export type ColunistaCom = {
+  id: string
+  name: string
+  slug: string
+  type: string
+  avatar_url: string | null
+  bio: string | null
+  subtitle: string | null
+  active: boolean
+  lastArticle: { slug: string; title: string; featured_image_url: string | null } | null
+}
+
+export async function getColunistas(): Promise<ColunistaCom[]> {
+  const { data: cols } = await getSupabase()
     .from('columnists')
-    .select('id, name, slug, type, avatar_url, bio, active')
+    .select('id, name, slug, type, avatar_url, bio, subtitle, active')
     .eq('active', true)
     .order('name')
-  return (data ?? []) as { id: string; name: string; slug: string; type: string; avatar_url: string | null; bio: string | null; active: boolean }[]
+
+  if (!cols?.length) return []
+
+  const slugs = cols.map(c => c.slug)
+  const { data: recents } = await getSupabase()
+    .from('artigos_publicados')
+    .select('slug, title, featured_image_url, columnist_slug')
+    .in('columnist_slug', slugs)
+    .order('published_at', { ascending: false })
+    .limit(50)
+
+  const lastBySlug: Record<string, { slug: string; title: string; featured_image_url: string | null }> = {}
+  for (const a of recents ?? []) {
+    if (a.columnist_slug && !lastBySlug[a.columnist_slug]) {
+      lastBySlug[a.columnist_slug] = { slug: a.slug, title: a.title, featured_image_url: a.featured_image_url }
+    }
+  }
+
+  return cols.map(c => ({ ...c, lastArticle: lastBySlug[c.slug] ?? null }))
+}
+
+export async function getColunistaPorSlug(slug: string): Promise<Columnist | null> {
+  const { data } = await getSupabase()
+    .from('columnists')
+    .select('id, name, slug, type, avatar_url, bio, subtitle, active, created_at')
+    .eq('slug', slug)
+    .eq('active', true)
+    .single()
+  return data ?? null
+}
+
+export async function getArtigosPorColunista(
+  columnistSlug: string,
+  page = 1,
+  perPage = 12
+): Promise<{ articles: ArticlePublico[]; total: number }> {
+  const from = (page - 1) * perPage
+  const to = from + perPage - 1
+  const { data, count } = await getSupabase()
+    .from('artigos_publicados')
+    .select('*', { count: 'exact' })
+    .eq('columnist_slug', columnistSlug)
+    .order('published_at', { ascending: false })
+    .range(from, to)
+  return { articles: data ?? [], total: count ?? 0 }
 }
 
 // ── Destaques: top artigos por views (últimos 7 dias) ────────────────────────

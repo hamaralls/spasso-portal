@@ -126,6 +126,7 @@ export interface ColumnistInput {
   name: string
   slug: string
   bio?: string
+  subtitle?: string
   avatar_url?: string
   type: 'editorial' | 'person'
   active?: boolean

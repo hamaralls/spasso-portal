@@ -7,6 +7,7 @@ interface ColumnistFormValues {
   id?: string
   name: string
   slug: string
+  subtitle: string
   bio: string
   type: 'editorial' | 'person'
   avatar_url: string
@@ -25,6 +26,7 @@ export default function ColumnistForm({ initial }: Props) {
   const [form, setForm] = useState<ColumnistFormValues>(initial ?? {
     name: '',
     slug: '',
+    subtitle: '',
     bio: '',
     type: 'person',
     avatar_url: '',
@@ -74,6 +76,7 @@ export default function ColumnistForm({ initial }: Props) {
         body: JSON.stringify({
           name: form.name,
           slug: form.slug,
+          subtitle: form.subtitle || undefined,
           bio: form.bio || undefined,
           avatar_url: form.avatar_url || undefined,
           type: form.type,
@@ -143,6 +146,19 @@ export default function ColumnistForm({ initial }: Props) {
             set('name', e.target.value)
             if (isNew) set('slug', autoSlug(e.target.value))
           }}
+          className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#f5821f]/50"
+        />
+      </div>
+
+      {/* Subtitle */}
+      <div>
+        <label className="block text-sm font-semibold text-gray-700 mb-1">
+          Subtítulo <span className="font-normal text-gray-400">(ex: por Elaine Amaral)</span>
+        </label>
+        <input
+          value={form.subtitle}
+          onChange={e => set('subtitle', e.target.value)}
+          placeholder="por Nome da Autora"
           className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#f5821f]/50"
         />
       </div>

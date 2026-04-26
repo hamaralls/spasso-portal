@@ -4,6 +4,7 @@ import Image from 'next/image'
 import ArticleCard from '@/components/ArticleCard'
 import SectionHeader from '@/components/SectionHeader'
 import { getColunistas, getArtigosPorCategoria } from '@/lib/supabase/queries'
+import type { ColunistaCom } from '@/lib/supabase/queries'
 
 export const runtime = 'edge'
 
@@ -13,50 +14,73 @@ export const metadata: Metadata = {
   alternates: { canonical: '/colunistas' },
 }
 
-function ColumnistCard({ col }: { col: { id: string; name: string; slug: string; type: string; avatar_url: string | null; bio: string | null } }) {
+function ColumnistCard({ col }: { col: ColunistaCom }) {
   const initials = col.name
     .split(' ').filter(Boolean)
     .map((n: string) => n[0].toUpperCase())
     .slice(0, 2).join('')
-
   const isPerson = col.type === 'person'
 
   return (
-    <div className="bg-white rounded-xl p-5 shadow-sm flex flex-col items-center text-center">
-      {/* Avatar */}
-      <div className="w-20 h-20 rounded-full overflow-hidden flex items-center justify-center shrink-0 mb-3"
-        style={{ background: isPerson && col.avatar_url ? undefined : '#7c3aed1a' }}
-      >
-        {isPerson && col.avatar_url ? (
-          <Image
-            src={col.avatar_url}
-            alt={col.name}
-            width={80}
-            height={80}
-            className="object-cover w-full h-full"
-          />
-        ) : (
-          <span className="text-2xl font-extrabold text-[#7c3aed]">{initials}</span>
-        )}
+    <Link
+      href={`/colunistas/${col.slug}`}
+      className="group bg-white rounded-xl shadow-sm hover:shadow-md transition-shadow overflow-hidden block"
+    >
+      {/* Cabeçalho do colunista */}
+      <div className="p-5 flex items-center gap-3">
+        <div
+          className="w-14 h-14 rounded-full overflow-hidden shrink-0 flex items-center justify-center"
+          style={{ background: isPerson && col.avatar_url ? undefined : '#7c3aed1a' }}
+        >
+          {isPerson && col.avatar_url ? (
+            <Image
+              src={col.avatar_url}
+              alt={col.name}
+              width={56}
+              height={56}
+              className="object-cover w-full h-full"
+            />
+          ) : (
+            <span className="text-lg font-extrabold text-[#7c3aed]">{initials}</span>
+          )}
+        </div>
+        <div className="min-w-0">
+          <span className="text-[10px] font-bold uppercase tracking-widest text-[#7c3aed]">
+            {isPerson ? 'Colunista' : 'Editorial'}
+          </span>
+          <p className="font-extrabold text-[#1a1a1a] text-sm uppercase tracking-wide leading-tight truncate">
+            {col.name}
+          </p>
+          {col.subtitle && (
+            <p className="text-xs text-gray-400 truncate">{col.subtitle}</p>
+          )}
+        </div>
       </div>
 
-      {/* Tag tipo */}
-      <span className={`text-[10px] font-bold uppercase tracking-widest px-2 py-0.5 rounded mb-2 ${
-        isPerson
-          ? 'bg-[#7c3aed]/10 text-[#7c3aed]'
-          : 'bg-gray-100 text-gray-500'
-      }`}>
-        {isPerson ? 'Colunista' : 'Editorial'}
-      </span>
-
-      {/* Nome */}
-      <p className="font-extrabold text-[#1a1a1a] text-sm uppercase tracking-wide leading-tight mb-1">{col.name}</p>
-
-      {/* Bio */}
-      {col.bio && (
-        <p className="text-xs text-gray-500 leading-relaxed line-clamp-2 mt-1">{col.bio}</p>
+      {/* Último artigo */}
+      {col.lastArticle && (
+        <div className="px-5 pb-4 pt-3 border-t border-gray-50 flex gap-3 items-start">
+          {col.lastArticle.featured_image_url && (
+            <div className="relative w-14 h-10 shrink-0 overflow-hidden rounded bg-gray-100">
+              <Image
+                src={col.lastArticle.featured_image_url}
+                alt={col.lastArticle.title}
+                fill
+                className="object-cover"
+                sizes="56px"
+              />
+            </div>
+          )}
+          <p className="text-xs text-gray-600 line-clamp-2 leading-snug group-hover:text-[#7c3aed] transition-colors">
+            {col.lastArticle.title}
+          </p>
+        </div>
       )}
-    </div>
+
+      <div className="px-5 pb-4 text-xs font-semibold text-[#7c3aed] group-hover:underline">
+        Ver coluna →
+      </div>
+    </Link>
   )
 }
 
@@ -71,28 +95,39 @@ export default async function ColunistasPage({ searchParams }: { searchParams: P
   ])
 
   const totalPages = Math.ceil(total / perPage)
+  const pessoas = colunistas.filter(c => c.type === 'person')
+  const editoriais = colunistas.filter(c => c.type === 'editorial')
+
+  const gridCols = (n: number) =>
+    n === 1 ? 'grid-cols-1 max-w-sm' :
+    n === 2 ? 'grid-cols-1 sm:grid-cols-2 max-w-2xl' :
+    'grid-cols-1 sm:grid-cols-2 lg:grid-cols-3'
 
   return (
     <div className="max-w-7xl mx-auto px-4 py-8 space-y-10">
 
-      {/* Header da seção */}
       <div>
         <SectionHeader title="Colunistas" color="#7c3aed" />
         <p className="text-sm text-gray-500 mt-1">Opiniões, análises e colunas editoriais</p>
       </div>
 
-      {/* Perfis dos colunistas */}
-      {colunistas.length > 0 && (
+      {/* Colunistas pessoa */}
+      {pessoas.length > 0 && (
         <section>
-          <div className={`grid gap-4 ${
-            colunistas.length === 1 ? 'grid-cols-1 max-w-xs' :
-            colunistas.length === 2 ? 'grid-cols-2 max-w-md' :
-            colunistas.length === 3 ? 'grid-cols-3 max-w-xl' :
-            'grid-cols-2 sm:grid-cols-3 lg:grid-cols-4'
-          }`}>
-            {colunistas.map(col => (
-              <ColumnistCard key={col.id} col={col} />
-            ))}
+          <div className={`grid gap-4 ${gridCols(pessoas.length)}`}>
+            {pessoas.map(col => <ColumnistCard key={col.id} col={col} />)}
+          </div>
+        </section>
+      )}
+
+      {/* Colunas editoriais */}
+      {editoriais.length > 0 && (
+        <section>
+          <h2 className="text-xs font-bold uppercase tracking-widest text-gray-400 mb-4">
+            Colunas editoriais
+          </h2>
+          <div className={`grid gap-4 ${gridCols(editoriais.length)}`}>
+            {editoriais.map(col => <ColumnistCard key={col.id} col={col} />)}
           </div>
         </section>
       )}

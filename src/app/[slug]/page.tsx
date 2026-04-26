@@ -241,7 +241,15 @@ export default async function SlugPage({ params, searchParams }: Props) {
           {/* Meta */}
           <div className="flex flex-wrap items-center gap-x-4 gap-y-1 text-sm text-gray-500 mb-6 pb-4 border-b border-gray-100">
             {authorName && (
-              <span className="font-medium text-[#1a1a1a]">
+              <span className="font-medium text-[#1a1a1a] flex items-center gap-2">
+                {colData?.avatar_url && (
+                  // eslint-disable-next-line @next/next/no-img-element
+                  <img
+                    src={colData.avatar_url}
+                    alt={authorName}
+                    className="w-8 h-8 rounded-full object-cover shrink-0"
+                  />
+                )}
                 {colData?.slug ? (
                   <Link href={`/colunistas/${colData.slug}`} className="hover:text-[#f5821f] transition-colors">
                     {authorName}

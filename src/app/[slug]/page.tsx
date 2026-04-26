@@ -141,7 +141,7 @@ export default async function SlugPage({ params, searchParams }: Props) {
     ? (authorRaw[0] as { name: string } | undefined)?.name
     : (authorRaw as { name: string } | null)?.name
 
-  type ColumnistJoin = { name: string; slug: string; type: string; subtitle: string | null; avatar_url: string | null }
+  type ColumnistJoin = { name: string; slug: string; type: string; subtitle: string | null; bio: string | null; avatar_url: string | null }
   const colRaw = artigo.columnist as unknown
   const colData: ColumnistJoin | null = Array.isArray(colRaw)
     ? ((colRaw[0] as ColumnistJoin | undefined) ?? null)
@@ -243,7 +243,7 @@ export default async function SlugPage({ params, searchParams }: Props) {
             {authorName && (
               <span className="font-medium text-[#1a1a1a]">
                 {colData?.slug ? (
-                  <Link href={`/colunistas/${colData.slug}`} className="hover:text-[#7c3aed] transition-colors">
+                  <Link href={`/colunistas/${colData.slug}`} className="hover:text-[#f5821f] transition-colors">
                     {authorName}
                   </Link>
                 ) : authorName}
@@ -290,6 +290,44 @@ export default async function SlugPage({ params, searchParams }: Props) {
 
           {/* Banner fim-artigo */}
           <AdUnit slot="artigo-fim" format="rectangle" className="flex justify-center my-6" />
+
+          {/* Perfil do colunista */}
+          {colData && (
+            <div className="mt-10 pt-6 border-t border-gray-100">
+              <Link href={`/colunistas/${colData.slug}`}
+                className="group flex items-start gap-5 bg-gray-50 rounded-xl p-5 hover:bg-orange-50 transition-colors">
+                {/* Avatar */}
+                <div className="w-16 h-16 rounded-full overflow-hidden shrink-0 flex items-center justify-center"
+                  style={{ background: colData.avatar_url ? undefined : '#f5821f1a' }}>
+                  {colData.avatar_url ? (
+                    <Image src={colData.avatar_url} alt={colData.name} width={64} height={64}
+                      className="object-cover w-full h-full" />
+                  ) : (
+                    <span className="text-xl font-extrabold text-[#f5821f]">
+                      {colData.name.split(' ').filter(Boolean).map(n => n[0].toUpperCase()).slice(0, 2).join('')}
+                    </span>
+                  )}
+                </div>
+                {/* Info */}
+                <div className="min-w-0 flex-1">
+                  <p className="text-[10px] font-bold uppercase tracking-widest text-[#f5821f] mb-1">
+                    {colData.type === 'person' ? 'Colunista' : 'Editorial'}
+                  </p>
+                  <p className="font-extrabold text-[#1a1a1a] text-base leading-snug group-hover:text-[#f5821f] transition-colors">
+                    {colData.name}
+                  </p>
+                  {colData.bio && (
+                    <p className="mt-1 text-sm text-gray-500 leading-relaxed">
+                      {colData.bio}
+                    </p>
+                  )}
+                  <p className="mt-2 text-xs font-semibold text-[#f5821f]">
+                    Ver todas as colunas →
+                  </p>
+                </div>
+              </Link>
+            </div>
+          )}
 
           {/* Compartilhar */}
           <div className="mt-8 pt-6 border-t border-gray-100">

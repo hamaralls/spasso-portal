@@ -68,8 +68,12 @@ export default async function ColunistaPaginaPage({ params, searchParams }: Prop
           <div className="flex flex-col sm:flex-row items-center sm:items-start gap-7">
             {/* Avatar — maior e com anel laranja */}
             <div
-              className="w-36 h-36 rounded-full overflow-hidden shrink-0 flex items-center justify-center ring-4 ring-[#f5821f] ring-offset-2"
-              style={{ background: isPerson && col.avatar_url ? undefined : '#f5821f1a' }}
+              className="w-36 h-36 rounded-full overflow-hidden shrink-0 flex items-center justify-center"
+              style={{
+                background: isPerson && col.avatar_url ? undefined : '#f5821f1a',
+                outline: '4px solid #f5821f',
+                outlineOffset: '3px',
+              }}
             >
               {isPerson && col.avatar_url ? (
                 <Image

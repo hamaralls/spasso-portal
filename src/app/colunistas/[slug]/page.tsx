@@ -100,10 +100,6 @@ export default async function ColunistaPaginaPage({ params, searchParams }: Prop
                 {col.name}
               </h1>
 
-              {col.subtitle && (
-                <p className="text-gray-500 mt-1 text-sm">{col.subtitle}</p>
-              )}
-
               {bioText && (
                 <p className="mt-3 text-gray-600 leading-relaxed max-w-xl text-sm">
                   {bioText}

@@ -241,15 +241,12 @@ export default async function SlugPage({ params, searchParams }: Props) {
           {/* Meta */}
           <div className="flex flex-wrap items-center gap-x-4 gap-y-1 text-sm text-gray-500 mb-6 pb-4 border-b border-gray-100">
             {authorName && (
-              <span className="font-medium text-[#1a1a1a] flex items-center gap-1.5 flex-wrap">
+              <span className="font-medium text-[#1a1a1a]">
                 {colData?.slug ? (
                   <Link href={`/colunistas/${colData.slug}`} className="hover:text-[#7c3aed] transition-colors">
                     {authorName}
                   </Link>
                 ) : authorName}
-                {colData?.subtitle && (
-                  <span className="text-gray-400 font-normal text-xs">— {colData.subtitle}</span>
-                )}
               </span>
             )}
             {artigo.published_at && (

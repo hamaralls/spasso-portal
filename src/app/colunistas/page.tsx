@@ -26,33 +26,28 @@ function ColumnistCard({ col }: { col: ColunistaCom }) {
       href={`/colunistas/${col.slug}`}
       className="group bg-white rounded-xl shadow-sm hover:shadow-md transition-shadow overflow-hidden block"
     >
-      {/* Cabeçalho do colunista */}
-      <div className="p-5 flex items-center gap-3">
+      {/* Cabeçalho */}
+      <div className="p-5 flex items-center gap-4">
         <div
-          className="w-14 h-14 rounded-full overflow-hidden shrink-0 flex items-center justify-center"
+          className="w-16 h-16 rounded-full overflow-hidden shrink-0 flex items-center justify-center"
           style={{ background: isPerson && col.avatar_url ? undefined : '#7c3aed1a' }}
         >
           {isPerson && col.avatar_url ? (
             <Image
               src={col.avatar_url}
               alt={col.name}
-              width={56}
-              height={56}
+              width={64}
+              height={64}
               className="object-cover w-full h-full"
             />
           ) : (
-            <span className="text-lg font-extrabold text-[#7c3aed]">{initials}</span>
+            <span className="text-xl font-extrabold text-[#7c3aed]">{initials}</span>
           )}
         </div>
         <div className="min-w-0">
-          <span className="text-[10px] font-bold uppercase tracking-widest text-[#7c3aed]">
-            {isPerson ? 'Colunista' : 'Editorial'}
-          </span>
-          <p className="font-extrabold text-[#1a1a1a] text-sm uppercase tracking-wide leading-tight truncate">
-            {col.name}
-          </p>
-          {col.subtitle && (
-            <p className="text-xs text-gray-400 truncate">{col.subtitle}</p>
+          <p className="font-bold text-[#1a1a1a] text-sm leading-snug">{col.name}</p>
+          {col.bio && (
+            <p className="text-xs text-gray-500 leading-relaxed line-clamp-2 mt-0.5">{col.bio}</p>
           )}
         </div>
       </div>

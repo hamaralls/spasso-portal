@@ -88,10 +88,11 @@ const nextConfig: NextConfig = {
       { source: '/category/brasil',                 destination: '/brasil',         permanent: true },
       { source: '/category/infraestrutura',         destination: '/infraestrutura', permanent: true },
 
-      // ── Colunistas (antigo Opinião) ───────────────────────
-      { source: '/category/politicando',            destination: '/colunistas',     permanent: true },
-      { source: '/category/opiniao',                destination: '/colunistas',     permanent: true },
-      { source: '/opiniao',                         destination: '/colunistas',     permanent: true },
+      // ── Colunistas (antigo Opinião / Politicando) ────────
+      { source: '/category/politicando',            destination: '/colunistas',                          permanent: true },
+      { source: '/category/opiniao',                destination: '/colunistas',                          permanent: true },
+      { source: '/opiniao',                         destination: '/colunistas',                          permanent: true },
+      { source: '/colunistas/politicando',          destination: '/colunistas/elaine-cristina-amaral',   permanent: true },
 
       // ── WP interno (→ home) ───────────────────────────────
       { source: '/category/featured',               destination: '/',               permanent: true },

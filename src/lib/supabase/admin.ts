@@ -20,6 +20,7 @@ export interface ArticleInput {
   source_type: string
   origin_badge?: string
   columnist_id?: string | null
+  theme_slug?: string | null
   seo_title?: string
   seo_description?: string
   seo_keywords?: string[]

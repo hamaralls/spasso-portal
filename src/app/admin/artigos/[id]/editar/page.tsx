@@ -25,6 +25,7 @@ export default async function EditarArtigoPage({ params }: Props) {
     slug: article.slug ?? '',
     excerpt: article.excerpt ?? '',
     category_slug: article.category_slug ?? '',
+    theme_slug: article.theme_slug ?? '',
     content_type: article.content_type ?? 'news',
     source_type: article.source_type ?? 'original',
     origin_badge: article.origin_badge ?? '',
@@ -34,6 +35,7 @@ export default async function EditarArtigoPage({ params }: Props) {
     status: article.status as 'draft' | 'published' | 'archived',
     content: article.content ?? { rendered: '' },
     columnist_id: article.columnist_id ?? '',
+    published_at: article.published_at ?? '',
   }
 
   return (

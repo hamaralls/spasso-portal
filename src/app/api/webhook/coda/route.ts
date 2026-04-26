@@ -21,6 +21,11 @@ const VALID_CATEGORY_SLUGS = new Set([
   'sumare','tecnologia',
 ])
 
+const VALID_THEME_SLUGS = new Set([
+  'saude','politica','economia','educacao','esporte','cultura-e-lazer',
+  'estilo-de-vida','tecnologia','meio-ambiente','empregos','seguranca','infraestrutura',
+])
+
 // Converte data do Coda (DD/MM/YY ou DD/MM/YYYY) → ISO string (YYYY-MM-DDTHH:mm:ssZ)
 function parseCodaDate(raw?: string): string | undefined {
   if (!raw) return undefined
@@ -77,8 +82,12 @@ export async function POST(request: Request) {
   const coda_image_url    = body.coda_image_url    as string | undefined
   const rawCategorySlug   = ((body.category_slug as string | undefined) ?? '').trim()
   const category_slug     = VALID_CATEGORY_SLUGS.has(rawCategorySlug) ? rawCategorySlug : undefined
-  const published_at       = parseCodaDate(body.published_at as string | undefined)
-  const status             = body.status             as string | undefined
+  const rawThemeSlug      = ((body.theme_slug as string | undefined) ?? '').trim()
+  const theme_slug        = VALID_THEME_SLUGS.has(rawThemeSlug) ? rawThemeSlug : undefined
+  const published_at      = parseCodaDate(body.published_at as string | undefined)
+  const status            = body.status             as string | undefined
+  const seo_title         = (body.seo_title as string | undefined)?.trim() || undefined
+  const seo_description   = (body.seo_description as string | undefined)?.trim() || undefined
 
   if (!title || !slug) {
     return Response.json({ error: 'Campos obrigatórios: title, slug' }, { status: 400 })
@@ -106,8 +115,11 @@ export async function POST(request: Request) {
         excerpt:            excerpt            || null,
         featured_image_url: imageUrl,
         category_slug:      category_slug      || null,
+        theme_slug:         theme_slug         || null,
         status:             articleStatus,
         published_at:       articleStatus === 'published' ? (published_at ?? new Date().toISOString()) : null,
+        seo_title:          seo_title ?? title.slice(0, 60),
+        seo_description:    seo_description ?? (excerpt ? excerpt.slice(0, 160) : null),
         reading_time_min:   mins,
       })
       .eq('id', existing.id)
@@ -126,10 +138,13 @@ export async function POST(request: Request) {
       excerpt:            excerpt            || null,
       featured_image_url: imageUrl,
       category_slug:      category_slug      || null,
+      theme_slug:         theme_slug         || null,
       status:             articleStatus,
       published_at:       articleStatus === 'published' ? (published_at ?? new Date().toISOString()) : null,
       content_type:       'news',
       source_type:        'original',
+      seo_title:          seo_title ?? title.slice(0, 60),
+      seo_description:    seo_description ?? (excerpt ? excerpt.slice(0, 160) : null),
       reading_time_min:   mins,
     })
     .select('id, slug')

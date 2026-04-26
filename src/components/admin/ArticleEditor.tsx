@@ -15,6 +15,7 @@ interface ArticleData {
   slug: string
   excerpt: string
   category_slug: string
+  theme_slug?: string
   content_type: string
   source_type: string
   origin_badge: string
@@ -24,6 +25,32 @@ interface ArticleData {
   status: 'draft' | 'published' | 'archived'
   content: { rendered: string }
   columnist_id?: string
+  published_at?: string
+}
+
+// Slugs geográficos — exibem o select de Tema
+const GEO_SLUGS = new Set(['','sumare','hortolandia','nova-odessa','campinas','paulinia',
+  'monte-mor','santa-barbara-doeste','outras-cidades','rmc','brasil'])
+
+const TEMAS = [
+  { slug: 'saude',          nome: 'Saúde' },
+  { slug: 'politica',       nome: 'Política' },
+  { slug: 'economia',       nome: 'Economia' },
+  { slug: 'educacao',       nome: 'Educação' },
+  { slug: 'esporte',        nome: 'Esporte' },
+  { slug: 'cultura-e-lazer',nome: 'Cultura e Lazer' },
+  { slug: 'estilo-de-vida', nome: 'Estilo de Vida' },
+  { slug: 'tecnologia',     nome: 'Tecnologia' },
+  { slug: 'meio-ambiente',  nome: 'Meio Ambiente' },
+  { slug: 'empregos',       nome: 'Empregos' },
+  { slug: 'seguranca',      nome: 'Segurança' },
+  { slug: 'infraestrutura', nome: 'Infraestrutura' },
+]
+
+// Converte ISO UTC → input datetime-local em BRT (UTC-3)
+function utcToBrtInput(iso: string): string {
+  const brtMs = new Date(iso).getTime() - 3 * 3600 * 1000
+  return new Date(brtMs).toISOString().slice(0, 16)
 }
 
 interface Props {
@@ -56,6 +83,10 @@ export default function ArticleEditor({ categories, columnists = [], initial }: 
   const [sourceType, setSourceType]   = useState(initial?.source_type ?? 'original')
   const [originBadge, setOriginBadge] = useState(initial?.origin_badge ?? '')
   const [columnistId, setColumnistId] = useState(initial?.columnist_id ?? '')
+  const [themeSlug, setThemeSlug]   = useState(initial?.theme_slug ?? '')
+  const [publishedAt, setPublishedAt] = useState(
+    initial?.published_at ? utcToBrtInput(initial.published_at) : ''
+  )
   const [coverUrl, setCoverUrl]     = useState(initial?.featured_image_url ?? '')
   const [seoTitle, setSeoTitle]     = useState(initial?.seo_title ?? '')
   const [seoDesc, setSeoDesc]       = useState(initial?.seo_description ?? '')
@@ -142,9 +173,11 @@ export default function ArticleEditor({ categories, columnists = [], initial }: 
       source_type: sourceType,
       origin_badge: originBadge || null,
       columnist_id: columnistId || null,
+      theme_slug: themeSlug || null,
       featured_image_url: coverUrl || null,
       seo_title: seoTitle || null,
       seo_description: seoDesc || null,
+      published_at: publishedAt ? `${publishedAt}:00-03:00` : undefined,
       status,
       content: { rendered: editor?.getHTML() ?? '' },
     }
@@ -254,6 +287,16 @@ export default function ArticleEditor({ categories, columnists = [], initial }: 
 
         {/* Campos */}
         <div className="p-4 space-y-4 flex-1">
+          <Field label="Data de publicação">
+            <input
+              type="datetime-local"
+              value={publishedAt}
+              onChange={(e) => setPublishedAt(e.target.value)}
+              className={inputCls}
+            />
+            <p className="text-xs text-gray-400 mt-1">Horário de Brasília (UTC-3)</p>
+          </Field>
+
           <Field label="Categoria">
             <select value={category} onChange={(e) => setCategory(e.target.value)} className={selectCls}>
               <option value="">— Sem categoria —</option>
@@ -262,6 +305,17 @@ export default function ArticleEditor({ categories, columnists = [], initial }: 
               ))}
             </select>
           </Field>
+
+          {GEO_SLUGS.has(category) && (
+            <Field label="Tema">
+              <select value={themeSlug} onChange={(e) => setThemeSlug(e.target.value)} className={selectCls}>
+                <option value="">— Sem tema —</option>
+                {TEMAS.map((t) => (
+                  <option key={t.slug} value={t.slug}>{t.nome}</option>
+                ))}
+              </select>
+            </Field>
+          )}
 
           {category === 'colunistas' && columnists.length > 0 && (
             <Field label="Colunista">

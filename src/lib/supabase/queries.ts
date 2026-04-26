@@ -65,6 +65,21 @@ export async function getArtigosPorCategorias(
   return data ?? []
 }
 
+// ── Home sections: por tema (theme_slug OR category_slug) ────────────────────
+
+export async function getArtigosPorTema(
+  slug: string,
+  limit = 10
+): Promise<ArticlePublico[]> {
+  const { data } = await getSupabase()
+    .from('artigos_publicados')
+    .select('*')
+    .or(`theme_slug.eq.${slug},category_slug.eq.${slug}`)
+    .order('published_at', { ascending: false })
+    .limit(limit)
+  return data ?? []
+}
+
 // ── Artigo completo (inclui content) ─────────────────────────────────────────
 
 export async function getArtigoCompleto(slug: string) {

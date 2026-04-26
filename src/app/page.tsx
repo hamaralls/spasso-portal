@@ -4,7 +4,7 @@ import Badge from '@/components/Badge'
 import ArticleCard from '@/components/ArticleCard'
 import SectionHeader from '@/components/SectionHeader'
 import { AdUnit } from '@/components/AdUnit'
-import { getArtigosRecentes, getArtigosPorCategorias, getColunistas } from '@/lib/supabase/queries'
+import { getArtigosRecentes, getArtigosPorCategorias, getArtigosPorTema, getColunistas } from '@/lib/supabase/queries'
 import type { ArticlePublico } from '@/types'
 
 export const runtime = 'edge'
@@ -175,9 +175,9 @@ export default async function Home() {
     getArtigosPorCategorias(['sumare', 'hortolandia', 'nova-odessa', 'campinas', 'paulinia', 'monte-mor', 'santa-barbara-doeste', 'outras-cidades', 'rmc'], 16),
     getArtigosPorCategorias(['estilo-de-vida', 'cultura-e-lazer', 'eventos'], 10),
     getArtigosPorCategorias(['brasil'], 10),
-    getArtigosPorCategorias(['saude'], 10),
-    getArtigosPorCategorias(['politica'], 6),
-    getArtigosPorCategorias(['economia'], 10),
+    getArtigosPorTema('saude', 10),
+    getArtigosPorTema('politica', 6),
+    getArtigosPorTema('economia', 10),
     getArtigosPorCategorias(['colunistas'], 4),
     getColunistas(),
   ])

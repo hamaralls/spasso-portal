@@ -38,6 +38,7 @@ export interface Article {
   featured_image_url: string | null
   status: ArticleStatus
   category_slug: string | null
+  theme_slug: string | null
   content_type: ContentType
   source_type: SourceType
   origin_badge: string | null
@@ -65,6 +66,7 @@ export interface ArticlePublico {
   source_type: SourceType
   origin_badge: string | null
   category_slug: string | null
+  theme_slug: string | null
   published_at: string
   views: number
   reading_time_min: number | null

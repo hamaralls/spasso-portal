@@ -278,8 +278,8 @@ export default async function SlugPage({ params, searchParams }: Props) {
             dangerouslySetInnerHTML={{ __html: htmlContent }}
           />
 
-          {/* Badge de origem */}
-          {artigo.origin_badge && (
+          {/* Badge de origem — só para conteúdo de terceiros sem colunista cadastrado */}
+          {artigo.origin_badge && !colData && (
             <div className="mt-6 border border-gray-200 rounded-lg p-4 bg-gray-50 text-sm text-gray-600">
               <p className="font-semibold text-gray-800 text-xs uppercase tracking-wide mb-1">
                 Conteúdo de terceiros

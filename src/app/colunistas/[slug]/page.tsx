@@ -53,11 +53,11 @@ export default async function ColunistaPaginaPage({ params, searchParams }: Prop
   return (
     <div className="bg-white min-h-screen">
       {/* Hero do colunista */}
-      <div className="border-b border-gray-100">
-        <div className="max-w-3xl mx-auto px-4 py-10">
+      <div className="border-b-4 border-[#f5821f]">
+        <div className="max-w-3xl mx-auto px-4 pt-6 pb-10">
 
           {/* Breadcrumb */}
-          <nav className="text-xs text-gray-400 mb-6 flex items-center gap-1.5">
+          <nav className="text-xs text-gray-400 mb-8 flex items-center gap-1.5">
             <Link href="/" className="hover:text-[#f5821f]">Home</Link>
             <span>/</span>
             <Link href="/colunistas" className="hover:text-[#f5821f]">Colunistas</Link>
@@ -65,48 +65,48 @@ export default async function ColunistaPaginaPage({ params, searchParams }: Prop
             <span className="text-gray-600">{col.name}</span>
           </nav>
 
-          <div className="flex flex-col sm:flex-row items-center sm:items-start gap-6">
-            {/* Avatar */}
+          <div className="flex flex-col sm:flex-row items-center sm:items-start gap-7">
+            {/* Avatar — maior e com anel laranja */}
             <div
-              className="w-28 h-28 rounded-full overflow-hidden shrink-0 flex items-center justify-center"
+              className="w-36 h-36 rounded-full overflow-hidden shrink-0 flex items-center justify-center ring-4 ring-[#f5821f] ring-offset-2"
               style={{ background: isPerson && col.avatar_url ? undefined : '#f5821f1a' }}
             >
               {isPerson && col.avatar_url ? (
                 <Image
                   src={col.avatar_url}
                   alt={col.name}
-                  width={112}
-                  height={112}
+                  width={144}
+                  height={144}
                   className="object-cover w-full h-full"
                   priority
                 />
               ) : (
-                <span className="text-4xl font-extrabold text-[#f5821f]">{initials}</span>
+                <span className="text-5xl font-extrabold text-[#f5821f]">{initials}</span>
               )}
             </div>
 
             {/* Info */}
-            <div className="text-center sm:text-left">
-              <span className="inline-block text-[10px] font-bold uppercase tracking-widest px-2 py-0.5 rounded mb-2"
+            <div className="text-center sm:text-left flex flex-col justify-center">
+              <span className="inline-block text-[10px] font-bold uppercase tracking-widest px-2.5 py-1 rounded-full mb-3 self-center sm:self-start"
                 style={{
-                  background: isPerson ? '#f5821f1a' : '#f5f5f5',
-                  color: isPerson ? '#f5821f' : '#6b7280',
+                  background: isPerson ? '#f5821f' : '#f5f5f5',
+                  color: isPerson ? '#fff' : '#6b7280',
                 }}
               >
                 {isPerson ? 'Colunista' : 'Editorial'}
               </span>
 
-              <h1 className="text-3xl font-extrabold text-[#1a1a1a] leading-tight">
+              <h1 className="text-4xl font-extrabold text-[#1a1a1a] leading-tight">
                 {col.name}
               </h1>
 
               {bioText && (
-                <p className="mt-3 text-gray-600 leading-relaxed max-w-xl text-sm">
+                <p className="mt-4 text-gray-600 leading-relaxed max-w-xl text-sm">
                   {bioText}
                 </p>
               )}
 
-              <p className="mt-3 text-xs text-gray-400">
+              <p className="mt-4 text-xs text-gray-400">
                 {total} {total === 1 ? 'publicação' : 'publicações'}
               </p>
             </div>

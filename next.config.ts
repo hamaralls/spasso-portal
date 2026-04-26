@@ -21,6 +21,26 @@ const nextConfig: NextConfig = {
     ],
   },
 
+  async headers() {
+    return [
+      {
+        // Permite scrapers (WhatsApp, Telegram, Facebook) acessarem a OG image padrão
+        source: '/og-default.jpg',
+        headers: [
+          { key: 'Cache-Control', value: 'public, max-age=86400' },
+          { key: 'X-Robots-Tag', value: 'max-image-preview:large' },
+        ],
+      },
+      {
+        // X-Robots-Tag em todas as páginas — aumenta preview no Google Discover
+        source: '/(.*)',
+        headers: [
+          { key: 'X-Robots-Tag', value: 'max-image-preview:large' },
+        ],
+      },
+    ]
+  },
+
   async redirects() {
     // Fontes SEM trailing slash — Next.js 15 normaliza para sem barra (308)
     // antes de aplicar redirects, então a source deve casar sem barra

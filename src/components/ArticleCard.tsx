@@ -20,23 +20,25 @@ export default function ArticleCard({ article, size = 'default' }: ArticleCardPr
     const isEditorial = !columnist_type || columnist_type === 'editorial'
 
     return (
-      <Link href={`/${slug}`} className="group block bg-white rounded-lg p-4 shadow-sm hover:shadow-md transition-shadow text-center">
-        <div className="mx-auto mb-3 w-16 h-16 rounded-full overflow-hidden flex items-center justify-center shrink-0"
-          style={{ background: isEditorial ? '#7c3aed1a' : undefined }}
+      <Link href={`/${slug}`} className="group flex items-start gap-3 bg-white p-4 shadow-sm hover:shadow-md transition-shadow">
+        <div className="w-11 h-11 rounded-full overflow-hidden shrink-0 flex items-center justify-center"
+          style={{ background: isEditorial || !author_avatar ? '#f5821f1a' : undefined }}
         >
           {!isEditorial && author_avatar ? (
-            <Image src={author_avatar} alt={displayName ?? ''} width={64} height={64} className="object-cover w-full h-full" />
+            <Image src={author_avatar} alt={displayName ?? ''} width={44} height={44} className="object-cover w-full h-full" />
           ) : (
-            <span className="text-xl font-bold text-[#7c3aed]">{initials}</span>
+            <span className="text-sm font-bold text-[#f5821f]">{initials}</span>
           )}
         </div>
-        {displayName && (
-          <p className="text-xs font-bold text-[#7c3aed] uppercase tracking-wide mb-2 truncate">{displayName}</p>
-        )}
-        <h3 className="text-sm font-bold text-[#1a1a1a] leading-snug group-hover:text-[#7c3aed] transition-colors line-clamp-3">
-          {title}
-        </h3>
-        <div className="mt-2 text-xs text-gray-400">{timeAgo(published_at)}</div>
+        <div className="min-w-0 flex-1">
+          {displayName && (
+            <p className="text-xs font-bold text-[#f5821f] uppercase tracking-wide truncate mb-0.5">{displayName}</p>
+          )}
+          <h3 className="text-sm font-semibold text-[#1a1a1a] leading-snug group-hover:text-[#f5821f] transition-colors line-clamp-2">
+            {title}
+          </h3>
+          <div className="mt-1 text-xs text-gray-400">{timeAgo(published_at)}</div>
+        </div>
       </Link>
     )
   }

@@ -170,7 +170,7 @@ function MetropolesGrid({
 }
 
 export default async function Home() {
-  const [recentes, regiao, culturaELazer, brasil, saude, politica, economia, opiniao, colunistas] = await Promise.all([
+  const [recentes, regiao, culturaELazer, brasil, saude, politica, economia, colunistas] = await Promise.all([
     getArtigosRecentes(17),
     getArtigosPorCategorias(['sumare', 'hortolandia', 'nova-odessa', 'campinas', 'paulinia', 'monte-mor', 'santa-barbara-doeste', 'outras-cidades', 'rmc'], 16),
     getArtigosPorCategorias(['estilo-de-vida', 'cultura-e-lazer', 'eventos'], 10),
@@ -178,7 +178,6 @@ export default async function Home() {
     getArtigosPorTema('saude', 10),
     getArtigosPorTema('politica', 6),
     getArtigosPorTema('economia', 10),
-    getArtigosPorCategorias(['colunistas'], 4),
     getColunistas(),
   ])
 
@@ -291,51 +290,41 @@ export default async function Home() {
         </div>
 
         {/* ── 3. Colunistas ── */}
-        {(opiniao.length > 0 || colunistas.length > 0) && (
+        {colunistas.length > 0 && (
           <section>
-            <SectionHeader title="Colunistas" href="/colunistas" color="#7c3aed" />
+            <SectionHeader title="Colunistas" href="/colunistas" color="#f5821f" />
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
               {colunistas.map(col => {
                 const initials = col.name.split(' ').filter(Boolean)
                   .map((n: string) => n[0].toUpperCase()).slice(0, 2).join('')
-                const latestArticle = opiniao.find(a => a.author_name === col.name) ?? opiniao[0]
-                const href = col.slug ? `/colunistas/${col.slug}` : '/colunistas'
+                const href = `/colunistas/${col.slug}`
                 return (
                   <Link key={col.id} href={href}
-                    className="group bg-white p-5 shadow-sm hover:shadow-md transition-shadow flex flex-col items-center text-center gap-3">
-                    {/* Avatar / logo — mostra imagem para qualquer tipo se tiver avatar_url */}
-                    <div className="w-20 h-20 rounded-full overflow-hidden flex items-center justify-center shrink-0"
-                      style={{ background: col.avatar_url ? undefined : '#7c3aed1a' }}>
+                    className="group flex items-start gap-3 bg-white p-4 shadow-sm hover:shadow-md transition-shadow">
+                    <div className="w-12 h-12 rounded-full overflow-hidden shrink-0 flex items-center justify-center"
+                      style={{ background: col.avatar_url ? undefined : '#f5821f1a' }}>
                       {col.avatar_url ? (
-                        <Image src={col.avatar_url} alt={col.name} width={80} height={80}
+                        <Image src={col.avatar_url} alt={col.name} width={48} height={48}
                           className="object-cover w-full h-full" />
                       ) : (
-                        <span className="text-2xl font-extrabold text-[#7c3aed]">{initials}</span>
+                        <span className="text-base font-extrabold text-[#f5821f]">{initials}</span>
                       )}
                     </div>
-                    <div className="w-full min-w-0">
-                      <p className="text-xs font-bold text-[#7c3aed] uppercase tracking-wide truncate mb-1">
+                    <div className="min-w-0 flex-1">
+                      <p className="text-xs font-bold text-[#f5821f] uppercase tracking-wide truncate mb-0.5">
                         {col.name}
                       </p>
-                      {latestArticle && (
-                        <>
-                          <p className="text-sm font-bold text-[#1a1a1a] leading-snug line-clamp-2 group-hover:text-[#7c3aed] transition-colors">
-                            {latestArticle.title}
-                          </p>
-                          {latestArticle.excerpt && (
-                            <p className="text-xs text-gray-500 mt-1 line-clamp-2 leading-relaxed">
-                              {latestArticle.excerpt.replace(/<[^>]+>/g, '')}
-                            </p>
-                          )}
-                        </>
+                      {col.lastArticle ? (
+                        <p className="text-sm font-semibold text-[#1a1a1a] leading-snug line-clamp-2 group-hover:text-[#f5821f] transition-colors">
+                          {col.lastArticle.title}
+                        </p>
+                      ) : (
+                        <p className="text-xs text-gray-400 italic">{col.bio}</p>
                       )}
                     </div>
                   </Link>
                 )
               })}
-              {colunistas.length === 0 && opiniao.map((article) => (
-                <ArticleCard key={article.id} article={article} size="columnist" />
-              ))}
             </div>
           </section>
         )}

@@ -58,9 +58,9 @@ export default async function ColunistaPaginaPage({ params, searchParams }: Prop
 
           {/* Breadcrumb */}
           <nav className="text-xs text-gray-400 mb-6 flex items-center gap-1.5">
-            <Link href="/" className="hover:text-[#7c3aed]">Home</Link>
+            <Link href="/" className="hover:text-[#f5821f]">Home</Link>
             <span>/</span>
-            <Link href="/colunistas" className="hover:text-[#7c3aed]">Colunistas</Link>
+            <Link href="/colunistas" className="hover:text-[#f5821f]">Colunistas</Link>
             <span>/</span>
             <span className="text-gray-600">{col.name}</span>
           </nav>
@@ -69,7 +69,7 @@ export default async function ColunistaPaginaPage({ params, searchParams }: Prop
             {/* Avatar */}
             <div
               className="w-28 h-28 rounded-full overflow-hidden shrink-0 flex items-center justify-center"
-              style={{ background: isPerson && col.avatar_url ? undefined : '#7c3aed1a' }}
+              style={{ background: isPerson && col.avatar_url ? undefined : '#f5821f1a' }}
             >
               {isPerson && col.avatar_url ? (
                 <Image
@@ -81,7 +81,7 @@ export default async function ColunistaPaginaPage({ params, searchParams }: Prop
                   priority
                 />
               ) : (
-                <span className="text-4xl font-extrabold text-[#7c3aed]">{initials}</span>
+                <span className="text-4xl font-extrabold text-[#f5821f]">{initials}</span>
               )}
             </div>
 
@@ -89,8 +89,8 @@ export default async function ColunistaPaginaPage({ params, searchParams }: Prop
             <div className="text-center sm:text-left">
               <span className="inline-block text-[10px] font-bold uppercase tracking-widest px-2 py-0.5 rounded mb-2"
                 style={{
-                  background: isPerson ? '#7c3aed1a' : '#f5f5f5',
-                  color: isPerson ? '#7c3aed' : '#6b7280',
+                  background: isPerson ? '#f5821f1a' : '#f5f5f5',
+                  color: isPerson ? '#f5821f' : '#6b7280',
                 }}
               >
                 {isPerson ? 'Colunista' : 'Editorial'}
@@ -119,7 +119,7 @@ export default async function ColunistaPaginaPage({ params, searchParams }: Prop
         <div className="mb-6">
           <SectionHeader
             title={isPerson ? `Artigos de ${col.name}` : 'Arquivo'}
-            color="#7c3aed"
+            color="#f5821f"
           />
         </div>
 

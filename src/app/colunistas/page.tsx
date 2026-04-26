@@ -30,7 +30,7 @@ function ColumnistCard({ col }: { col: ColunistaCom }) {
       <div className="p-5 flex items-center gap-4">
         <div
           className="w-16 h-16 rounded-full overflow-hidden shrink-0 flex items-center justify-center"
-          style={{ background: isPerson && col.avatar_url ? undefined : '#7c3aed1a' }}
+          style={{ background: isPerson && col.avatar_url ? undefined : '#f5821f1a' }}
         >
           {isPerson && col.avatar_url ? (
             <Image
@@ -41,7 +41,7 @@ function ColumnistCard({ col }: { col: ColunistaCom }) {
               className="object-cover w-full h-full"
             />
           ) : (
-            <span className="text-xl font-extrabold text-[#7c3aed]">{initials}</span>
+            <span className="text-xl font-extrabold text-[#f5821f]">{initials}</span>
           )}
         </div>
         <div className="min-w-0">
@@ -66,13 +66,13 @@ function ColumnistCard({ col }: { col: ColunistaCom }) {
               />
             </div>
           )}
-          <p className="text-xs text-gray-600 line-clamp-2 leading-snug group-hover:text-[#7c3aed] transition-colors">
+          <p className="text-xs text-gray-600 line-clamp-2 leading-snug group-hover:text-[#f5821f] transition-colors">
             {col.lastArticle.title}
           </p>
         </div>
       )}
 
-      <div className="px-5 pb-4 text-xs font-semibold text-[#7c3aed] group-hover:underline">
+      <div className="px-5 pb-4 text-xs font-semibold text-[#f5821f] group-hover:underline">
         Ver coluna →
       </div>
     </Link>
@@ -102,7 +102,7 @@ export default async function ColunistasPage({ searchParams }: { searchParams: P
     <div className="max-w-7xl mx-auto px-4 py-8 space-y-10">
 
       <div>
-        <SectionHeader title="Colunistas" color="#7c3aed" />
+        <SectionHeader title="Colunistas" color="#f5821f" />
         <p className="text-sm text-gray-500 mt-1">Opiniões, análises e colunas editoriais</p>
       </div>
 

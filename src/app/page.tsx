@@ -293,7 +293,11 @@ export default async function Home() {
         {colunistas.length > 0 && (
           <section>
             <SectionHeader title="Colunistas" href="/colunistas" color="#f5821f" />
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+            <div className={`grid gap-4 ${
+              colunistas.length === 1 ? 'grid-cols-1 max-w-sm' :
+              colunistas.length === 2 ? 'grid-cols-1 sm:grid-cols-2 max-w-2xl' :
+              'grid-cols-1 sm:grid-cols-2 lg:grid-cols-3'
+            }`}>
               {colunistas.map(col => {
                 const initials = col.name.split(' ').filter(Boolean)
                   .map((n: string) => n[0].toUpperCase()).slice(0, 2).join('')
@@ -314,12 +318,10 @@ export default async function Home() {
                       <p className="text-xs font-bold text-[#f5821f] uppercase tracking-wide truncate mb-0.5">
                         {col.name}
                       </p>
-                      {col.lastArticle ? (
+                      {col.lastArticle && (
                         <p className="text-sm font-semibold text-[#1a1a1a] leading-snug line-clamp-2 group-hover:text-[#f5821f] transition-colors">
                           {col.lastArticle.title}
                         </p>
-                      ) : (
-                        <p className="text-xs text-gray-400 italic">{col.bio}</p>
                       )}
                     </div>
                   </Link>

@@ -92,7 +92,7 @@ const nextConfig: NextConfig = {
       { source: '/category/politicando',            destination: '/colunistas',                          permanent: true },
       { source: '/category/opiniao',                destination: '/colunistas',                          permanent: true },
       { source: '/opiniao',                         destination: '/colunistas',                          permanent: true },
-      { source: '/colunistas/politicando',          destination: '/colunistas/elaine-cristina-amaral',   permanent: true },
+      { source: '/colunistas/politicando',          destination: '/colunistas/elaine-amaral',   permanent: true },
 
       // ── WP interno (→ home) ───────────────────────────────
       { source: '/category/featured',               destination: '/',               permanent: true },

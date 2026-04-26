@@ -2,8 +2,8 @@ import { notFound } from 'next/navigation'
 import type { Metadata } from 'next'
 import Image from 'next/image'
 import Link from 'next/link'
-import ArticleCard from '@/components/ArticleCard'
 import SectionHeader from '@/components/SectionHeader'
+import { timeAgo } from '@/lib/format'
 import { getColunistaPorSlug, getArtigosPorColunista } from '@/lib/supabase/queries'
 
 export const runtime = 'edge'
@@ -128,9 +128,20 @@ export default async function ColunistaPaginaPage({ params, searchParams }: Prop
             <p>Nenhuma publicação ainda.</p>
           </div>
         ) : (
-          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4">
+          <div className="divide-y divide-gray-100">
             {articles.map(article => (
-              <ArticleCard key={article.id} article={article} size="default" />
+              <Link key={article.id} href={`/${article.slug}`}
+                className="group flex flex-col gap-1 py-5 hover:bg-gray-50 transition-colors px-1 -mx-1">
+                <h3 className="font-bold text-[#1a1a1a] leading-snug group-hover:text-[#f5821f] transition-colors text-base">
+                  {article.title}
+                </h3>
+                {article.excerpt && (
+                  <p className="text-sm text-gray-500 leading-relaxed line-clamp-3">
+                    {article.excerpt.replace(/<[^>]+>/g, '')}
+                  </p>
+                )}
+                <span className="text-xs text-gray-400 mt-0.5">{timeAgo(article.published_at)}</span>
+              </Link>
             ))}
           </div>
         )}

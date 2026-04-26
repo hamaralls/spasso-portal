@@ -131,7 +131,7 @@ export type ColunistaCom = {
   bio: string | null
   subtitle: string | null
   active: boolean
-  lastArticle: { slug: string; title: string; featured_image_url: string | null } | null
+  lastArticle: { slug: string; title: string; excerpt: string | null; featured_image_url: string | null } | null
 }
 
 export async function getColunistas(): Promise<ColunistaCom[]> {
@@ -146,15 +146,15 @@ export async function getColunistas(): Promise<ColunistaCom[]> {
   const slugs = cols.map(c => c.slug)
   const { data: recents } = await getSupabase()
     .from('artigos_publicados')
-    .select('slug, title, featured_image_url, columnist_slug')
+    .select('slug, title, excerpt, featured_image_url, columnist_slug')
     .in('columnist_slug', slugs)
     .order('published_at', { ascending: false })
     .limit(50)
 
-  const lastBySlug: Record<string, { slug: string; title: string; featured_image_url: string | null }> = {}
+  const lastBySlug: Record<string, { slug: string; title: string; excerpt: string | null; featured_image_url: string | null }> = {}
   for (const a of recents ?? []) {
     if (a.columnist_slug && !lastBySlug[a.columnist_slug]) {
-      lastBySlug[a.columnist_slug] = { slug: a.slug, title: a.title, featured_image_url: a.featured_image_url }
+      lastBySlug[a.columnist_slug] = { slug: a.slug, title: a.title, excerpt: a.excerpt ?? null, featured_image_url: a.featured_image_url }
     }
   }
 

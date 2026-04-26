@@ -319,9 +319,16 @@ export default async function Home() {
                         {col.name}
                       </p>
                       {col.lastArticle && (
-                        <p className="text-sm font-semibold text-[#1a1a1a] leading-snug line-clamp-2 group-hover:text-[#f5821f] transition-colors">
-                          {col.lastArticle.title}
-                        </p>
+                        <>
+                          <p className="text-sm font-semibold text-[#1a1a1a] leading-snug line-clamp-1 group-hover:text-[#f5821f] transition-colors">
+                            {col.lastArticle.title}
+                          </p>
+                          {col.lastArticle.excerpt && (
+                            <p className="text-xs text-gray-500 leading-relaxed line-clamp-2 mt-0.5">
+                              {col.lastArticle.excerpt.replace(/<[^>]+>/g, '')}
+                            </p>
+                          )}
+                        </>
                       )}
                     </div>
                   </Link>

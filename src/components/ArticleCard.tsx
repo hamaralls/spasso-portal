@@ -121,6 +121,11 @@ export default function ArticleCard({ article, size = 'default' }: ArticleCardPr
   }
 
   // default — horizontal: imagem esq (10:9), badge acima do título
+  const displayName = author_name ?? origin_badge ?? null
+  const initials = displayName
+    ? displayName.split(' ').filter(Boolean).map((n: string) => n[0].toUpperCase()).slice(0, 2).join('')
+    : null
+
   return (
     <Link href={`/${slug}`}
       className="group flex gap-3 items-start bg-white p-2 shadow-sm hover:shadow-md transition-shadow">
@@ -133,6 +138,13 @@ export default function ArticleCard({ article, size = 'default' }: ArticleCardPr
             className="object-cover transition-transform duration-300 group-hover:scale-105"
             sizes="96px"
           />
+        ) : columnist_type && author_avatar ? (
+          <Image src={author_avatar} alt={displayName ?? ''} fill className="object-cover" sizes="96px" />
+        ) : columnist_type ? (
+          <div className="absolute inset-0 flex flex-col items-center justify-center gap-1" style={{ background: '#f5821f15' }}>
+            <span className="text-xl font-extrabold text-[#f5821f]">{initials ?? '?'}</span>
+            <span className="text-[9px] font-bold text-[#f5821f] uppercase tracking-wide px-1 text-center leading-tight line-clamp-2 max-w-[88px]">{displayName}</span>
+          </div>
         ) : (
           <div className="absolute inset-0 bg-gradient-to-br from-gray-100 to-gray-200" />
         )}

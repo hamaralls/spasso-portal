@@ -1,6 +1,5 @@
 import { notFound } from 'next/navigation'
 import type { Metadata } from 'next'
-import Image from 'next/image'
 import Link from 'next/link'
 import SectionHeader from '@/components/SectionHeader'
 import { timeAgo } from '@/lib/format'
@@ -70,19 +69,17 @@ export default async function ColunistaPaginaPage({ params, searchParams }: Prop
             <div
               className="w-36 h-36 rounded-full overflow-hidden shrink-0 flex items-center justify-center"
               style={{
-                background: isPerson && col.avatar_url ? undefined : '#f5821f1a',
+                background: col.avatar_url ? undefined : '#f5821f1a',
                 outline: '4px solid #f5821f',
                 outlineOffset: '3px',
               }}
             >
-              {isPerson && col.avatar_url ? (
-                <Image
+              {col.avatar_url ? (
+                // eslint-disable-next-line @next/next/no-img-element
+                <img
                   src={col.avatar_url}
                   alt={col.name}
-                  width={144}
-                  height={144}
                   className="object-cover w-full h-full"
-                  priority
                 />
               ) : (
                 <span className="text-5xl font-extrabold text-[#f5821f]">{initials}</span>

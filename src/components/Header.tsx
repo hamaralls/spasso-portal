@@ -201,7 +201,7 @@ export default function Header() {
               {mobileOpen ? <X size={20} /> : <Menu size={20} />}
               <span className="text-[11px] font-medium">{mobileOpen ? 'Fechar' : 'Menu'}</span>
             </button>
-            <span className={`hidden lg:block text-gray-500 leading-tight transition-all duration-300 ${scrolled ? 'text-[10px]' : 'text-[11px]'}`}>
+            <span className={`hidden lg:block text-gray-500 leading-tight transition-all duration-300 ${scrolled ? 'text-xs' : 'text-sm'}`}>
               {formatDate()}
             </span>
           </div>

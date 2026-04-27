@@ -23,6 +23,15 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     title: `${col.name} — Spasso Cidades`,
     description,
     alternates: { canonical: `/colunistas/${col.slug}` },
+    openGraph: {
+      title: `${col.name} — Spasso Cidades`,
+      description,
+      url: `https://jornalspassocidades.com.br/colunistas/${col.slug}`,
+      type: 'profile',
+      images: col.avatar_url
+        ? [{ url: col.avatar_url, width: 400, height: 400, alt: col.name }]
+        : [{ url: 'https://jornalspassocidades.com.br/og-default.jpg', width: 1200, height: 630 }],
+    },
   }
 }
 
@@ -53,7 +62,7 @@ export default async function ColunistaPaginaPage({ params, searchParams }: Prop
   return (
     <div className="bg-white min-h-screen">
       {/* Hero do colunista */}
-      <div className="border-b-4 border-[#f5821f]">
+      <div className="border-b border-gray-200">
         <div className="max-w-3xl mx-auto px-4 pt-6 pb-10">
 
           {/* Breadcrumb */}

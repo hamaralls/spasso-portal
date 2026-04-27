@@ -2,7 +2,7 @@ import Link from 'next/link'
 import Image from 'next/image'
 import { createClient } from '@/lib/supabase/server'
 import { listArticles } from '@/lib/supabase/admin'
-import { formatDateShort } from '@/lib/format'
+import { formatDateTimeAdmin } from '@/lib/format'
 import DeleteButton from '@/components/admin/DeleteButton'
 
 export const runtime = 'edge'
@@ -64,7 +64,7 @@ export default async function ArtigosPage({ searchParams }: Props) {
 
       {/* Filtro status */}
       <div className="flex gap-2 mb-3 flex-wrap">
-        {['all', 'published', 'draft', 'archived'].map((s) => (
+        {['all', 'published', 'scheduled', 'draft', 'archived'].map((s) => (
           <Link
             key={s}
             href={filterHref({ status: s })}
@@ -154,8 +154,21 @@ export default async function ArtigosPage({ searchParams }: Props) {
                       {STATUS_LABEL[article.status] ?? article.status}
                     </span>
                   </td>
-                  <td className="px-4 py-3 text-gray-400 text-xs hidden lg:table-cell">
-                    {article.published_at ? formatDateShort(article.published_at) : '—'}
+                  <td className="px-4 py-3 text-xs hidden lg:table-cell" style={{ minWidth: '100px' }}>
+                    {article.published_at ? (() => {
+                      const { date, time } = formatDateTimeAdmin(article.published_at)
+                      const isScheduled = article.status === 'scheduled'
+                      return (
+                        <span className="flex flex-col gap-0.5">
+                          <span className={isScheduled ? 'text-blue-600 font-semibold' : 'text-gray-500'}>
+                            {isScheduled ? '⏰ ' : ''}{date}
+                          </span>
+                          <span className={isScheduled ? 'text-blue-400' : 'text-gray-400'}>
+                            {time}
+                          </span>
+                        </span>
+                      )
+                    })() : <span className="text-gray-300">—</span>}
                   </td>
                   <td className="px-4 py-3 text-right whitespace-nowrap">
                     <Link

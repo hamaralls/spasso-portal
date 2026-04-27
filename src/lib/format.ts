@@ -15,6 +15,14 @@ export function formatDateShort(dateStr: string): string {
   })
 }
 
+export function formatDateTimeAdmin(dateStr: string): { date: string; time: string } {
+  const d = new Date(dateStr)
+  return {
+    date: d.toLocaleDateString('pt-BR', { day: '2-digit', month: '2-digit', year: '2-digit', timeZone: 'America/Sao_Paulo' }),
+    time: d.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit', timeZone: 'America/Sao_Paulo' }),
+  }
+}
+
 export function readingTime(htmlContent: string): number {
   const text = htmlContent.replace(/<[^>]+>/g, ' ')
   const words = text.trim().split(/\s+/).filter(Boolean).length

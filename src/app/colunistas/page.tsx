@@ -13,6 +13,13 @@ export const metadata: Metadata = {
   title: 'Colunistas — Spasso Cidades',
   description: 'Opiniões, análises e colunas editoriais do Jornal Spasso Cidades.',
   alternates: { canonical: '/colunistas' },
+  openGraph: {
+    title: 'Colunistas — Spasso Cidades',
+    description: 'Opiniões, análises e colunas editoriais do Jornal Spasso Cidades.',
+    url: 'https://jornalspassocidades.com.br/colunistas',
+    type: 'website',
+    images: [{ url: 'https://jornalspassocidades.com.br/og-default.jpg', width: 1200, height: 630 }],
+  },
 }
 
 function ColumnistCard({ col }: { col: ColunistaCom }) {

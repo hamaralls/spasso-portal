@@ -332,6 +332,40 @@ export async function getArtigoProximo(
   return data?.[0] ?? null
 }
 
+// ── Edições Semanais (público) ───────────────────────────────────────────────
+
+import type { WeeklyEdition } from '@/types'
+
+export async function getEdicoesSemanais(limit = 50): Promise<WeeklyEdition[]> {
+  const { data } = await getSupabase()
+    .from('weekly_editions')
+    .select('*')
+    .eq('active', true)
+    .order('published_date', { ascending: false })
+    .limit(limit)
+  return (data ?? []) as WeeklyEdition[]
+}
+
+export async function getEdicaoPorId(id: string): Promise<WeeklyEdition | null> {
+  const { data } = await getSupabase()
+    .from('weekly_editions')
+    .select('*')
+    .eq('id', id)
+    .eq('active', true)
+    .single()
+  return (data ?? null) as WeeklyEdition | null
+}
+
+export async function getUltimaEdicao(): Promise<WeeklyEdition | null> {
+  const { data } = await getSupabase()
+    .from('weekly_editions')
+    .select('*')
+    .eq('active', true)
+    .order('published_date', { ascending: false })
+    .limit(1)
+  return (data?.[0] ?? null) as WeeklyEdition | null
+}
+
 // ── Sitemap: todos os slugs publicados ───────────────────────────────────────
 
 export async function getAllArtigosSlugs(): Promise<

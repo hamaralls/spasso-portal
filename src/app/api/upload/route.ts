@@ -3,8 +3,8 @@ import { uploadToR2, r2Key } from '@/lib/r2'
 
 export const runtime = 'edge'
 
-const ALLOWED_TYPES = ['image/jpeg', 'image/jpg', 'image/png', 'image/webp', 'image/gif']
-const MAX_SIZE = 10 * 1024 * 1024 // 10MB
+const ALLOWED_TYPES = ['image/jpeg', 'image/jpg', 'image/png', 'image/webp', 'image/gif', 'application/pdf']
+const MAX_SIZE = 50 * 1024 * 1024 // 50MB (PDFs podem ser maiores)
 
 export async function POST(request: Request) {
   const sb = await createClient()

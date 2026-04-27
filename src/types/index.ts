@@ -101,6 +101,18 @@ export interface Columnist {
   created_at: string
 }
 
+export interface WeeklyEdition {
+  id: string
+  edition_number: number | null
+  published_date: string
+  title: string | null
+  pdf_url: string
+  cover_url: string | null
+  description: string | null
+  active: boolean
+  created_at: string
+}
+
 export interface Redirect {
   id: string
   source: string

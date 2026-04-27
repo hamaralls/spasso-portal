@@ -25,6 +25,7 @@ export default async function AdminLayout({ children }: { children: React.ReactN
           <NavLink href="/admin">📊 Dashboard</NavLink>
           <NavLink href="/admin/artigos">📝 Artigos</NavLink>
           <NavLink href="/admin/colunistas">👤 Colunistas</NavLink>
+          <NavLink href="/admin/edicoes">📰 Edição de Sexta</NavLink>
         </nav>
 
         <div className="p-3 border-t border-gray-100">

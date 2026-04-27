@@ -185,3 +185,65 @@ export async function deleteColumnist(id: string) {
   const { error } = await sb.from('columnists').delete().eq('id', id)
   if (error) throw error
 }
+
+// ── Edições Semanais ─────────────────────────────────────────────────────────
+
+export interface EditionInput {
+  edition_number?: number | null
+  published_date: string
+  title?: string | null
+  pdf_url: string
+  cover_url?: string | null
+  description?: string | null
+  active?: boolean
+}
+
+export async function listEditions() {
+  const sb = getAdminClient()
+  const { data, error } = await sb
+    .from('weekly_editions')
+    .select('*')
+    .order('published_date', { ascending: false })
+  if (error) throw error
+  return data ?? []
+}
+
+export async function getEditionById(id: string) {
+  const sb = getAdminClient()
+  const { data, error } = await sb
+    .from('weekly_editions')
+    .select('*')
+    .eq('id', id)
+    .single()
+  if (error) throw error
+  return data
+}
+
+export async function createEdition(input: EditionInput) {
+  const sb = getAdminClient()
+  const { data, error } = await sb
+    .from('weekly_editions')
+    .insert(input)
+    .select('id')
+    .single()
+  if (error) throw error
+  return data
+}
+
+export async function updateEdition(id: string, input: Partial<EditionInput>) {
+  const sb = getAdminClient()
+  const { data, error } = await sb
+    .from('weekly_editions')
+    .update(input)
+    .eq('id', id)
+    .select('id')
+    .single()
+  if (error) throw error
+  return data
+}
+
+export async function deleteEdition(id: string) {
+  const sb = getAdminClient()
+  const { error } = await sb.from('weekly_editions').delete().eq('id', id)
+  if (error) throw error
+}

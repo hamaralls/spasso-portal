@@ -4,7 +4,8 @@ import Badge from '@/components/Badge'
 import ArticleCard from '@/components/ArticleCard'
 import SectionHeader from '@/components/SectionHeader'
 import { AdUnit } from '@/components/AdUnit'
-import { getArtigosHero, getArtigosRecentes, getArtigosPorCategorias, getArtigosPorTema, getColunistas } from '@/lib/supabase/queries'
+import { getArtigosHero, getArtigosRecentes, getArtigosPorCategorias, getArtigosPorTema, getColunistas, getUltimaEdicao } from '@/lib/supabase/queries'
+import EdicaoSemanalWidget from '@/components/EdicaoSemanalWidget'
 import type { ArticlePublico } from '@/types'
 
 export const runtime = 'edge'
@@ -170,7 +171,7 @@ function MetropolesGrid({
 }
 
 export default async function Home() {
-  const [hero, ultimas, regiao, culturaELazer, brasil, saude, politica, economia, colunistas] = await Promise.all([
+  const [hero, ultimas, regiao, culturaELazer, brasil, saude, politica, economia, colunistas, ultimaEdicao] = await Promise.all([
     getArtigosHero(),
     getArtigosRecentes(12),
     getArtigosPorCategorias(['sumare', 'hortolandia', 'nova-odessa', 'campinas', 'paulinia', 'monte-mor', 'santa-barbara-doeste', 'outras-cidades', 'rmc'], 16),
@@ -180,6 +181,7 @@ export default async function Home() {
     getArtigosPorTema('politica', 6),
     getArtigosPorTema('economia', 10),
     getColunistas(),
+    getUltimaEdicao(),
   ])
 
   return (
@@ -353,6 +355,11 @@ export default async function Home() {
               })}
             </div>
           </section>
+        )}
+
+        {/* ── Edição de Sexta widget ── */}
+        {ultimaEdicao && (
+          <EdicaoSemanalWidget edition={ultimaEdicao} />
         )}
 
         {/* ── 4. Brasil — MetropolesGrid, sem extras ── */}

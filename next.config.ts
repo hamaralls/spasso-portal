@@ -129,6 +129,10 @@ const nextConfig: NextConfig = {
       { source: '/politica-de-privacidade/',        destination: '/privacidade',    permanent: true },
       { source: '/sobre-nos',                       destination: '/sobre',          permanent: true },
       { source: '/sobre-nos/',                      destination: '/sobre',          permanent: true },
+
+      // ── Edição de Sexta (antigo nome Edição Impressa) ────
+      { source: '/edicao-impressa',                 destination: '/edicao-de-sexta', permanent: true },
+      { source: '/edicao-impressa/:path*',          destination: '/edicao-de-sexta/:path*', permanent: true },
     ]
   },
 }

@@ -64,7 +64,7 @@ const MOBILE_ITEMS = [
   { name: 'Estilo de Vida',        href: '/estilo-de-vida' },
   { name: 'Entretenimento',        href: '/eventos' },
   { name: 'Colunistas',            href: '/colunistas' },
-  { name: 'Ed. Impressa',          href: '/edicao-impressa' },
+  { name: 'Edição de Sexta',       href: '/edicao-de-sexta' },
   { name: 'Anuncie',               href: '/anuncie' },
   { name: 'Buscar',                href: '/busca' },
 ]
@@ -250,6 +250,8 @@ export default function Header() {
             />
 
             <Link href="/colunistas" className={NAV_LINK}>Colunistas</Link>
+
+            <Link href="/edicao-de-sexta" className={NAV_LINK}>Ed. de Sexta</Link>
 
           </div>
         </div>

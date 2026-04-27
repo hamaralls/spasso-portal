@@ -87,41 +87,45 @@ export default async function SlugPage({ params, searchParams }: Props) {
           <p className="text-sm text-gray-500">{total} notícias</p>
         </div>
 
-        {articles.length === 0 ? (
-          <div className="text-center py-16 text-gray-400">
-            <p>Nenhuma notícia publicada ainda.</p>
-          </div>
-        ) : (
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-            {articles.map((article) => (
-              <ArticleCard key={article.id} article={article} />
-            ))}
-          </div>
-        )}
+        <div className="lg:grid lg:grid-cols-[1fr_300px] lg:gap-8 lg:items-start">
+          <div>
+            {articles.length === 0 ? (
+              <div className="text-center py-16 text-gray-400">
+                <p>Nenhuma notícia publicada ainda.</p>
+              </div>
+            ) : (
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                {articles.map((article) => (
+                  <ArticleCard key={article.id} article={article} />
+                ))}
+              </div>
+            )}
 
-        {totalPages > 1 && (
-          <div className="flex justify-center gap-2 mt-10">
-            {page > 1 && (
-              <a
-                href={`/${slug}?page=${page - 1}`}
-                className="px-4 py-2 rounded border border-gray-300 text-sm font-medium hover:bg-gray-50 transition-colors"
-              >
-                ← Anterior
-              </a>
-            )}
-            <span className="px-4 py-2 text-sm text-gray-500">
-              Página {page} de {totalPages}
-            </span>
-            {page < totalPages && (
-              <a
-                href={`/${slug}?page=${page + 1}`}
-                className="px-4 py-2 rounded border border-gray-300 text-sm font-medium hover:bg-gray-50 transition-colors"
-              >
-                Próxima →
-              </a>
+            {totalPages > 1 && (
+              <div className="flex justify-center gap-2 mt-10">
+                {page > 1 && (
+                  <a href={`/${slug}?page=${page - 1}`}
+                    className="px-4 py-2 rounded border border-gray-300 text-sm font-medium hover:bg-gray-50 transition-colors">
+                    ← Anterior
+                  </a>
+                )}
+                <span className="px-4 py-2 text-sm text-gray-500">
+                  Página {page} de {totalPages}
+                </span>
+                {page < totalPages && (
+                  <a href={`/${slug}?page=${page + 1}`}
+                    className="px-4 py-2 rounded border border-gray-300 text-sm font-medium hover:bg-gray-50 transition-colors">
+                    Próxima →
+                  </a>
+                )}
+              </div>
             )}
           </div>
-        )}
+
+          <aside className="hidden lg:block lg:sticky lg:top-4">
+            <AdUnit slot="categoria-sidebar" format="rectangle" />
+          </aside>
+        </div>
       </div>
     )
   }
@@ -391,24 +395,21 @@ export default async function SlugPage({ params, searchParams }: Props) {
                   <h2 className="text-xs font-bold uppercase tracking-widest text-gray-400 mb-4 pb-2 border-b border-gray-100">
                     Mais Lidos
                   </h2>
-                  <ol className="space-y-4">
+                  <ol className="space-y-3">
                     {maisLidos.map((a, i) => (
                       <li key={a.id}>
-                        <Link href={`/${a.slug}`} className="group flex items-start gap-3">
-                          <span className="text-2xl font-extrabold text-gray-100 leading-none w-6 shrink-0 mt-0.5">
+                        <Link href={`/${a.slug}`} className="group flex items-center gap-3">
+                          <span className="text-xl font-extrabold text-gray-200 leading-none w-5 shrink-0 select-none">
                             {i + 1}
                           </span>
-                          <div className="min-w-0">
-                            {a.featured_image_url && (
-                              <div className="relative w-full aspect-video rounded overflow-hidden mb-1.5">
-                                <Image src={a.featured_image_url} alt={a.title} fill
-                                  className="object-cover" sizes="288px" />
-                              </div>
-                            )}
-                            <p className="text-sm font-semibold text-[#1a1a1a] line-clamp-2 group-hover:text-[#f5821f] transition-colors leading-snug">
-                              {a.title}
-                            </p>
-                          </div>
+                          <p className="flex-1 text-sm font-semibold text-[#1a1a1a] line-clamp-2 group-hover:text-[#f5821f] transition-colors leading-snug min-w-0">
+                            {a.title}
+                          </p>
+                          {a.featured_image_url && (
+                            <div className="relative w-16 h-10 rounded overflow-hidden shrink-0">
+                              <Image src={a.featured_image_url} alt={a.title} fill className="object-cover" sizes="64px" />
+                            </div>
+                          )}
                         </Link>
                       </li>
                     ))}
@@ -416,24 +417,26 @@ export default async function SlugPage({ params, searchParams }: Props) {
                 </div>
               )}
 
+              {/* Banner sidebar artigo */}
+              <AdUnit slot="artigo-sidebar" format="rectangle" className="flex justify-center" />
+
               {/* Veja Também */}
               {relacionados.length > 0 && (
                 <div>
                   <h2 className="text-xs font-bold uppercase tracking-widest text-gray-400 mb-4 pb-2 border-b border-gray-100">
                     Veja Também
                   </h2>
-                  <div className="space-y-4">
+                  <div className="space-y-3">
                     {relacionados.map((a) => (
-                      <Link key={a.id} href={`/${a.slug}`} className="group flex items-start gap-3">
-                        {a.featured_image_url && (
-                          <div className="relative w-20 aspect-video rounded overflow-hidden shrink-0">
-                            <Image src={a.featured_image_url} alt={a.title} fill
-                              className="object-cover" sizes="80px" />
-                          </div>
-                        )}
-                        <p className="text-sm font-semibold text-[#1a1a1a] line-clamp-3 group-hover:text-[#f5821f] transition-colors leading-snug">
+                      <Link key={a.id} href={`/${a.slug}`} className="group flex items-center gap-3">
+                        <p className="flex-1 text-sm font-semibold text-[#1a1a1a] line-clamp-2 group-hover:text-[#f5821f] transition-colors leading-snug min-w-0">
                           {a.title}
                         </p>
+                        {a.featured_image_url && (
+                          <div className="relative w-16 h-10 rounded overflow-hidden shrink-0">
+                            <Image src={a.featured_image_url} alt={a.title} fill className="object-cover" sizes="64px" />
+                          </div>
+                        )}
                       </Link>
                     ))}
                   </div>

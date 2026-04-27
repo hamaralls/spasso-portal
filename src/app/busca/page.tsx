@@ -1,6 +1,7 @@
 import type { Metadata } from 'next'
 import Link from 'next/link'
 import Image from 'next/image'
+import { AdUnit } from '@/components/AdUnit'
 import { buscarArtigos } from '@/lib/supabase/queries'
 import { formatDateShort } from '@/lib/format'
 
@@ -59,6 +60,9 @@ export default async function BuscaPage({ searchParams }: Props) {
           Buscar
         </button>
       </form>
+
+      {/* Banner acima dos resultados */}
+      <AdUnit slot="busca-leaderboard" format="leaderboard" className="flex justify-center mb-8" />
 
       {/* Resultados */}
       {query.length >= 2 && (

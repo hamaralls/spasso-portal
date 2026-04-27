@@ -2,6 +2,7 @@ import { notFound } from 'next/navigation'
 import type { Metadata } from 'next'
 import Link from 'next/link'
 import SectionHeader from '@/components/SectionHeader'
+import { AdUnit } from '@/components/AdUnit'
 import { timeAgo } from '@/lib/format'
 import { getColunistaPorSlug, getArtigosPorColunista } from '@/lib/supabase/queries'
 
@@ -113,6 +114,11 @@ export default async function ColunistaPaginaPage({ params, searchParams }: Prop
             </div>
           </div>
         </div>
+      </div>
+
+      {/* Banner leaderboard entre hero e artigos */}
+      <div className="max-w-3xl mx-auto px-4 pt-6">
+        <AdUnit slot="colunista-leaderboard" format="leaderboard" className="flex justify-center" />
       </div>
 
       {/* Artigos */}

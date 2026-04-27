@@ -3,6 +3,7 @@ import Link from 'next/link'
 import Image from 'next/image'
 import ArticleCard from '@/components/ArticleCard'
 import SectionHeader from '@/components/SectionHeader'
+import { AdUnit } from '@/components/AdUnit'
 import { getColunistas, getArtigosPorCategoria } from '@/lib/supabase/queries'
 import type { ColunistaCom } from '@/lib/supabase/queries'
 
@@ -126,6 +127,9 @@ export default async function ColunistasPage({ searchParams }: { searchParams: P
           </div>
         </section>
       )}
+
+      {/* Banner entre colunistas e feed */}
+      <AdUnit slot="colunistas-leaderboard" format="leaderboard" className="flex justify-center" />
 
       {/* Feed de artigos */}
       <section>

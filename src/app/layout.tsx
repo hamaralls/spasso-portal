@@ -3,6 +3,7 @@ import { Inter } from 'next/font/google'
 import Script from 'next/script'
 import Header from '@/components/Header'
 import Footer from '@/components/Footer'
+import SocialStrip from '@/components/SocialStrip'
 import AuthRecoveryRedirect from '@/components/AuthRecoveryRedirect'
 import './globals.css'
 
@@ -68,6 +69,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
     <html lang="pt-BR" className={`${inter.variable} h-full`}>
       <body className="min-h-full flex flex-col bg-white text-[#1a1a1a] antialiased">
         <AuthRecoveryRedirect />
+        <SocialStrip />
         <Header />
         <main className="flex-1">{children}</main>
         <Footer />

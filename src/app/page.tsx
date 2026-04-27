@@ -4,7 +4,7 @@ import Badge from '@/components/Badge'
 import ArticleCard from '@/components/ArticleCard'
 import SectionHeader from '@/components/SectionHeader'
 import { AdUnit } from '@/components/AdUnit'
-import { getArtigosRecentes, getArtigosPorCategorias, getArtigosPorTema, getColunistas } from '@/lib/supabase/queries'
+import { getArtigosHero, getArtigosRecentes, getArtigosPorCategorias, getArtigosPorTema, getColunistas } from '@/lib/supabase/queries'
 import type { ArticlePublico } from '@/types'
 
 export const runtime = 'edge'
@@ -170,8 +170,9 @@ function MetropolesGrid({
 }
 
 export default async function Home() {
-  const [recentes, regiao, culturaELazer, brasil, saude, politica, economia, colunistas] = await Promise.all([
-    getArtigosRecentes(17),
+  const [hero, ultimas, regiao, culturaELazer, brasil, saude, politica, economia, colunistas] = await Promise.all([
+    getArtigosHero(),
+    getArtigosRecentes(12),
     getArtigosPorCategorias(['sumare', 'hortolandia', 'nova-odessa', 'campinas', 'paulinia', 'monte-mor', 'santa-barbara-doeste', 'outras-cidades', 'rmc'], 16),
     getArtigosPorCategorias(['estilo-de-vida', 'cultura-e-lazer', 'eventos'], 10),
     getArtigosPorCategorias(['brasil'], 10),
@@ -181,66 +182,64 @@ export default async function Home() {
     getColunistas(),
   ])
 
-  const ultimas = recentes.slice(5, 17)
-
   return (
     <>
       {/* ── 1. Hero / Destaques ── */}
-      {recentes.length >= 2 ? (
+      {hero.length >= 2 ? (
         <section className="bg-white border-b border-gray-100">
           <div className="max-w-7xl mx-auto px-4 py-6">
 
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-5">
               {/* Principal */}
-              <Link href={`/${recentes[0].slug}`}
+              <Link href={`/${hero[0].slug}`}
                 className="group lg:col-span-2 flex flex-col sm:flex-row gap-4">
                 <div className="sm:w-[55%] relative aspect-video overflow-hidden bg-gray-200 shrink-0">
-                  {recentes[0].featured_image_url && (
-                    <Image src={recentes[0].featured_image_url} alt={recentes[0].title}
+                  {hero[0].featured_image_url && (
+                    <Image src={hero[0].featured_image_url} alt={hero[0].title}
                       fill priority className="object-cover group-hover:scale-[1.02] transition-transform duration-300"
                       sizes="(max-width: 640px) 100vw, 40vw" />
                   )}
                 </div>
                 <div className="sm:w-[45%] flex flex-col justify-start pt-1">
-                  {recentes[0].category_name && (
-                    <Badge name={recentes[0].category_name} color={recentes[0].badge_color} size="sm" />
+                  {hero[0].category_name && (
+                    <Badge name={hero[0].category_name} color={hero[0].badge_color} size="sm" />
                   )}
                   <h1 className="text-xl md:text-2xl font-bold leading-snug mt-2 group-hover:underline line-clamp-4 text-[#1a1a1a]">
-                    {recentes[0].title}
+                    {hero[0].title}
                   </h1>
-                  {recentes[0].excerpt && (
+                  {hero[0].excerpt && (
                     <p className="text-sm text-gray-500 mt-2 line-clamp-3 leading-relaxed">
-                      {recentes[0].excerpt.replace(/<[^>]+>/g, '')}
+                      {hero[0].excerpt.replace(/<[^>]+>/g, '')}
                     </p>
                   )}
-                  {recentes[0].author_name && (
-                    <p className="mt-auto pt-3 text-xs text-gray-400">{recentes[0].author_name}</p>
+                  {hero[0].author_name && (
+                    <p className="mt-auto pt-3 text-xs text-gray-400">{hero[0].author_name}</p>
                   )}
                 </div>
               </Link>
 
               {/* Secundário */}
-              <Link href={`/${recentes[1].slug}`} className="group flex flex-col">
+              <Link href={`/${hero[1].slug}`} className="group flex flex-col">
                 <div className="relative aspect-video overflow-hidden bg-gray-200">
-                  {recentes[1].featured_image_url && (
-                    <Image src={recentes[1].featured_image_url} alt={recentes[1].title}
+                  {hero[1].featured_image_url && (
+                    <Image src={hero[1].featured_image_url} alt={hero[1].title}
                       fill className="object-cover group-hover:scale-[1.02] transition-transform duration-300"
                       sizes="(max-width: 640px) 100vw, 25vw" />
                   )}
                 </div>
                 <p className="text-[#f5821f] text-xs font-bold mt-2 uppercase tracking-wide truncate">
-                  {recentes[1].author_name ?? recentes[1].category_name ?? ''}
+                  {hero[1].author_name ?? hero[1].category_name ?? ''}
                 </p>
                 <h2 className="text-base font-bold leading-snug mt-1 group-hover:underline line-clamp-3 text-[#1a1a1a]">
-                  {recentes[1].title}
+                  {hero[1].title}
                 </h2>
               </Link>
             </div>
 
             {/* Faixa inferior — 3 thumbnails */}
-            {recentes.length >= 5 && (
+            {hero.length >= 5 && (
               <div className="grid grid-cols-1 sm:grid-cols-3 gap-x-6 gap-y-3 pt-4 border-t border-gray-200">
-                {recentes.slice(2, 5).map((article) => (
+                {hero.slice(2, 5).map((article) => (
                   <Link key={article.id} href={`/${article.slug}`} className="group flex items-start gap-3">
                     <div className="relative w-16 h-12 shrink-0 overflow-hidden bg-gray-200">
                       {article.featured_image_url && (

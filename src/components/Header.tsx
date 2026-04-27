@@ -5,7 +5,7 @@ import Image from 'next/image'
 import { useState, useRef, useEffect } from 'react'
 import { Menu, X, Search, ChevronDown } from 'lucide-react'
 
-// Cidades com foco editorial — links diretos no nav desktop (sem Campinas)
+// Cidades foco editorial — flat no desktop
 const CIDADES_NAV = [
   { name: 'Sumaré',      href: '/sp/sumare' },
   { name: 'Hortolândia', href: '/sp/hortolandia' },
@@ -14,36 +14,30 @@ const CIDADES_NAV = [
   { name: 'Monte Mor',   href: '/sp/monte-mor' },
 ]
 
-// Dropdown RMC — todas as cidades da região (inclui Campinas)
+// Dropdown RMC ▾ — cidades secundárias + portal regional
 const RMC_ITEMS = [
-  { name: 'Hortolândia',           href: '/sp/hortolandia' },
-  { name: 'Nova Odessa',           href: '/sp/nova-odessa' },
   { name: 'Campinas',              href: '/sp/campinas' },
-  { name: 'Paulínia',              href: '/sp/paulinia' },
-  { name: 'Monte Mor',             href: '/sp/monte-mor' },
   { name: "Sta. Bárbara d'Oeste",  href: '/sp/santa-barbara-doeste' },
-  { name: 'Interior SP',           href: '/rmc' },
+  { name: 'Outras cidades',        href: '/sp/outras-cidades' },
+  { name: 'Toda a RMC',            href: '/rmc' },
 ]
 
-// Temas flat — alto volume editorial
-const TEMAS_FLAT = [
+// Dropdown Temas ▾ — 2 colunas, todos os temas
+const TEMAS_COL1 = [
   { name: 'Política',        href: '/politica' },
   { name: 'Saúde',           href: '/saude' },
   { name: 'Educação',        href: '/educacao' },
   { name: 'Economia',        href: '/economia' },
   { name: 'Cultura e Lazer', href: '/cultura-e-lazer' },
+  { name: 'Esporte',         href: '/esporte' },
 ]
-
-// Dropdown Categorias — temas secundários
-const CATEGORIAS_COL1 = [
-  { name: 'Esporte',        href: '/esporte' },
+const TEMAS_COL2 = [
   { name: 'Tecnologia',     href: '/tecnologia' },
   { name: 'Meio Ambiente',  href: '/meio-ambiente' },
-]
-const CATEGORIAS_COL2 = [
   { name: 'Empregos',       href: '/empregos' },
   { name: 'Estilo de Vida', href: '/estilo-de-vida' },
   { name: 'Entretenimento', href: '/eventos' },
+  { name: 'Segurança',      href: '/seguranca' },
 ]
 
 // Menu mobile completo
@@ -52,9 +46,9 @@ const MOBILE_ITEMS = [
   { name: 'Sumaré',                href: '/sp/sumare' },
   { name: 'Hortolândia',           href: '/sp/hortolandia' },
   { name: 'Nova Odessa',           href: '/sp/nova-odessa' },
-  { name: 'Campinas',              href: '/sp/campinas' },
   { name: 'Paulínia',              href: '/sp/paulinia' },
   { name: 'Monte Mor',             href: '/sp/monte-mor' },
+  { name: 'Campinas',              href: '/sp/campinas' },
   { name: "Sta. Bárbara d'Oeste",  href: '/sp/santa-barbara-doeste' },
   { name: 'RMC',                   href: '/rmc' },
   { name: 'Brasil',                href: '/brasil' },
@@ -201,7 +195,7 @@ export default function Header() {
               {mobileOpen ? <X size={20} /> : <Menu size={20} />}
               <span className="text-[11px] font-medium">{mobileOpen ? 'Fechar' : 'Menu'}</span>
             </button>
-            <span className={`hidden lg:block text-gray-500 leading-tight transition-all duration-300 ${scrolled ? 'text-xs' : 'text-sm'}`}>
+            <span className={`hidden lg:block text-gray-500 leading-tight whitespace-nowrap transition-all duration-300 ${scrolled ? 'text-[11px]' : 'text-[13px]'}`}>
               {formatDate()}
             </span>
           </div>
@@ -249,15 +243,9 @@ export default function Header() {
 
             <Link href="/brasil" className={NAV_LINK}>Brasil</Link>
 
-            {TEMAS_FLAT.map((item) => (
-              <Link key={item.href} href={item.href} className={NAV_LINK}>
-                {item.name}
-              </Link>
-            ))}
-
             <NavDropdown
-              label="Categorias"
-              items={{ col1: CATEGORIAS_COL1, col2: CATEGORIAS_COL2 }}
+              label="Temas"
+              items={{ col1: TEMAS_COL1, col2: TEMAS_COL2 }}
               cols={2}
             />
 

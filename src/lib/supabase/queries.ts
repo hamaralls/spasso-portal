@@ -1,6 +1,41 @@
 import { getSupabase } from './edge'
 import type { ArticlePublico, Category, Columnist } from '@/types'
 
+// ── Hero: artigos marcados como destaque (com diversity filter) ──────────────
+
+export async function getArtigosHero(): Promise<ArticlePublico[]> {
+  const { data: featured } = await getSupabase()
+    .from('artigos_publicados')
+    .select('*')
+    .eq('is_featured', true)
+    .order('is_featured_pinned', { ascending: false })
+    .order('published_at', { ascending: false })
+    .limit(10)
+
+  const pool = featured ?? []
+
+  // Menos de 2 featured → fallback para recentes
+  if (pool.length < 2) {
+    const { data } = await getSupabase()
+      .from('artigos_publicados')
+      .select('*')
+      .order('published_at', { ascending: false })
+      .limit(5)
+    return data ?? []
+  }
+
+  // Diversity filter: sem 2 cidades iguais consecutivas
+  const result: ArticlePublico[] = []
+  const remaining = [...pool]
+  while (result.length < 5 && remaining.length > 0) {
+    const lastCity = result.length > 0 ? result[result.length - 1].category_slug : null
+    let idx = remaining.findIndex(a => a.category_slug !== lastCity)
+    if (idx === -1) idx = 0
+    result.push(...remaining.splice(idx, 1))
+  }
+  return result
+}
+
 // ── Home: últimos artigos publicados ────────────────────────────────────────
 
 export async function getArtigosRecentes(limit = 13): Promise<ArticlePublico[]> {

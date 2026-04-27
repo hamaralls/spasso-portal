@@ -6,6 +6,7 @@ import Badge from '@/components/Badge'
 import ArticleCard from '@/components/ArticleCard'
 import SectionHeader from '@/components/SectionHeader'
 import ShareButtons from '@/components/ShareButtons'
+import SocialFollowCard from '@/components/SocialFollowCard'
 import { AdUnit } from '@/components/AdUnit'
 import ViewTracker from '@/components/ViewTracker'
 import {
@@ -442,6 +443,10 @@ export default async function SlugPage({ params, searchParams }: Props) {
                   </div>
                 </div>
               )}
+
+              {/* Redes sociais */}
+              <SocialFollowCard />
+
             </aside>
 
           </div>

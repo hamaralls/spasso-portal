@@ -11,10 +11,14 @@
             "id": "c2d70c86becd6be8",
             "type": "leaf",
             "state": {
-              "type": "empty",
-              "state": {},
+              "type": "markdown",
+              "state": {
+                "file": "CLAUDE.md",
+                "mode": "source",
+                "source": false
+              },
               "icon": "lucide-file",
-              "title": "Nova aba"
+              "title": "CLAUDE"
             }
           }
         ]
@@ -177,5 +181,18 @@
     }
   },
   "active": "c2d70c86becd6be8",
-  "lastOpenFiles": []
+  "lastOpenFiles": [
+    "src/app/[slug]/page.tsx.tmp.358874.1777222298626",
+    "src/app/colunistas/[slug]/page.tsx.tmp.358874.1777222291966",
+    "src/app/colunistas/page.tsx.tmp.358874.1777222280194",
+    "next.config.ts.tmp.358874.1777222261131",
+    "src/app/admin/colunistas/[id]/editar/page.tsx.tmp.358874.1777220716006",
+    "src/components/admin/ColumnistForm.tsx.tmp.358874.1777220700914",
+    "src/components/admin/ColumnistForm.tsx.tmp.358874.1777220694889",
+    "src/components/admin/ColumnistForm.tsx.tmp.358874.1777220691449",
+    "src/components/admin/ColumnistForm.tsx.tmp.358874.1777220687544",
+    "src/app/[slug]/page.tsx.tmp.358874.1777220683036",
+    "src/app/[slug]/page.tsx.tmp.358874.1777220670140",
+    "README.md"
+  ]
 }

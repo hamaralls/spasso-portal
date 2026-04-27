@@ -45,6 +45,8 @@ export interface Article {
   source_type: SourceType
   origin_badge: string | null
   is_legacy_blog: boolean
+  is_featured: boolean
+  is_featured_pinned: boolean
   author_id: string | null
   seo_title: string | null
   seo_description: string | null
@@ -69,6 +71,8 @@ export interface ArticlePublico {
   origin_badge: string | null
   category_slug: string | null
   theme_slug: string | null
+  is_featured: boolean
+  is_featured_pinned: boolean
   published_at: string
   views: number
   reading_time_min: number | null

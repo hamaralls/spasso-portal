@@ -28,6 +28,8 @@ export interface ArticleInput {
   seo_keywords?: string[]
   published_at?: string
   reading_time_min?: number
+  is_featured?: boolean
+  is_featured_pinned?: boolean
 }
 
 export async function createArticle(input: ArticleInput) {
@@ -73,7 +75,7 @@ export async function listArticles(page = 1, perPage = 20, status?: string, cate
 
   let query = sb
     .from('articles')
-    .select('id, slug, title, status, category_slug, published_at, created_at, views, featured_image_url', { count: 'exact' })
+    .select('id, slug, title, status, category_slug, published_at, created_at, views, featured_image_url, is_featured', { count: 'exact' })
     .order('published_at', { ascending: false })
     .range(from, to)
 

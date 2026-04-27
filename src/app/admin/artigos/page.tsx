@@ -172,7 +172,7 @@ export default async function ArtigosPage({ searchParams }: Props) {
                     })() : <span className="text-gray-300">—</span>}
                   </td>
                   <td className="px-4 py-3 text-right whitespace-nowrap">
-                    <FeaturedToggleButton id={article.id} isFeatured={(article as { is_featured?: boolean }).is_featured ?? false} />
+                    <FeaturedToggleButton id={article.id} isFeatured={article.is_featured ?? false} />
                     <Link
                       href={`/admin/artigos/${article.id}/editar`}
                       className="text-xs font-medium text-[#f5821f] hover:underline ml-3"

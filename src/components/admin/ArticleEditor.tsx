@@ -20,6 +20,8 @@ interface ArticleData {
   source_type: string
   origin_badge: string
   featured_image_url: string
+  featured_image_alt?: string
+  featured_image_caption?: string
   seo_title: string
   seo_description: string
   status: 'draft' | 'published' | 'archived'
@@ -87,8 +89,10 @@ export default function ArticleEditor({ categories, columnists = [], initial }: 
   const [publishedAt, setPublishedAt] = useState(
     initial?.published_at ? utcToBrtInput(initial.published_at) : ''
   )
-  const [coverUrl, setCoverUrl]     = useState(initial?.featured_image_url ?? '')
-  const [seoTitle, setSeoTitle]     = useState(initial?.seo_title ?? '')
+  const [coverUrl, setCoverUrl]         = useState(initial?.featured_image_url ?? '')
+  const [imageAlt, setImageAlt]         = useState(initial?.featured_image_alt ?? '')
+  const [imageCaption, setImageCaption] = useState(initial?.featured_image_caption ?? '')
+  const [seoTitle, setSeoTitle]         = useState(initial?.seo_title ?? '')
   const [seoDesc, setSeoDesc]       = useState(initial?.seo_description ?? '')
   const [saving, setSaving]         = useState(false)
   const [uploadingCover, setUploadingCover] = useState(false)
@@ -175,6 +179,8 @@ export default function ArticleEditor({ categories, columnists = [], initial }: 
       columnist_id: columnistId || null,
       theme_slug: themeSlug || null,
       featured_image_url: coverUrl || null,
+      featured_image_alt: imageAlt || null,
+      featured_image_caption: imageCaption || null,
       seo_title: seoTitle || null,
       seo_description: seoDesc || null,
       published_at: publishedAt ? `${publishedAt}:00-03:00` : undefined,
@@ -365,6 +371,20 @@ export default function ArticleEditor({ categories, columnists = [], initial }: 
               <button onClick={() => setCoverUrl('')} className="text-xs text-red-500 mt-1 hover:underline">Remover</button>
             )}
           </Field>
+
+          {coverUrl && (
+            <>
+              <Field label="Alt text (acessibilidade)">
+                <input value={imageAlt} onChange={(e) => setImageAlt(e.target.value)}
+                  placeholder={title || 'Descrição da imagem...'} className={inputCls} />
+                <p className="text-xs text-gray-400 mt-1">Padrão: título do artigo</p>
+              </Field>
+              <Field label="Legenda da imagem">
+                <input value={imageCaption} onChange={(e) => setImageCaption(e.target.value)}
+                  placeholder="Foto: Assessoria / nome do fotógrafo" className={inputCls} />
+              </Field>
+            </>
+          )}
 
           <Field label="Resumo (excerpt)">
             <textarea value={excerpt} onChange={(e) => setExcerpt(e.target.value)}

@@ -13,6 +13,9 @@ import {
   getArtigosPorCategoria,
   getArtigoCompleto,
   getArtigosRelacionados,
+  getArtigosMaisLidos,
+  getArtigoAnterior,
+  getArtigoProximo,
 } from '@/lib/supabase/queries'
 import { formatDate, readingTime } from '@/lib/format'
 
@@ -127,9 +130,12 @@ export default async function SlugPage({ params, searchParams }: Props) {
   const artigo = await getArtigoCompleto(slug)
   if (!artigo) notFound()
 
-  const [relacionados, categoriaArtigo] = await Promise.all([
-    getArtigosRelacionados(artigo.category_slug ?? '', artigo.slug, 3),
+  const [relacionados, categoriaArtigo, maisLidos, anterior, proximo] = await Promise.all([
+    getArtigosRelacionados(artigo.category_slug ?? '', artigo.slug, 4),
     artigo.category_slug ? getCategoria(artigo.category_slug) : Promise.resolve(null),
+    getArtigosMaisLidos(5),
+    artigo.published_at ? getArtigoAnterior(artigo.published_at, artigo.slug) : Promise.resolve(null),
+    artigo.published_at ? getArtigoProximo(artigo.published_at, artigo.slug) : Promise.resolve(null),
   ])
 
   const htmlContent = artigo.content?.rendered ?? ''
@@ -211,144 +217,239 @@ export default async function SlugPage({ params, searchParams }: Props) {
       />
 
       <ViewTracker slug={artigo.slug} />
-      <article className="bg-white">
-        <div className="max-w-3xl mx-auto px-4 py-8">
-          {/* Breadcrumb */}
-          <nav className="text-xs text-gray-400 mb-4 flex items-center gap-1.5">
-            <Link href="/" className="hover:text-[#f5821f]">Home</Link>
-            {categoriaArtigo && (
-              <>
-                <span>/</span>
-                <Link href={`${categoriaArtigo.url_prefix}`} className="hover:text-[#f5821f]">
-                  {categoriaArtigo.name}
-                </Link>
-              </>
-            )}
-          </nav>
+      <div className="bg-white">
+        <div className="max-w-6xl mx-auto px-4 py-8">
+          <div className="lg:grid lg:grid-cols-[1fr_288px] lg:gap-10 lg:items-start">
 
-          {/* Badge + título */}
-          <div className="mb-4">
-            {categoriaArtigo && (
-              <div className="mb-3">
-                <Badge name={categoriaArtigo.name} color={categoriaArtigo.badge_color} />
-              </div>
-            )}
-            <h1 className="text-2xl md:text-4xl font-extrabold text-[#1a1a1a] leading-tight">
-              {artigo.title}
-            </h1>
-          </div>
-
-          {/* Meta */}
-          <div className="flex flex-wrap items-center gap-x-4 gap-y-1 text-sm text-gray-500 mb-6 pb-4 border-b border-gray-100">
-            {authorName && (
-              <span className="font-medium text-[#1a1a1a] flex items-center gap-2">
-                {colData?.avatar_url && (
-                  // eslint-disable-next-line @next/next/no-img-element
-                  <img
-                    src={colData.avatar_url}
-                    alt={authorName}
-                    className="w-8 h-8 rounded-full object-cover shrink-0"
-                  />
+            {/* ── Artigo principal ─────────────────────────── */}
+            <article className="min-w-0">
+              {/* Breadcrumb */}
+              <nav className="text-xs text-gray-400 mb-4 flex items-center gap-1.5">
+                <Link href="/" className="hover:text-[#f5821f]">Home</Link>
+                {categoriaArtigo && (
+                  <>
+                    <span>/</span>
+                    <Link href={`${categoriaArtigo.url_prefix}`} className="hover:text-[#f5821f]">
+                      {categoriaArtigo.name}
+                    </Link>
+                  </>
                 )}
-                {colData?.slug ? (
-                  <Link href={`/colunistas/${colData.slug}`} className="hover:text-[#f5821f] transition-colors">
-                    {authorName}
-                  </Link>
-                ) : authorName}
-              </span>
-            )}
-            {artigo.published_at && (
-              <time dateTime={artigo.published_at}>{formatDate(artigo.published_at)}</time>
-            )}
-            <span>{tempoLeitura} min de leitura</span>
-          </div>
+              </nav>
 
-          {/* Imagem destaque */}
-          {artigo.featured_image_url && (
-            <div className="relative w-full aspect-video mb-6 rounded-lg overflow-hidden">
-              <Image
-                src={artigo.featured_image_url}
-                alt={artigo.title}
-                fill
-                priority
-                className="object-cover"
-                sizes="(max-width: 768px) 100vw, 768px"
+              {/* Badge + título */}
+              <div className="mb-4">
+                {categoriaArtigo && (
+                  <div className="mb-3">
+                    <Badge name={categoriaArtigo.name} color={categoriaArtigo.badge_color} />
+                  </div>
+                )}
+                <h1 className="text-2xl md:text-4xl font-extrabold text-[#1a1a1a] leading-tight">
+                  {artigo.title}
+                </h1>
+              </div>
+
+              {/* Meta */}
+              <div className="flex flex-wrap items-center gap-x-4 gap-y-1 text-sm text-gray-500 mb-6 pb-4 border-b border-gray-100">
+                {authorName && (
+                  <span className="font-medium text-[#1a1a1a] flex items-center gap-2">
+                    {colData?.avatar_url && (
+                      // eslint-disable-next-line @next/next/no-img-element
+                      <img
+                        src={colData.avatar_url}
+                        alt={authorName}
+                        className="w-8 h-8 rounded-full object-cover shrink-0"
+                      />
+                    )}
+                    {colData?.slug ? (
+                      <Link href={`/colunistas/${colData.slug}`} className="hover:text-[#f5821f] transition-colors">
+                        {authorName}
+                      </Link>
+                    ) : authorName}
+                  </span>
+                )}
+                {artigo.published_at && (
+                  <time dateTime={artigo.published_at}>{formatDate(artigo.published_at)}</time>
+                )}
+                <span>{tempoLeitura} min de leitura</span>
+              </div>
+
+              {/* Imagem destaque */}
+              {artigo.featured_image_url && (
+                <figure className="mb-6">
+                  <div className="relative w-full aspect-video rounded-lg overflow-hidden">
+                    <Image
+                      src={artigo.featured_image_url}
+                      alt={(artigo as { featured_image_alt?: string | null }).featured_image_alt ?? artigo.title}
+                      fill
+                      priority
+                      className="object-cover"
+                      sizes="(max-width: 1024px) 100vw, 800px"
+                    />
+                  </div>
+                  {(artigo as { featured_image_caption?: string | null }).featured_image_caption && (
+                    <figcaption className="text-xs text-gray-400 mt-2 px-1 italic">
+                      {(artigo as { featured_image_caption?: string | null }).featured_image_caption}
+                    </figcaption>
+                  )}
+                </figure>
+              )}
+
+              {/* Banner meio-artigo */}
+              <AdUnit slot="artigo-meio" format="rectangle" className="flex justify-center my-6" />
+
+              {/* Conteúdo */}
+              <div
+                className="prose-spasso"
+                dangerouslySetInnerHTML={{ __html: htmlContent }}
               />
-            </div>
-          )}
 
-          {/* Banner meio-artigo */}
-          <AdUnit slot="artigo-meio" format="rectangle" className="flex justify-center my-6" />
-
-          {/* Conteúdo */}
-          <div
-            className="prose-spasso"
-            dangerouslySetInnerHTML={{ __html: htmlContent }}
-          />
-
-          {/* Badge de origem — só para conteúdo de terceiros sem colunista cadastrado */}
-          {artigo.origin_badge && !colData && (
-            <div className="mt-6 border border-gray-200 rounded-lg p-4 bg-gray-50 text-sm text-gray-600">
-              <p className="font-semibold text-gray-800 text-xs uppercase tracking-wide mb-1">
-                Conteúdo de terceiros
-              </p>
-              <p>{artigo.origin_badge}</p>
-            </div>
-          )}
-
-          {/* Banner fim-artigo */}
-          <AdUnit slot="artigo-fim" format="rectangle" className="flex justify-center my-6" />
-
-          {/* Perfil do colunista */}
-          {colData && (
-            <div className="mt-10 pt-6 border-t border-gray-100">
-              <Link href={`/colunistas/${colData.slug}`}
-                className="group flex items-start gap-5 bg-gray-50 rounded-xl p-5 hover:bg-orange-50 transition-colors">
-                {/* Avatar */}
-                <div className="w-16 h-16 rounded-full overflow-hidden shrink-0 flex items-center justify-center"
-                  style={{ background: colData.avatar_url ? undefined : '#f5821f1a' }}>
-                  {colData.avatar_url ? (
-                    <Image src={colData.avatar_url} alt={colData.name} width={64} height={64}
-                      className="object-cover w-full h-full" />
-                  ) : (
-                    <span className="text-xl font-extrabold text-[#f5821f]">
-                      {colData.name.split(' ').filter(Boolean).map(n => n[0].toUpperCase()).slice(0, 2).join('')}
-                    </span>
-                  )}
+              {/* Badge de origem — só para conteúdo de terceiros sem colunista cadastrado */}
+              {artigo.origin_badge && !colData && (
+                <div className="mt-6 border border-gray-200 rounded-lg p-4 bg-gray-50 text-sm text-gray-600">
+                  <p className="font-semibold text-gray-800 text-xs uppercase tracking-wide mb-1">
+                    Conteúdo de terceiros
+                  </p>
+                  <p>{artigo.origin_badge}</p>
                 </div>
-                {/* Info */}
-                <div className="min-w-0 flex-1">
-                  <p className="text-[10px] font-bold uppercase tracking-widest text-[#f5821f] mb-1">
-                    {colData.type === 'person' ? 'Colunista' : 'Editorial'}
-                  </p>
-                  <p className="font-extrabold text-[#1a1a1a] text-base leading-snug group-hover:text-[#f5821f] transition-colors">
-                    {colData.name}
-                  </p>
-                  {colData.bio && (
-                    <p className="mt-1 text-sm text-gray-500 leading-relaxed">
-                      {colData.bio}
-                    </p>
-                  )}
-                  <p className="mt-2 text-xs font-semibold text-[#f5821f]">
-                    Ver todas as colunas →
-                  </p>
-                </div>
-              </Link>
-            </div>
-          )}
+              )}
 
-          {/* Compartilhar */}
-          <div className="mt-8 pt-6 border-t border-gray-100">
-            <ShareButtons title={artigo.title} url={url} />
+              {/* Banner fim-artigo */}
+              <AdUnit slot="artigo-fim" format="rectangle" className="flex justify-center my-6" />
+
+              {/* Perfil do colunista */}
+              {colData && (
+                <div className="mt-10 pt-6 border-t border-gray-100">
+                  <Link href={`/colunistas/${colData.slug}`}
+                    className="group flex items-start gap-5 bg-gray-50 rounded-xl p-5 hover:bg-orange-50 transition-colors">
+                    <div className="w-16 h-16 rounded-full overflow-hidden shrink-0 flex items-center justify-center"
+                      style={{ background: colData.avatar_url ? undefined : '#f5821f1a' }}>
+                      {colData.avatar_url ? (
+                        <Image src={colData.avatar_url} alt={colData.name} width={64} height={64}
+                          className="object-cover w-full h-full" />
+                      ) : (
+                        <span className="text-xl font-extrabold text-[#f5821f]">
+                          {colData.name.split(' ').filter(Boolean).map(n => n[0].toUpperCase()).slice(0, 2).join('')}
+                        </span>
+                      )}
+                    </div>
+                    <div className="min-w-0 flex-1">
+                      <p className="text-[10px] font-bold uppercase tracking-widest text-[#f5821f] mb-1">
+                        {colData.type === 'person' ? 'Colunista' : 'Editorial'}
+                      </p>
+                      <p className="font-extrabold text-[#1a1a1a] text-base leading-snug group-hover:text-[#f5821f] transition-colors">
+                        {colData.name}
+                      </p>
+                      {colData.bio && (
+                        <p className="mt-1 text-sm text-gray-500 leading-relaxed">{colData.bio}</p>
+                      )}
+                      <p className="mt-2 text-xs font-semibold text-[#f5821f]">Ver todas as colunas →</p>
+                    </div>
+                  </Link>
+                </div>
+              )}
+
+              {/* Compartilhar */}
+              <div className="mt-8 pt-6 border-t border-gray-100">
+                <ShareButtons title={artigo.title} url={url} />
+              </div>
+
+              {/* Navegação anterior / próximo */}
+              {(anterior || proximo) && (
+                <nav className="mt-10 pt-6 border-t border-gray-100 grid grid-cols-2 gap-4">
+                  <div>
+                    {anterior && (
+                      <Link href={`/${anterior.slug}`}
+                        className="group flex flex-col gap-1 p-3 rounded-lg hover:bg-gray-50 transition-colors">
+                        <span className="text-xs text-gray-400 font-medium">← Anterior</span>
+                        <span className="text-sm font-semibold text-[#1a1a1a] line-clamp-2 group-hover:text-[#f5821f] transition-colors">
+                          {anterior.title}
+                        </span>
+                      </Link>
+                    )}
+                  </div>
+                  <div className="text-right">
+                    {proximo && (
+                      <Link href={`/${proximo.slug}`}
+                        className="group flex flex-col gap-1 p-3 rounded-lg hover:bg-gray-50 transition-colors items-end">
+                        <span className="text-xs text-gray-400 font-medium">Próximo →</span>
+                        <span className="text-sm font-semibold text-[#1a1a1a] line-clamp-2 group-hover:text-[#f5821f] transition-colors">
+                          {proximo.title}
+                        </span>
+                      </Link>
+                    )}
+                  </div>
+                </nav>
+              )}
+            </article>
+
+            {/* ── Sidebar desktop ──────────────────────────── */}
+            <aside className="hidden lg:block lg:sticky lg:top-4 space-y-8">
+
+              {/* Mais Lidos */}
+              {maisLidos.length > 0 && (
+                <div>
+                  <h2 className="text-xs font-bold uppercase tracking-widest text-gray-400 mb-4 pb-2 border-b border-gray-100">
+                    Mais Lidos
+                  </h2>
+                  <ol className="space-y-4">
+                    {maisLidos.map((a, i) => (
+                      <li key={a.id}>
+                        <Link href={`/${a.slug}`} className="group flex items-start gap-3">
+                          <span className="text-2xl font-extrabold text-gray-100 leading-none w-6 shrink-0 mt-0.5">
+                            {i + 1}
+                          </span>
+                          <div className="min-w-0">
+                            {a.featured_image_url && (
+                              <div className="relative w-full aspect-video rounded overflow-hidden mb-1.5">
+                                <Image src={a.featured_image_url} alt={a.title} fill
+                                  className="object-cover" sizes="288px" />
+                              </div>
+                            )}
+                            <p className="text-sm font-semibold text-[#1a1a1a] line-clamp-2 group-hover:text-[#f5821f] transition-colors leading-snug">
+                              {a.title}
+                            </p>
+                          </div>
+                        </Link>
+                      </li>
+                    ))}
+                  </ol>
+                </div>
+              )}
+
+              {/* Veja Também */}
+              {relacionados.length > 0 && (
+                <div>
+                  <h2 className="text-xs font-bold uppercase tracking-widest text-gray-400 mb-4 pb-2 border-b border-gray-100">
+                    Veja Também
+                  </h2>
+                  <div className="space-y-4">
+                    {relacionados.map((a) => (
+                      <Link key={a.id} href={`/${a.slug}`} className="group flex items-start gap-3">
+                        {a.featured_image_url && (
+                          <div className="relative w-20 aspect-video rounded overflow-hidden shrink-0">
+                            <Image src={a.featured_image_url} alt={a.title} fill
+                              className="object-cover" sizes="80px" />
+                          </div>
+                        )}
+                        <p className="text-sm font-semibold text-[#1a1a1a] line-clamp-3 group-hover:text-[#f5821f] transition-colors leading-snug">
+                          {a.title}
+                        </p>
+                      </Link>
+                    ))}
+                  </div>
+                </div>
+              )}
+            </aside>
+
           </div>
         </div>
-      </article>
+      </div>
 
-      {/* Relacionados */}
+      {/* Relacionados mobile (oculto no desktop — coberto pela sidebar) */}
       {relacionados.length > 0 && (
-        <section className="max-w-7xl mx-auto px-4 py-10">
+        <section className="lg:hidden max-w-6xl mx-auto px-4 py-10">
           <SectionHeader title="Veja Também" />
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
             {relacionados.map((article) => (
               <ArticleCard key={article.id} article={article} />
             ))}

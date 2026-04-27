@@ -36,6 +36,8 @@ export interface Article {
   excerpt: string | null
   content: { rendered: string; tiptap?: object }
   featured_image_url: string | null
+  featured_image_alt: string | null
+  featured_image_caption: string | null
   status: ArticleStatus
   category_slug: string | null
   theme_slug: string | null

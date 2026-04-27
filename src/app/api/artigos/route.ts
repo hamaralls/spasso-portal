@@ -33,6 +33,8 @@ export async function POST(request: Request) {
     excerpt:            body.excerpt   || null,
     content:            body.content   ?? { rendered: '' },
     featured_image_url: body.featured_image_url || null,
+    featured_image_alt: body.featured_image_alt || null,
+    featured_image_caption: body.featured_image_caption || null,
     status:             body.status    ?? 'draft',
     category_slug:      body.category_slug || null,
     theme_slug:         body.theme_slug    || null,

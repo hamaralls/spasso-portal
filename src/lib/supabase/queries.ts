@@ -87,6 +87,7 @@ export async function getArtigoCompleto(slug: string) {
     .from('articles')
     .select(`
       id, slug, title, excerpt, content, featured_image_url,
+      featured_image_alt, featured_image_caption,
       content_type, source_type, origin_badge, is_legacy_blog,
       category_slug, author_id, columnist_id, published_at, updated_at,
       views, reading_time_min,
@@ -251,6 +252,49 @@ export async function buscarArtigos(
     .range(from, to)
 
   return { articles: data ?? [], total: count ?? 0 }
+}
+
+// ── Mais lidos (últimos 30 dias) ─────────────────────────────────────────────
+
+export async function getArtigosMaisLidos(limit = 5): Promise<ArticlePublico[]> {
+  const desde = new Date(Date.now() - 30 * 24 * 60 * 60 * 1000).toISOString()
+  const { data } = await getSupabase()
+    .from('artigos_publicados')
+    .select('*')
+    .gte('published_at', desde)
+    .order('views', { ascending: false })
+    .limit(limit)
+  return data ?? []
+}
+
+// ── Navegação: artigo anterior / próximo ─────────────────────────────────────
+
+export async function getArtigoAnterior(
+  publishedAt: string,
+  excludeSlug: string
+): Promise<{ slug: string; title: string; featured_image_url: string | null } | null> {
+  const { data } = await getSupabase()
+    .from('artigos_publicados')
+    .select('slug, title, featured_image_url')
+    .lt('published_at', publishedAt)
+    .neq('slug', excludeSlug)
+    .order('published_at', { ascending: false })
+    .limit(1)
+  return data?.[0] ?? null
+}
+
+export async function getArtigoProximo(
+  publishedAt: string,
+  excludeSlug: string
+): Promise<{ slug: string; title: string; featured_image_url: string | null } | null> {
+  const { data } = await getSupabase()
+    .from('artigos_publicados')
+    .select('slug, title, featured_image_url')
+    .gt('published_at', publishedAt)
+    .neq('slug', excludeSlug)
+    .order('published_at', { ascending: true })
+    .limit(1)
+  return data?.[0] ?? null
 }
 
 // ── Sitemap: todos os slugs publicados ───────────────────────────────────────

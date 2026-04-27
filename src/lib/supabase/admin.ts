@@ -14,6 +14,8 @@ export interface ArticleInput {
   excerpt?: string
   content: { rendered: string }
   featured_image_url?: string
+  featured_image_alt?: string | null
+  featured_image_caption?: string | null
   status: 'draft' | 'published' | 'scheduled' | 'archived'
   category_slug?: string
   content_type: string

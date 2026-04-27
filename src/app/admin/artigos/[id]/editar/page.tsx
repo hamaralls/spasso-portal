@@ -30,6 +30,8 @@ export default async function EditarArtigoPage({ params }: Props) {
     source_type: article.source_type ?? 'original',
     origin_badge: article.origin_badge ?? '',
     featured_image_url: article.featured_image_url ?? '',
+    featured_image_alt: article.featured_image_alt ?? '',
+    featured_image_caption: article.featured_image_caption ?? '',
     seo_title: article.seo_title ?? '',
     seo_description: article.seo_description ?? '',
     status: article.status as 'draft' | 'published' | 'archived',

@@ -415,55 +415,55 @@ export default async function Home() {
           </section>
         )}
 
-        {/* ── 7. Política — editorial 50/50: lista numerada esq + imagem dir ── */}
+        {/* ── 7. Política — flex row: texto esq cresce, img dir w-[42%] h-auto ── */}
         {politica.length >= 2 && (
           <section>
             <SectionHeader title="Política" href="/politica" color="#7c3aed" />
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-8 items-start">
 
-              {/* Esquerda: título destaque + lista numerada */}
-              <div className="flex flex-col">
-                <Link href={`/${politica[0].slug}`} className="group mb-5">
-                  <h2 className="text-2xl md:text-3xl font-extrabold text-[#1a1a1a] leading-snug group-hover:text-[#7c3aed] transition-colors">
-                    {politica[0].title}
-                  </h2>
-                  {politica[0].excerpt && (
-                    <p className="text-sm text-gray-500 mt-2 leading-relaxed line-clamp-3">
-                      {politica[0].excerpt.replace(/<[^>]+>/g, '')}
-                    </p>
-                  )}
-                  {politica[0].author_name && (
-                    <p className="text-xs font-semibold text-[#7c3aed] mt-2">{politica[0].author_name}</p>
-                  )}
-                </Link>
-
-                <div className="border-t border-gray-200 divide-y divide-gray-100">
-                  {politica.slice(1, 5).map((artigo, i) => (
-                    <Link key={artigo.id} href={`/${artigo.slug}`}
-                      className="group flex items-start gap-3 py-3">
-                      <span className="text-xl font-extrabold leading-none w-7 shrink-0 select-none"
-                        style={{ color: '#e5e7eb' }}>
-                        {String(i + 1).padStart(2, '0')}
-                      </span>
-                      <p className="text-sm font-semibold text-[#1a1a1a] leading-snug group-hover:text-[#7c3aed] transition-colors line-clamp-2">
-                        {artigo.title}
-                      </p>
-                    </Link>
-                  ))}
-                </div>
+            {/* Destaque principal */}
+            <Link href={`/${politica[0].slug}`}
+              className="group flex flex-col md:flex-row gap-5 items-start pb-5 border-b border-gray-100 mb-1">
+              {/* Texto — ocupa o espaço restante */}
+              <div className="flex-1 min-w-0 flex flex-col gap-2">
+                <h2 className="text-2xl md:text-3xl font-extrabold text-[#1a1a1a] leading-snug group-hover:text-[#7c3aed] transition-colors">
+                  {politica[0].title}
+                </h2>
+                {politica[0].excerpt && (
+                  <p className="text-sm text-gray-500 leading-relaxed line-clamp-4">
+                    {politica[0].excerpt.replace(/<[^>]+>/g, '')}
+                  </p>
+                )}
+                {politica[0].author_name && (
+                  <p className="text-xs font-semibold text-[#7c3aed]">{politica[0].author_name}</p>
+                )}
               </div>
-
-              {/* Direita: imagem completa sem crop */}
+              {/* Imagem direita — largura fixa, altura natural, zero crop */}
               {politica[0].featured_image_url && (
-                <Link href={`/${politica[0].slug}`} className="group block">
+                <div className="w-full md:w-[42%] shrink-0">
                   {/* eslint-disable-next-line @next/next/no-img-element */}
                   <img
                     src={politica[0].featured_image_url}
                     alt={politica[0].title}
-                    className="w-full h-auto block shadow-sm group-hover:opacity-95 transition-opacity"
+                    className="w-full h-auto block"
                   />
-                </Link>
+                </div>
               )}
+            </Link>
+
+            {/* Secundários — lista numerada, texto puro */}
+            <div className="divide-y divide-gray-100">
+              {politica.slice(1, 5).map((artigo, i) => (
+                <Link key={artigo.id} href={`/${artigo.slug}`}
+                  className="group flex items-start gap-3 py-3">
+                  <span className="text-lg font-extrabold w-7 shrink-0 leading-snug select-none"
+                    style={{ color: '#d1d5db' }}>
+                    {String(i + 1).padStart(2, '0')}
+                  </span>
+                  <p className="text-sm font-semibold text-[#1a1a1a] leading-snug group-hover:text-[#7c3aed] transition-colors line-clamp-2">
+                    {artigo.title}
+                  </p>
+                </Link>
+              ))}
             </div>
           </section>
         )}

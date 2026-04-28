@@ -422,44 +422,44 @@ export default async function Home() {
 
             {/* Destaque principal */}
             <Link href={`/${politica[0].slug}`}
-              className="group flex flex-col md:flex-row gap-5 items-start pb-5 border-b border-gray-100 mb-1">
+              className="group flex flex-col md:flex-row gap-6 items-start pb-5 border-b border-gray-100 mb-1">
               {/* Texto — ocupa o espaço restante */}
-              <div className="flex-1 min-w-0 flex flex-col gap-2">
+              <div className="flex-1 min-w-0 flex flex-col gap-2 py-1">
                 <h2 className="text-2xl md:text-3xl font-extrabold text-[#1a1a1a] leading-snug group-hover:text-[#7c3aed] transition-colors">
                   {politica[0].title}
                 </h2>
                 {politica[0].excerpt && (
-                  <p className="text-sm text-gray-500 leading-relaxed line-clamp-4">
+                  <p className="text-sm text-gray-500 leading-relaxed line-clamp-3">
                     {politica[0].excerpt.replace(/<[^>]+>/g, '')}
                   </p>
                 )}
                 {politica[0].author_name && (
-                  <p className="text-xs font-semibold text-[#7c3aed]">{politica[0].author_name}</p>
+                  <p className="text-xs font-semibold text-[#7c3aed] mt-1">{politica[0].author_name}</p>
                 )}
               </div>
-              {/* Imagem direita — largura fixa, altura natural, zero crop */}
+              {/* Imagem direita — 16:9 fixo, object-cover gracioso */}
               {politica[0].featured_image_url && (
-                <div className="w-full md:w-[42%] shrink-0">
+                <div className="w-full md:w-[45%] shrink-0 aspect-[16/9] overflow-hidden">
                   {/* eslint-disable-next-line @next/next/no-img-element */}
                   <img
                     src={politica[0].featured_image_url}
                     alt={politica[0].title}
-                    className="w-full h-auto block"
+                    className="w-full h-full object-cover object-center group-hover:scale-[1.02] transition-transform duration-300"
                   />
                 </div>
               )}
             </Link>
 
-            {/* Secundários — lista numerada, texto puro */}
-            <div className="divide-y divide-gray-100">
+            {/* Secundários — lista com borda roxa, sem foto */}
+            <div className="mt-2">
               {politica.slice(1, 5).map((artigo, i) => (
                 <Link key={artigo.id} href={`/${artigo.slug}`}
-                  className="group flex items-start gap-3 py-3">
-                  <span className="text-lg font-extrabold w-7 shrink-0 leading-snug select-none"
-                    style={{ color: '#d1d5db' }}>
+                  className="group flex items-start gap-3 py-3 border-b border-gray-100 last:border-0">
+                  <span className="text-sm font-extrabold w-6 shrink-0 leading-5 select-none tabular-nums"
+                    style={{ color: '#c4b5fd' }}>
                     {String(i + 1).padStart(2, '0')}
                   </span>
-                  <p className="text-sm font-semibold text-[#1a1a1a] leading-snug group-hover:text-[#7c3aed] transition-colors line-clamp-2">
+                  <p className="text-sm font-semibold text-[#1a1a1a] leading-snug group-hover:text-[#7c3aed] transition-colors line-clamp-2 flex-1">
                     {artigo.title}
                   </p>
                 </Link>

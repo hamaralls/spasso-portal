@@ -415,67 +415,55 @@ export default async function Home() {
           </section>
         )}
 
-        {/* ── 7. Política — destaque large + grid 4 cards ── */}
+        {/* ── 7. Política — editorial 50/50: lista numerada esq + imagem dir ── */}
         {politica.length >= 2 && (
           <section>
             <SectionHeader title="Política" href="/politica" color="#7c3aed" />
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-8 items-start">
 
-            {/* Destaque: texto esq (3/5) + foto dir (2/5) */}
-            <Link href={`/${politica[0].slug}`}
-              className="group grid grid-cols-1 lg:grid-cols-5 gap-4 items-stretch mb-4 pb-4 border-b border-gray-100">
-              <div className="lg:col-span-3 flex flex-col justify-between">
-                <div>
-                  <h2 className="text-2xl md:text-3xl font-extrabold text-[#1a1a1a] leading-snug group-hover:text-[#7c3aed] transition-colors line-clamp-3">
+              {/* Esquerda: título destaque + lista numerada */}
+              <div className="flex flex-col">
+                <Link href={`/${politica[0].slug}`} className="group mb-5">
+                  <h2 className="text-2xl md:text-3xl font-extrabold text-[#1a1a1a] leading-snug group-hover:text-[#7c3aed] transition-colors">
                     {politica[0].title}
                   </h2>
                   {politica[0].excerpt && (
-                    <p className="text-sm text-gray-500 mt-3 leading-relaxed line-clamp-4 hidden sm:block">
+                    <p className="text-sm text-gray-500 mt-2 leading-relaxed line-clamp-3">
                       {politica[0].excerpt.replace(/<[^>]+>/g, '')}
                     </p>
                   )}
+                  {politica[0].author_name && (
+                    <p className="text-xs font-semibold text-[#7c3aed] mt-2">{politica[0].author_name}</p>
+                  )}
+                </Link>
+
+                <div className="border-t border-gray-200 divide-y divide-gray-100">
+                  {politica.slice(1, 5).map((artigo, i) => (
+                    <Link key={artigo.id} href={`/${artigo.slug}`}
+                      className="group flex items-start gap-3 py-3">
+                      <span className="text-xl font-extrabold leading-none w-7 shrink-0 select-none"
+                        style={{ color: '#e5e7eb' }}>
+                        {String(i + 1).padStart(2, '0')}
+                      </span>
+                      <p className="text-sm font-semibold text-[#1a1a1a] leading-snug group-hover:text-[#7c3aed] transition-colors line-clamp-2">
+                        {artigo.title}
+                      </p>
+                    </Link>
+                  ))}
                 </div>
-                {politica[0].author_name && (
-                  <p className="text-xs font-semibold text-[#7c3aed] mt-4">{politica[0].author_name}</p>
-                )}
               </div>
-              <div className="lg:col-span-2 relative overflow-hidden bg-gray-100 min-h-[180px]">
-                {politica[0].featured_image_url && (
-                  <Image
+
+              {/* Direita: imagem completa sem crop */}
+              {politica[0].featured_image_url && (
+                <Link href={`/${politica[0].slug}`} className="group block">
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                  <img
                     src={politica[0].featured_image_url}
                     alt={politica[0].title}
-                    fill
-                    className="object-cover group-hover:scale-[1.02] transition-transform duration-300"
-                    sizes="(max-width: 1024px) 100vw, 40vw"
-                    unoptimized
+                    className="w-full h-auto block shadow-sm group-hover:opacity-95 transition-opacity"
                   />
-                )}
-              </div>
-            </Link>
-
-            {/* Secundários: grid 4 cards com thumb 16:9 */}
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-              {politica.slice(1, 5).map(artigo => (
-                <Link key={artigo.id} href={`/${artigo.slug}`}
-                  className="group flex flex-col gap-2">
-                  <div className="relative aspect-video overflow-hidden bg-gray-100">
-                    {artigo.featured_image_url ? (
-                      <Image
-                        src={artigo.featured_image_url}
-                        alt={artigo.title}
-                        fill
-                        className="object-cover group-hover:scale-[1.02] transition-transform duration-300"
-                        sizes="(max-width: 768px) 45vw, 25vw"
-                        unoptimized
-                      />
-                    ) : (
-                      <div className="absolute inset-0 bg-gradient-to-br from-[#7c3aed]/10 to-[#7c3aed]/5" />
-                    )}
-                  </div>
-                  <p className="text-xs font-semibold text-[#1a1a1a] leading-snug group-hover:text-[#7c3aed] transition-colors line-clamp-3">
-                    {artigo.title}
-                  </p>
                 </Link>
-              ))}
+              )}
             </div>
           </section>
         )}

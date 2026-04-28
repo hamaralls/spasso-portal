@@ -415,60 +415,65 @@ export default async function Home() {
           </section>
         )}
 
-        {/* ── 7. Política — layout editorial: texto esq + foto dir + lista compacta ── */}
+        {/* ── 7. Política — destaque large + grid 4 cards ── */}
         {politica.length >= 2 && (
           <section>
             <SectionHeader title="Política" href="/politica" color="#7c3aed" />
 
-            {/* Artigo principal */}
+            {/* Destaque: texto esq (3/5) + foto dir (2/5) */}
             <Link href={`/${politica[0].slug}`}
-              className="group flex gap-5 items-stretch pb-4 border-b border-gray-100">
-              <div className="flex-1 flex flex-col justify-between min-w-0">
+              className="group grid grid-cols-1 lg:grid-cols-5 gap-4 items-stretch mb-4 pb-4 border-b border-gray-100">
+              <div className="lg:col-span-3 flex flex-col justify-between">
                 <div>
-                  {politica[0].category_name && (
-                    <Badge name={politica[0].category_name} color={politica[0].badge_color ?? '#7c3aed'} size="sm" />
-                  )}
-                  <h2 className="text-xl md:text-2xl font-extrabold text-[#1a1a1a] leading-snug mt-2 group-hover:text-[#7c3aed] transition-colors line-clamp-3">
+                  <h2 className="text-2xl md:text-3xl font-extrabold text-[#1a1a1a] leading-snug group-hover:text-[#7c3aed] transition-colors line-clamp-3">
                     {politica[0].title}
                   </h2>
                   {politica[0].excerpt && (
-                    <p className="text-sm text-gray-500 mt-2 leading-relaxed line-clamp-3 hidden sm:block">
+                    <p className="text-sm text-gray-500 mt-3 leading-relaxed line-clamp-4 hidden sm:block">
                       {politica[0].excerpt.replace(/<[^>]+>/g, '')}
                     </p>
                   )}
                 </div>
                 {politica[0].author_name && (
-                  <p className="text-xs font-medium text-gray-400 mt-3">{politica[0].author_name}</p>
+                  <p className="text-xs font-semibold text-[#7c3aed] mt-4">{politica[0].author_name}</p>
                 )}
               </div>
-              {politica[0].featured_image_url && (
-                <div className="relative w-36 sm:w-52 md:w-64 shrink-0 overflow-hidden bg-gray-100 min-h-[140px]">
+              <div className="lg:col-span-2 relative overflow-hidden bg-gray-100 min-h-[180px]">
+                {politica[0].featured_image_url && (
                   <Image
                     src={politica[0].featured_image_url}
                     alt={politica[0].title}
                     fill
                     className="object-cover group-hover:scale-[1.02] transition-transform duration-300"
-                    sizes="(max-width: 640px) 144px, (max-width: 768px) 208px, 256px"
+                    sizes="(max-width: 1024px) 100vw, 40vw"
                     unoptimized
                   />
-                </div>
-              )}
+                )}
+              </div>
             </Link>
 
-            {/* Artigos secundários: lista editorial com barra roxa */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-8 mt-1">
-              {politica.slice(1).map(artigo => (
+            {/* Secundários: grid 4 cards com thumb 16:9 */}
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+              {politica.slice(1, 5).map(artigo => (
                 <Link key={artigo.id} href={`/${artigo.slug}`}
-                  className="group flex items-start gap-3 py-3 border-b border-gray-100">
-                  <span className="w-0.5 self-stretch bg-[#7c3aed] shrink-0" />
-                  <div className="min-w-0">
-                    <p className="text-sm font-semibold text-[#1a1a1a] leading-snug group-hover:text-[#7c3aed] transition-colors line-clamp-2">
-                      {artigo.title}
-                    </p>
-                    {artigo.author_name && (
-                      <p className="text-xs text-gray-400 mt-0.5">{artigo.author_name}</p>
+                  className="group flex flex-col gap-2">
+                  <div className="relative aspect-video overflow-hidden bg-gray-100">
+                    {artigo.featured_image_url ? (
+                      <Image
+                        src={artigo.featured_image_url}
+                        alt={artigo.title}
+                        fill
+                        className="object-cover group-hover:scale-[1.02] transition-transform duration-300"
+                        sizes="(max-width: 768px) 45vw, 25vw"
+                        unoptimized
+                      />
+                    ) : (
+                      <div className="absolute inset-0 bg-gradient-to-br from-[#7c3aed]/10 to-[#7c3aed]/5" />
                     )}
                   </div>
+                  <p className="text-xs font-semibold text-[#1a1a1a] leading-snug group-hover:text-[#7c3aed] transition-colors line-clamp-3">
+                    {artigo.title}
+                  </p>
                 </Link>
               ))}
             </div>

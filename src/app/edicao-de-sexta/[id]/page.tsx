@@ -74,11 +74,11 @@ export default async function EdicaoPage({ params }: Props) {
         </div>
       </div>
 
-      {/* Visualizador PDF */}
+      {/* Visualizador PDF — proxy entrega com nome limpo */}
       <div className="w-full rounded-lg overflow-hidden border border-gray-200 shadow-sm bg-gray-50"
         style={{ height: 'min(88vh, 1000px)' }}>
         <iframe
-          src={`${ed.pdf_url}#toolbar=1&view=FitH`}
+          src={`/api/edicoes/${ed.id}/pdf#toolbar=1&view=FitH`}
           className="w-full h-full"
           title={`Edição de Sexta${ed.edition_number ? ` Nº ${ed.edition_number}` : ''}`}
         />

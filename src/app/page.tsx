@@ -171,7 +171,7 @@ function MetropolesGrid({
 }
 
 export default async function Home() {
-  const [hero, ultimas, regiao, culturaELazer, brasil, saude, politica, economia, colunistas, ultimaEdicao] = await Promise.all([
+  const [hero, ultimas, regiaoRaw, culturaELazarRaw, brasilRaw, saudeRaw, politicaRaw, economiaRaw, colunistas, ultimaEdicao] = await Promise.all([
     getArtigosHero(),
     getArtigosRecentes(12),
     getArtigosPorCategorias(['sumare', 'hortolandia', 'nova-odessa', 'campinas', 'paulinia', 'monte-mor', 'santa-barbara-doeste', 'outras-cidades', 'rmc'], 16),
@@ -183,6 +183,16 @@ export default async function Home() {
     getColunistas(),
     getUltimaEdicao(),
   ])
+
+  // Deduplica: artigos do hero não aparecem novamente nas seções
+  const heroIds = new Set(hero.map((a: ArticlePublico) => a.id))
+  const dedupe = (arr: ArticlePublico[]) => arr.filter(a => !heroIds.has(a.id))
+  const regiao      = dedupe(regiaoRaw)
+  const culturaELazer = dedupe(culturaELazarRaw)
+  const brasil      = dedupe(brasilRaw)
+  const saude       = dedupe(saudeRaw)
+  const politica    = dedupe(politicaRaw)
+  const economia    = dedupe(economiaRaw)
 
   return (
     <>
@@ -279,7 +289,6 @@ export default async function Home() {
               <aside className="hidden lg:flex flex-col gap-4">
                 {ultimaEdicao && <EdicaoSemanalWidget edition={ultimaEdicao} />}
                 <AdUnit slot="rmc-sidebar" format="rectangle" />
-                <BannerPlaceholder w={300} h={300} label="Banner 300×600" fill />
               </aside>
             </div>
           </section>
@@ -406,11 +415,63 @@ export default async function Home() {
           </section>
         )}
 
-        {/* ── 7. Política — MetropolesGrid wide (sem col3, seção pequena) ── */}
+        {/* ── 7. Política — layout editorial: texto esq + foto dir + lista compacta ── */}
         {politica.length >= 2 && (
           <section>
             <SectionHeader title="Política" href="/politica" color="#7c3aed" />
-            <MetropolesGrid articles={politica} extraRows={0} wideLayout={true} />
+
+            {/* Artigo principal */}
+            <Link href={`/${politica[0].slug}`}
+              className="group flex gap-5 items-stretch pb-4 border-b border-gray-100">
+              <div className="flex-1 flex flex-col justify-between min-w-0">
+                <div>
+                  {politica[0].category_name && (
+                    <Badge name={politica[0].category_name} color={politica[0].badge_color ?? '#7c3aed'} size="sm" />
+                  )}
+                  <h2 className="text-xl md:text-2xl font-extrabold text-[#1a1a1a] leading-snug mt-2 group-hover:text-[#7c3aed] transition-colors line-clamp-3">
+                    {politica[0].title}
+                  </h2>
+                  {politica[0].excerpt && (
+                    <p className="text-sm text-gray-500 mt-2 leading-relaxed line-clamp-3 hidden sm:block">
+                      {politica[0].excerpt.replace(/<[^>]+>/g, '')}
+                    </p>
+                  )}
+                </div>
+                {politica[0].author_name && (
+                  <p className="text-xs font-medium text-gray-400 mt-3">{politica[0].author_name}</p>
+                )}
+              </div>
+              {politica[0].featured_image_url && (
+                <div className="relative w-36 sm:w-52 md:w-64 shrink-0 overflow-hidden bg-gray-100 min-h-[140px]">
+                  <Image
+                    src={politica[0].featured_image_url}
+                    alt={politica[0].title}
+                    fill
+                    className="object-cover group-hover:scale-[1.02] transition-transform duration-300"
+                    sizes="(max-width: 640px) 144px, (max-width: 768px) 208px, 256px"
+                    unoptimized
+                  />
+                </div>
+              )}
+            </Link>
+
+            {/* Artigos secundários: lista editorial com barra roxa */}
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-8 mt-1">
+              {politica.slice(1).map(artigo => (
+                <Link key={artigo.id} href={`/${artigo.slug}`}
+                  className="group flex items-start gap-3 py-3 border-b border-gray-100">
+                  <span className="w-0.5 self-stretch bg-[#7c3aed] shrink-0" />
+                  <div className="min-w-0">
+                    <p className="text-sm font-semibold text-[#1a1a1a] leading-snug group-hover:text-[#7c3aed] transition-colors line-clamp-2">
+                      {artigo.title}
+                    </p>
+                    {artigo.author_name && (
+                      <p className="text-xs text-gray-400 mt-0.5">{artigo.author_name}</p>
+                    )}
+                  </div>
+                </Link>
+              ))}
+            </div>
           </section>
         )}
 

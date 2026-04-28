@@ -12,43 +12,37 @@ export default function EdicaoSemanalWidget({ edition }: Props) {
   })
 
   return (
-    <Link href={`/edicao-de-sexta/${edition.id}`}
-      className="group flex items-center gap-5 bg-[#1a1a1a] text-white px-6 py-5 hover:bg-[#2a2a2a] transition-colors">
-
-      {/* Capa */}
-      {edition.cover_url ? (
-        <div className="relative w-16 h-[90px] shrink-0 overflow-hidden shadow-lg">
+    <Link href={`/edicao-de-sexta/${edition.id}`} className="group block w-full">
+      {/* Capa proporção A4 */}
+      <div className="relative w-full aspect-[3/4] overflow-hidden bg-gray-100 shadow-sm group-hover:shadow-md transition-shadow">
+        {edition.cover_url ? (
           <Image
             src={edition.cover_url}
-            alt={edition.title ?? 'Capa da edição'}
+            alt={edition.title ?? `Edição ${edition.edition_number ?? ''}`}
             fill
-            className="object-cover group-hover:scale-[1.03] transition-transform duration-300"
-            sizes="64px"
+            className="object-cover group-hover:scale-[1.02] transition-transform duration-300"
+            sizes="300px"
             unoptimized
           />
-        </div>
-      ) : (
-        <div className="w-16 h-[90px] shrink-0 bg-white/10 flex items-center justify-center rounded text-2xl">
-          📰
-        </div>
-      )}
-
-      {/* Info */}
-      <div className="flex-1 min-w-0">
-        <p className="text-xs font-bold text-[#f5821f] uppercase tracking-widest mb-1">
-          Edição de Sexta
-        </p>
-        <p className="text-base font-bold leading-snug line-clamp-2 group-hover:text-[#f5821f] transition-colors">
-          {edition.title ?? (edition.edition_number ? `Nº ${edition.edition_number}` : 'Edição desta semana')}
-        </p>
-        <p className="text-xs text-gray-400 mt-1">{dateStr}</p>
+        ) : (
+          <div className="absolute inset-0 flex flex-col items-center justify-center bg-[#f5f5f5] gap-3 p-4">
+            <span className="text-5xl">📰</span>
+            <span className="text-xs text-gray-400 text-center leading-relaxed">
+              {edition.title ?? (edition.edition_number ? `Edição Nº ${edition.edition_number}` : 'Edição de Sexta')}
+            </span>
+          </div>
+        )}
       </div>
 
-      {/* CTA */}
-      <div className="hidden sm:block shrink-0">
-        <span className="inline-flex items-center gap-1.5 px-4 py-2 bg-[#f5821f] text-white text-sm font-semibold rounded-lg group-hover:bg-[#e0711a] transition-colors whitespace-nowrap">
-          📖 Ler edição
-        </span>
+      {/* Legenda */}
+      <div className="mt-2">
+        <p className="text-[10px] font-bold text-[#f5821f] uppercase tracking-widest">
+          Edição de Sexta{edition.edition_number ? ` · Nº ${edition.edition_number}` : ''}
+        </p>
+        <p className="text-xs text-gray-500 mt-0.5">{dateStr}</p>
+        <p className="text-xs font-semibold text-[#f5821f] mt-1 group-hover:underline">
+          Ler edição completa →
+        </p>
       </div>
     </Link>
   )

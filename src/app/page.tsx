@@ -308,58 +308,60 @@ export default async function Home() {
           </div>
         </div>
 
-        {/* ── 3. Colunistas ── */}
+        {/* ── 3. Colunistas + Edição de Sexta (sidebar) ── */}
         {colunistas.length > 0 && (
           <section>
             <SectionHeader title="Colunistas" href="/colunistas" color="#f5821f" />
-            <div className={`grid gap-4 ${
-              colunistas.length === 1 ? 'grid-cols-1 max-w-sm' :
-              colunistas.length === 2 ? 'grid-cols-1 sm:grid-cols-2 max-w-2xl' :
-              'grid-cols-1 sm:grid-cols-2 lg:grid-cols-3'
-            }`}>
-              {colunistas.map(col => {
-                const initials = col.name.split(' ').filter(Boolean)
-                  .map((n: string) => n[0].toUpperCase()).slice(0, 2).join('')
-                const href = `/colunistas/${col.slug}`
-                return (
-                  <Link key={col.id} href={href}
-                    className="group flex items-start gap-3 bg-white p-4 shadow-sm hover:shadow-md transition-shadow">
-                    <div className="w-12 h-12 rounded-full overflow-hidden shrink-0 flex items-center justify-center"
-                      style={{ background: col.avatar_url ? undefined : '#f5821f1a' }}>
-                      {col.avatar_url ? (
-                        <Image src={col.avatar_url} alt={col.name} width={48} height={48}
-                          className="object-cover w-full h-full" />
-                      ) : (
-                        <span className="text-base font-extrabold text-[#f5821f]">{initials}</span>
-                      )}
-                    </div>
-                    <div className="min-w-0 flex-1">
-                      <p className="text-xs font-bold text-[#f5821f] uppercase tracking-wide truncate mb-0.5">
-                        {col.name}
-                      </p>
-                      {col.lastArticle && (
-                        <>
-                          <p className="text-sm font-semibold text-[#1a1a1a] leading-snug line-clamp-1 group-hover:text-[#f5821f] transition-colors">
-                            {col.lastArticle.title}
-                          </p>
-                          {col.lastArticle.excerpt && (
-                            <p className="text-xs text-gray-500 leading-relaxed line-clamp-2 mt-0.5">
-                              {col.lastArticle.excerpt.replace(/<[^>]+>/g, '')}
+            <div className="grid grid-cols-1 lg:grid-cols-4 gap-4 items-start">
+              <div className={`lg:col-span-3 grid gap-4 ${
+                colunistas.length === 1 ? 'grid-cols-1' :
+                colunistas.length === 2 ? 'grid-cols-1 sm:grid-cols-2' :
+                'grid-cols-1 sm:grid-cols-2 lg:grid-cols-3'
+              }`}>
+                {colunistas.map(col => {
+                  const initials = col.name.split(' ').filter(Boolean)
+                    .map((n: string) => n[0].toUpperCase()).slice(0, 2).join('')
+                  const href = `/colunistas/${col.slug}`
+                  return (
+                    <Link key={col.id} href={href}
+                      className="group flex items-start gap-3 bg-white p-4 shadow-sm hover:shadow-md transition-shadow">
+                      <div className="w-12 h-12 rounded-full overflow-hidden shrink-0 flex items-center justify-center"
+                        style={{ background: col.avatar_url ? undefined : '#f5821f1a' }}>
+                        {col.avatar_url ? (
+                          <Image src={col.avatar_url} alt={col.name} width={48} height={48}
+                            className="object-cover w-full h-full" />
+                        ) : (
+                          <span className="text-base font-extrabold text-[#f5821f]">{initials}</span>
+                        )}
+                      </div>
+                      <div className="min-w-0 flex-1">
+                        <p className="text-xs font-bold text-[#f5821f] uppercase tracking-wide truncate mb-0.5">
+                          {col.name}
+                        </p>
+                        {col.lastArticle && (
+                          <>
+                            <p className="text-sm font-semibold text-[#1a1a1a] leading-snug line-clamp-1 group-hover:text-[#f5821f] transition-colors">
+                              {col.lastArticle.title}
                             </p>
-                          )}
-                        </>
-                      )}
-                    </div>
-                  </Link>
-                )
-              })}
+                            {col.lastArticle.excerpt && (
+                              <p className="text-xs text-gray-500 leading-relaxed line-clamp-2 mt-0.5">
+                                {col.lastArticle.excerpt.replace(/<[^>]+>/g, '')}
+                              </p>
+                            )}
+                          </>
+                        )}
+                      </div>
+                    </Link>
+                  )
+                })}
+              </div>
+              {ultimaEdicao && (
+                <aside className="hidden lg:block">
+                  <EdicaoSemanalWidget edition={ultimaEdicao} />
+                </aside>
+              )}
             </div>
           </section>
-        )}
-
-        {/* ── Edição de Sexta widget ── */}
-        {ultimaEdicao && (
-          <EdicaoSemanalWidget edition={ultimaEdicao} />
         )}
 
         {/* ── 4. Brasil — MetropolesGrid, sem extras ── */}

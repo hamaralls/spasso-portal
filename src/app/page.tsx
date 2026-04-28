@@ -420,11 +420,11 @@ export default async function Home() {
           <section>
             <SectionHeader title="Política" href="/politica" color="#7c3aed" />
 
-            {/* Destaque principal */}
+            {/* Destaque principal — flex stretch: imagem se adapta à altura do texto */}
             <Link href={`/${politica[0].slug}`}
-              className="group flex flex-col md:flex-row gap-6 items-start pb-5 border-b border-gray-100 mb-1">
-              {/* Texto — ocupa o espaço restante */}
-              <div className="flex-1 min-w-0 flex flex-col gap-2 py-1">
+              className="group flex flex-col md:flex-row gap-5 pb-5 border-b border-gray-100 mb-3">
+              {/* Texto esquerda */}
+              <div className="flex-1 min-w-0 flex flex-col justify-center gap-2">
                 <h2 className="text-2xl md:text-3xl font-extrabold text-[#1a1a1a] leading-snug group-hover:text-[#7c3aed] transition-colors">
                   {politica[0].title}
                 </h2>
@@ -434,12 +434,12 @@ export default async function Home() {
                   </p>
                 )}
                 {politica[0].author_name && (
-                  <p className="text-xs font-semibold text-[#7c3aed] mt-1">{politica[0].author_name}</p>
+                  <p className="text-xs font-semibold text-[#7c3aed]">{politica[0].author_name}</p>
                 )}
               </div>
-              {/* Imagem direita — 16:9 fixo, object-cover gracioso */}
+              {/* Imagem direita — sem ratio fixo no desktop, estica com o texto */}
               {politica[0].featured_image_url && (
-                <div className="w-full md:w-[45%] shrink-0 aspect-[16/9] overflow-hidden">
+                <div className="w-full md:w-[42%] shrink-0 aspect-[4/3] md:aspect-auto overflow-hidden">
                   {/* eslint-disable-next-line @next/next/no-img-element */}
                   <img
                     src={politica[0].featured_image_url}
@@ -450,16 +450,21 @@ export default async function Home() {
               )}
             </Link>
 
-            {/* Secundários — lista com borda roxa, sem foto */}
-            <div className="mt-2">
-              {politica.slice(1, 5).map((artigo, i) => (
-                <Link key={artigo.id} href={`/${artigo.slug}`}
-                  className="group flex items-start gap-3 py-3 border-b border-gray-100 last:border-0">
-                  <span className="text-sm font-extrabold w-6 shrink-0 leading-5 select-none tabular-nums"
-                    style={{ color: '#c4b5fd' }}>
-                    {String(i + 1).padStart(2, '0')}
-                  </span>
-                  <p className="text-sm font-semibold text-[#1a1a1a] leading-snug group-hover:text-[#7c3aed] transition-colors line-clamp-2 flex-1">
+            {/* Secundários — grid 2×2 com thumb 10:9, padrão dos cards do portal */}
+            <div className="grid grid-cols-2 gap-x-4 gap-y-4">
+              {politica.slice(1, 5).map((artigo) => (
+                <Link key={artigo.id} href={`/${artigo.slug}`} className="group flex flex-col gap-2">
+                  <div className="aspect-[10/9] overflow-hidden bg-gray-100">
+                    {artigo.featured_image_url && (
+                      // eslint-disable-next-line @next/next/no-img-element
+                      <img
+                        src={artigo.featured_image_url}
+                        alt={artigo.title}
+                        className="w-full h-full object-cover object-center group-hover:scale-[1.02] transition-transform duration-300"
+                      />
+                    )}
+                  </div>
+                  <p className="text-sm font-semibold text-[#1a1a1a] leading-snug group-hover:text-[#7c3aed] transition-colors line-clamp-2">
                     {artigo.title}
                   </p>
                 </Link>

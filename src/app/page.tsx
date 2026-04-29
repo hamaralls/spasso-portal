@@ -182,7 +182,7 @@ function MetropolesGrid({
                     <Badge name={a[0].category_name} color={a[0].badge_color} size="sm" />
                   </div>
                 )}
-                <h3 className="text-xl font-bold leading-snug mt-2 group-hover:underline line-clamp-4 text-[#1a1a1a]">
+                <h3 className="text-xl font-bold leading-snug mt-1 group-hover:underline line-clamp-4 text-[#1a1a1a]">
                   {a[0].title}
                 </h3>
                 {a[0].excerpt && (
@@ -417,16 +417,22 @@ export default async function Home() {
             <SectionHeader title="Brasil" href="/brasil" color="#ec3535" />
             <div className="grid grid-cols-1 lg:grid-cols-4 gap-4 items-start">
               <div className="lg:col-span-3">
-                <MetropolesGrid articles={brasil.slice(0, 7)} extraRows={0} />
+                <MetropolesGrid articles={brasil.slice(0, 6)} extraRows={0} />
               </div>
               <aside className="hidden lg:flex flex-col gap-4">
-                {brasil.slice(7, 10).map(art => (
+                {brasil.slice(6, 9).map(art => (
                   <ArticleCard key={art.id} article={art} size="compact" />
                 ))}
               </aside>
             </div>
           </section>
         )}
+
+        {/* ── Banner pós-Brasil ── */}
+        <div className="flex justify-center py-2">
+          <AdUnit slot="post-brasil-leaderboard" format="leaderboard" />
+          <BannerPlaceholder w={728} h={90} label="Banner 728×90" />
+        </div>
 
         {/* ── 5. Cultura e Lazer — MetropolesGrid, sem extras ── */}
         {culturaELazer.length > 0 && (

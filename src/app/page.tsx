@@ -232,12 +232,12 @@ export default async function Home() {
   // Deduplica: artigos do hero não aparecem novamente nas seções
   const heroIds = new Set(hero.map((a: ArticlePublico) => a.id))
   const dedupe = (arr: ArticlePublico[]) => arr.filter(a => !heroIds.has(a.id))
-  const regiao      = dedupe(regiaoRaw)
-  const culturaELazer = dedupe(culturaELazarRaw)
-  const brasil      = dedupe(brasilRaw)
-  const saude       = dedupe(saudeRaw)
-  const politica    = dedupe(politicaRaw)
-  const economia    = dedupe(economiaRaw)
+  const regiao        = dedupe(regiaoRaw)
+  const culturaELazer = dedupe(culturaELazarRaw).map(a => ({ ...a, badge_color: '#2563eb' }))
+  const brasil        = dedupe(brasilRaw)
+  const saude         = dedupe(saudeRaw).map(a => ({ ...a, badge_color: '#0891b2' }))
+  const politica      = dedupe(politicaRaw).map(a => ({ ...a, badge_color: '#7c3aed' }))
+  const economia      = dedupe(economiaRaw).map(a => ({ ...a, badge_color: '#16a34a' }))
 
   return (
     <>

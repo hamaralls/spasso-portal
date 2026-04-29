@@ -4,7 +4,7 @@ import { uploadToR2, r2Key } from '@/lib/r2'
 export const runtime = 'edge'
 
 const ALLOWED_TYPES = ['image/jpeg', 'image/jpg', 'image/png', 'image/webp', 'image/gif', 'application/pdf']
-const MAX_SIZE = 50 * 1024 * 1024 // 50MB (PDFs podem ser maiores)
+const MAX_SIZE = 50 * 1024 * 1024 // 50MB por arquivo
 
 export async function POST(request: Request) {
   const sb = await createClient()
@@ -15,8 +15,14 @@ export async function POST(request: Request) {
   const file     = formData.get('file') as File | null
 
   if (!file) return Response.json({ error: 'Nenhum arquivo enviado' }, { status: 400 })
-  if (!ALLOWED_TYPES.includes(file.type)) return Response.json({ error: 'Tipo de arquivo não permitido' }, { status: 400 })
-  if (file.size > MAX_SIZE) return Response.json({ error: 'Arquivo muito grande (máx 10MB)' }, { status: 400 })
+
+  const isVideo = file.type.startsWith('video/')
+  if (!ALLOWED_TYPES.includes(file.type) && !isVideo) {
+    return Response.json({ error: 'Tipo de arquivo não permitido' }, { status: 400 })
+  }
+  if (file.size > MAX_SIZE) {
+    return Response.json({ error: 'Arquivo muito grande (máx 50MB)' }, { status: 400 })
+  }
 
   const buffer = await file.arrayBuffer()
   const key    = r2Key(file.name)

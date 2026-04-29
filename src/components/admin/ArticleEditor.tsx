@@ -8,6 +8,7 @@ import Image from '@tiptap/extension-image'
 import Link from '@tiptap/extension-link'
 import Placeholder from '@tiptap/extension-placeholder'
 import type { Category, Columnist } from '@/types'
+import Video from '@/lib/tiptap/Video'
 
 interface ArticleData {
   id?: string
@@ -96,6 +97,7 @@ export default function ArticleEditor({ categories, columnists = [], initial }: 
   const [seoDesc, setSeoDesc]       = useState(initial?.seo_description ?? '')
   const [saving, setSaving]         = useState(false)
   const [uploadingCover, setUploadingCover] = useState(false)
+  const [uploadingInline, setUploadingInline] = useState(false)
   const [error, setError]           = useState('')
   const [success, setSuccess]       = useState('')
 
@@ -103,6 +105,7 @@ export default function ArticleEditor({ categories, columnists = [], initial }: 
     extensions: [
       StarterKit,
       Image.configure({ inline: false, allowBase64: false }),
+      Video,
       Link.configure({ openOnClick: false }),
       Placeholder.configure({ placeholder: 'Escreva o conteúdo do artigo...' }),
     ],
@@ -119,12 +122,15 @@ export default function ArticleEditor({ categories, columnists = [], initial }: 
     if (!slugManual) setSlug(slugify(val))
   }
 
-  async function uploadImage(file: File): Promise<string> {
+  async function uploadAsset(file: File): Promise<string> {
     const formData = new FormData()
     formData.append('file', file)
     const res = await fetch('/api/upload', { method: 'POST', body: formData })
-    if (!res.ok) throw new Error('Erro no upload da imagem')
-    const { url } = await res.json()
+    const payload = await res.json().catch(() => null) as { error?: string; url?: string } | null
+    if (!res.ok || !payload?.url) {
+      throw new Error(payload?.error ?? 'Erro no upload do arquivo')
+    }
+    const { url } = payload
     return url
   }
 
@@ -133,10 +139,10 @@ export default function ArticleEditor({ categories, columnists = [], initial }: 
     if (!file) return
     setUploadingCover(true)
     try {
-      const url = await uploadImage(file)
+      const url = await uploadAsset(file)
       setCoverUrl(url)
-    } catch {
-      setError('Erro ao fazer upload da imagem.')
+    } catch (e) {
+      setError(e instanceof Error ? e.message : 'Erro ao fazer upload da imagem.')
     } finally {
       setUploadingCover(false)
     }
@@ -149,11 +155,34 @@ export default function ArticleEditor({ categories, columnists = [], initial }: 
     input.onchange = async () => {
       const file = input.files?.[0]
       if (!file || !editor) return
+      setUploadingInline(true)
       try {
-        const url = await uploadImage(file)
+        const url = await uploadAsset(file)
         editor.chain().focus().setImage({ src: url, alt: file.name }).run()
-      } catch {
-        setError('Erro ao inserir imagem.')
+      } catch (e) {
+        setError(e instanceof Error ? e.message : 'Erro ao inserir imagem.')
+      } finally {
+        setUploadingInline(false)
+      }
+    }
+    input.click()
+  }
+
+  async function handleVideoInsert() {
+    const input = document.createElement('input')
+    input.type = 'file'
+    input.accept = 'video/*'
+    input.onchange = async () => {
+      const file = input.files?.[0]
+      if (!file || !editor) return
+      setUploadingInline(true)
+      try {
+        const url = await uploadAsset(file)
+        editor.chain().focus().setVideo({ src: url }).run()
+      } catch (e) {
+        setError(e instanceof Error ? e.message : 'Erro ao inserir video.')
+      } finally {
+        setUploadingInline(false)
       }
     }
     input.click()
@@ -211,10 +240,10 @@ export default function ArticleEditor({ categories, columnists = [], initial }: 
     }
   }
 
-  const toolbarBtn = useCallback((active: boolean) =>
+  const toolbarBtn = useCallback((active: boolean, disabled = false) =>
     `px-2 py-1 text-xs rounded font-medium transition-colors ${
       active ? 'bg-[#f5821f] text-white' : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
-    }`, [])
+    } ${disabled ? 'opacity-60 cursor-not-allowed hover:bg-gray-100' : ''}`, [])
 
   return (
     <div className="flex gap-6 h-[calc(100vh-4rem)]">
@@ -248,7 +277,20 @@ export default function ArticleEditor({ categories, columnists = [], initial }: 
           <button onClick={() => editor?.chain().focus().toggleBulletList().run()} className={toolbarBtn(!!editor?.isActive('bulletList'))}>• Lista</button>
           <button onClick={() => editor?.chain().focus().toggleOrderedList().run()} className={toolbarBtn(!!editor?.isActive('orderedList'))}>1. Lista</button>
           <button onClick={() => editor?.chain().focus().toggleBlockquote().run()} className={toolbarBtn(!!editor?.isActive('blockquote'))}>❝</button>
-          <button onClick={handleImageInsert} className={toolbarBtn(false)}>🖼 Imagem</button>
+          <button
+            onClick={handleImageInsert}
+            disabled={uploadingInline}
+            className={toolbarBtn(false, uploadingInline)}
+          >
+            Imagem
+          </button>
+          <button
+            onClick={handleVideoInsert}
+            disabled={uploadingInline}
+            className={toolbarBtn(false, uploadingInline)}
+          >
+            {uploadingInline ? 'Enviando...' : 'Video'}
+          </button>
           <button onClick={() => editor?.chain().focus().undo().run()} className={toolbarBtn(false)}>↩</button>
           <button onClick={() => editor?.chain().focus().redo().run()} className={toolbarBtn(false)}>↪</button>
         </div>

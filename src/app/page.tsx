@@ -269,7 +269,7 @@ export default async function Home() {
         {/* ── 3. Colunistas ── */}
         {colunistas.length > 0 && (
           <section>
-            <SectionHeader title="Colunistas" href="/colunistas" color="#f5821f" />
+            <SectionHeader title="Colunistas" href="/colunistas" color="#f5821f" titleColor="#f5821f" linkColor="#f5821f" />
             <div className={`grid gap-4 ${
               colunistas.length === 1 ? 'grid-cols-1 max-w-sm' :
               colunistas.length === 2 ? 'grid-cols-1 sm:grid-cols-2 max-w-2xl' :
@@ -316,6 +316,12 @@ export default async function Home() {
         )}
 
 
+        {/* ── Leaderboard entre Colunistas e RMC ── */}
+        <div className="flex justify-center">
+          <AdUnit slot="home-leaderboard" format="leaderboard" />
+          <BannerPlaceholder w={728} h={90} label="Banner 728×90" />
+        </div>
+
         {/* ── 2. Região Metropolitana de Campinas ── */}
         {regiao.length > 0 && (
           <section>
@@ -332,11 +338,6 @@ export default async function Home() {
           </section>
         )}
 
-        {/* ── Leaderboard entre RMC e Colunistas ── */}
-        <div className="flex justify-center">
-          <AdUnit slot="home-leaderboard" format="leaderboard" />
-          <BannerPlaceholder w={728} h={90} label="Banner 728×90" />
-        </div>
 
         {/* ── Siga-nos ── */}
         <div className="flex flex-col sm:flex-row items-center justify-center gap-3 py-2">

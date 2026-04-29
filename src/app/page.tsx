@@ -14,13 +14,20 @@ const hasAds = !!process.env.NEXT_PUBLIC_GAM_NETWORK_CODE
 
 function BannerPlaceholder({ w, h, label, fill, minH }: { w: number; h: number; label: string; fill?: boolean; minH?: number }) {
   if (hasAds) return null
+  
+  const content = (
+    <Link href="/anuncie-aqui" className="text-gray-400 hover:text-gray-600 transition-colors">
+      Anuncie Aqui
+    </Link>
+  )
+
   if (fill) {
     return (
       <div
         className="w-full flex-1 bg-gray-50 border border-dashed border-gray-300 flex items-center justify-center text-xs text-gray-400"
         style={{ minHeight: minH ?? 150 }}
       >
-        {label}
+        {content}
       </div>
     )
   }
@@ -29,7 +36,7 @@ function BannerPlaceholder({ w, h, label, fill, minH }: { w: number; h: number; 
       style={{ width: w, height: h }}
       className="bg-gray-50 border border-dashed border-gray-300 flex items-center justify-center text-xs text-gray-400 mx-auto"
     >
-      {label}
+      {content}
     </div>
   )
 }
@@ -228,7 +235,7 @@ export default async function Home() {
     <>
       {/* ── 1. Hero / Destaques ── */}
       {hero.length >= 2 ? (
-        <section className="bg-white border-b border-gray-100">
+        <section className="bg-white">
           <div className="max-w-7xl mx-auto px-4 py-6">
 
             <div className="grid grid-cols-1 lg:grid-cols-4 gap-6 mb-5">

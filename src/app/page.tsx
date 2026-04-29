@@ -325,7 +325,7 @@ export default async function Home() {
         {/* ── 2. Região Metropolitana de Campinas ── */}
         {regiao.length > 0 && (
           <section>
-            <SectionHeader title="Região Metropolitana de Campinas" href="/rmc" color="#8dc63f" />
+            <SectionHeader title="Região Metropolitana de Campinas" href="/rmc" color="#8dc63f" titleColor="#8dc63f" linkColor="#8dc63f" />
             <div className="grid grid-cols-1 lg:grid-cols-4 gap-4 items-start">
               <div className="lg:col-span-3">
                 <MetropolesGrid articles={regiao} />

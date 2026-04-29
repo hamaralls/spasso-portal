@@ -120,6 +120,13 @@ const nextConfig: NextConfig = {
       { source: '/category/blog',                   destination: '/',               permanent: true },
       { source: '/category/td-demo/:path*',         destination: '/',               permanent: true },
 
+      // ── Catch-all: tags WP (não existem no portal) ───────
+      { source: '/tag/:slug*',                      destination: '/',               permanent: true },
+
+      // ── Catch-all: categorias WP não mapeadas → home ─────
+      // Deve ficar POR ÚLTIMO — captura qualquer /category/ sem redirect específico acima
+      { source: '/category/:slug*',                 destination: '/',               permanent: true },
+
       // ── Feed ──────────────────────────────────────────────
       { source: '/feed',                            destination: '/feed.xml',       permanent: true },
       { source: '/feed/',                           destination: '/feed.xml',       permanent: true },

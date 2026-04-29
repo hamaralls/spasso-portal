@@ -250,14 +250,14 @@ export default async function Home() {
               {/* Principal */}
               <Link href={`/${hero[0].slug}`}
                 className="group lg:col-span-3 flex flex-col sm:flex-row gap-6">
-                <div className="sm:w-[60%] relative aspect-video overflow-hidden bg-gray-200 shrink-0">
+                <div className="sm:w-[55%] relative aspect-video overflow-hidden bg-gray-200 shrink-0">
                   {hero[0].featured_image_url && (
                     <Image src={hero[0].featured_image_url} alt={hero[0].title}
                       fill priority className="object-cover group-hover:scale-[1.02] transition-transform duration-300"
                       sizes="(max-width: 640px) 100vw, 60vw" />
                   )}
                 </div>
-                <div className="sm:w-[40%] flex flex-col justify-start pt-1">
+                <div className="sm:w-[45%] flex flex-col justify-start pt-1">
                   {hero[0].category_name && (
                     <Badge name={hero[0].category_name} color={hero[0].badge_color} size="sm" />
                   )}

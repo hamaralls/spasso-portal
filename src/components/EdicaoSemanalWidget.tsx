@@ -14,7 +14,7 @@ export default function EdicaoSemanalWidget({ edition }: Props) {
     <div>
       {/* Label */}
       <div className="flex items-center justify-center mb-3">
-        <p className="text-base font-bold uppercase tracking-widest text-[#1a1a1a]">
+        <p className="font-extrabold text-sm uppercase tracking-widest text-[#1a1a1a]">
           Edição de Sexta
         </p>
       </div>

@@ -230,42 +230,30 @@ export default async function Home() {
                 </div>
               </Link>
 
-              {/* Secundário */}
-              <Link href={`/${hero[1].slug}`} className="group flex flex-col">
-                <div className="relative aspect-video overflow-hidden bg-gray-200">
-                  {hero[1].featured_image_url && (
-                    <Image src={hero[1].featured_image_url} alt={hero[1].title}
-                      fill className="object-cover group-hover:scale-[1.02] transition-transform duration-300"
-                      sizes="(max-width: 640px) 100vw, 25vw" />
-                  )}
-                </div>
-                <p className="text-[#f5821f] text-xs font-bold mt-2 uppercase tracking-wide truncate">
-                  {hero[1].author_name ?? hero[1].category_name ?? ''}
-                </p>
-                <h2 className="text-base font-bold leading-snug mt-1 group-hover:underline line-clamp-3 text-[#1a1a1a]">
-                  {hero[1].title}
-                </h2>
-              </Link>
-            </div>
-
-            {/* Faixa inferior — 3 thumbnails */}
-            {hero.length >= 5 && (
-              <div className="grid grid-cols-1 sm:grid-cols-3 gap-x-6 gap-y-3 pt-4 border-t border-gray-200">
-                {hero.slice(2, 5).map((article) => (
+              {/* Secundário (Lista de 3) */}
+              <div className="flex flex-col gap-4 justify-between h-full">
+                {hero.slice(1, 4).map(article => (
                   <Link key={article.id} href={`/${article.slug}`} className="group flex items-start gap-3">
-                    <div className="relative w-16 h-12 shrink-0 overflow-hidden bg-gray-200">
-                      {article.featured_image_url && (
+                    <div className="relative w-24 h-24 shrink-0 overflow-hidden bg-gray-200">
+                      {article.featured_image_url ? (
                         <Image src={article.featured_image_url} alt={article.title}
-                          fill className="object-cover" sizes="64px" />
+                          fill className="object-cover group-hover:scale-[1.02] transition-transform duration-300" sizes="96px" />
+                      ) : (
+                        <div className="absolute inset-0 bg-gradient-to-br from-gray-100 to-gray-200" />
                       )}
                     </div>
-                    <p className="text-sm font-semibold leading-snug group-hover:text-[#f5821f] transition-colors line-clamp-2 text-[#1a1a1a]">
-                      {article.title}
-                    </p>
+                    <div className="flex-1 min-w-0 flex flex-col justify-center h-full pt-1">
+                      <p className="text-[#f5821f] text-[10px] font-bold uppercase tracking-wide truncate mb-1">
+                        {article.author_name ?? article.category_name ?? ''}
+                      </p>
+                      <h2 className="text-sm font-bold leading-snug group-hover:text-[#f5821f] transition-colors line-clamp-3 text-[#1a1a1a]">
+                        {article.title}
+                      </h2>
+                    </div>
                   </Link>
                 ))}
               </div>
-            )}
+            </div>
           </div>
         </section>
       ) : (

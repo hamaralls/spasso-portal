@@ -20,14 +20,14 @@ export async function getArtigosHero(): Promise<ArticlePublico[]> {
       .from('artigos_publicados')
       .select('*')
       .order('published_at', { ascending: false })
-      .limit(5)
+      .limit(4)
     return data ?? []
   }
 
   // Diversity filter: sem 2 cidades iguais consecutivas
   const result: ArticlePublico[] = []
   const remaining = [...pool]
-  while (result.length < 5 && remaining.length > 0) {
+  while (result.length < 4 && remaining.length > 0) {
     const lastCity = result.length > 0 ? result[result.length - 1].category_slug : null
     let idx = remaining.findIndex(a => a.category_slug !== lastCity)
     if (idx === -1) idx = 0

@@ -220,11 +220,11 @@ export default async function Home() {
     getArtigosHero(),
     getArtigosRecentes(12),
     getArtigosPorCategorias(['sumare', 'hortolandia', 'nova-odessa', 'campinas', 'paulinia', 'monte-mor', 'santa-barbara-doeste', 'outras-cidades', 'rmc'], 16),
-    getArtigosPorCategorias(['estilo-de-vida', 'cultura-e-lazer', 'eventos'], 10),
+    getArtigosPorCategorias(['estilo-de-vida', 'cultura-e-lazer', 'eventos'], 5),
     getArtigosPorCategorias(['brasil'], 13),
-    getArtigosPorTema('saude', 10),
+    getArtigosPorTema('saude', 5),
     getArtigosPorTema('politica', 6),
-    getArtigosPorTema('economia', 10),
+    getArtigosPorTema('economia', 5),
     getColunistas(),
     getUltimaEdicao(),
   ])
@@ -434,33 +434,33 @@ export default async function Home() {
           <BannerPlaceholder w={728} h={90} label="Banner 728×90" />
         </div>
 
-        {/* ── 5. Cultura e Lazer — MetropolesGrid, sem extras ── */}
+        {/* ── 5. Cultura e Lazer ── */}
         {culturaELazer.length > 0 && (
           <section>
             <SectionHeader title="Cultura e Lazer" href="/cultura-e-lazer" color="#db2777" />
-            <div className="grid grid-cols-1 lg:grid-cols-4 gap-4 items-stretch">
+            <div className="grid grid-cols-1 lg:grid-cols-4 gap-4 items-start">
               <div className="lg:col-span-3">
-                <MetropolesGrid articles={culturaELazer} extraRows={0} />
+                <MetropolesGrid articles={culturaELazer.slice(0, 3)} extraRows={0} />
               </div>
-              <aside className="hidden lg:flex flex-col">
+              <aside className="hidden lg:flex flex-col gap-4">
                 <AdUnit slot="cultura-sidebar" format="rectangle" />
-                <BannerPlaceholder w={300} h={300} label="Banner 300×400" fill minH={300} />
+                <BannerPlaceholder w={300} h={250} label="Banner 300×250" />
               </aside>
             </div>
           </section>
         )}
 
-        {/* ── 6. Saúde — MetropolesGrid, sem extras ── */}
+        {/* ── 6. Saúde ── */}
         {saude.length >= 3 && (
           <section>
             <SectionHeader title="Saúde" href="/saude" color="#0891b2" />
-            <div className="grid grid-cols-1 lg:grid-cols-4 gap-4 items-stretch">
+            <div className="grid grid-cols-1 lg:grid-cols-4 gap-4 items-start">
               <div className="lg:col-span-3">
-                <MetropolesGrid articles={saude} extraRows={0} />
+                <MetropolesGrid articles={saude.slice(0, 3)} extraRows={0} />
               </div>
-              <aside className="hidden lg:flex flex-col">
+              <aside className="hidden lg:flex flex-col gap-4">
                 <AdUnit slot="saude-sidebar" format="rectangle" />
-                <BannerPlaceholder w={300} h={300} label="Banner 300×400" fill minH={300} />
+                <BannerPlaceholder w={300} h={250} label="Banner 300×250" />
               </aside>
             </div>
           </section>
@@ -524,17 +524,17 @@ export default async function Home() {
           </section>
         )}
 
-        {/* ── 8. Economia — MetropolesGrid, sem extras ── */}
+        {/* ── 8. Economia ── */}
         {economia.length >= 3 && (
           <section>
             <SectionHeader title="Economia" href="/economia" color="#16a34a" />
-            <div className="grid grid-cols-1 lg:grid-cols-4 gap-4 items-stretch">
+            <div className="grid grid-cols-1 lg:grid-cols-4 gap-4 items-start">
               <div className="lg:col-span-3">
-                <MetropolesGrid articles={economia} extraRows={0} />
+                <MetropolesGrid articles={economia.slice(0, 3)} extraRows={0} />
               </div>
-              <aside className="hidden lg:flex flex-col">
+              <aside className="hidden lg:flex flex-col gap-4">
                 <AdUnit slot="economia-sidebar" format="rectangle" />
-                <BannerPlaceholder w={300} h={300} label="Banner 300×400" fill minH={300} />
+                <BannerPlaceholder w={300} h={250} label="Banner 300×250" />
               </aside>
             </div>
           </section>

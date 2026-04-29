@@ -221,7 +221,7 @@ export default async function Home() {
     getArtigosRecentes(12),
     getArtigosPorCategorias(['sumare', 'hortolandia', 'nova-odessa', 'campinas', 'paulinia', 'monte-mor', 'santa-barbara-doeste', 'outras-cidades', 'rmc'], 16),
     getArtigosPorCategorias(['estilo-de-vida', 'cultura-e-lazer', 'eventos'], 10),
-    getArtigosPorCategorias(['brasil'], 10),
+    getArtigosPorCategorias(['brasil'], 13),
     getArtigosPorTema('saude', 10),
     getArtigosPorTema('politica', 6),
     getArtigosPorTema('economia', 10),
@@ -403,19 +403,26 @@ export default async function Home() {
           </section>
         )}
 
+        {/* ── Banner pós-RMC ── */}
+        <div className="flex justify-center py-2">
+          <AdUnit slot="post-rmc-leaderboard" format="leaderboard" />
+          <BannerPlaceholder w={728} h={90} label="Banner 728×90" />
+        </div>
+
         {/* ── Siga-nos (Movido para cima da RMC) ── */}
 
-        {/* ── 4. Brasil — MetropolesGrid, sem extras ── */}
+        {/* ── 4. Brasil — MetropolesGrid + 3 cards laterais ── */}
         {brasil.length > 0 && (
           <section>
             <SectionHeader title="Brasil" href="/brasil" color="#ec3535" />
-            <div className="grid grid-cols-1 lg:grid-cols-4 gap-4 items-stretch">
+            <div className="grid grid-cols-1 lg:grid-cols-4 gap-4 items-start">
               <div className="lg:col-span-3">
-                <MetropolesGrid articles={brasil} extraRows={0} />
+                <MetropolesGrid articles={brasil.slice(0, 7)} extraRows={0} />
               </div>
-              <aside className="hidden lg:flex flex-col">
-                <AdUnit slot="brasil-sidebar" format="rectangle" />
-                <BannerPlaceholder w={300} h={300} label="Banner 300×400" fill minH={300} />
+              <aside className="hidden lg:flex flex-col gap-4">
+                {brasil.slice(7, 10).map(art => (
+                  <ArticleCard key={art.id} article={art} size="compact" />
+                ))}
               </aside>
             </div>
           </section>

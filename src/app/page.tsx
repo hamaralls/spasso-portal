@@ -218,12 +218,12 @@ function MetropolesGrid({
 export default async function Home() {
   const [hero, ultimas, regiaoRaw, culturaELazarRaw, brasilRaw, saudeRaw, politicaRaw, economiaRaw, colunistas, ultimaEdicao] = await Promise.all([
     getArtigosHero(),
-    getArtigosRecentes(12),
+    getArtigosRecentes(16),
     getArtigosPorCategorias(['sumare', 'hortolandia', 'nova-odessa', 'campinas', 'paulinia', 'monte-mor', 'santa-barbara-doeste', 'outras-cidades', 'rmc'], 16),
     getArtigosPorCategorias(['estilo-de-vida', 'cultura-e-lazer', 'eventos'], 5),
     getArtigosPorCategorias(['brasil'], 13),
     getArtigosPorTema('saude', 5),
-    getArtigosPorTema('politica', 6),
+    getArtigosPorTema('politica', 5),
     getArtigosPorTema('economia', 5),
     getColunistas(),
     getUltimaEdicao(),
@@ -466,58 +466,35 @@ export default async function Home() {
           </section>
         )}
 
-        {/* ── 7. Política — flex row: texto esq cresce, img dir w-[42%] h-auto ── */}
+        {/* ── 7. Política ── */}
         {politica.length >= 2 && (
           <section>
             <SectionHeader title="Política" href="/politica" color="#7c3aed" />
-
-            {/* Destaque principal — flex stretch: imagem se adapta à altura do texto */}
-            <Link href={`/${politica[0].slug}`}
-              className="group flex flex-col md:flex-row gap-5 pb-5 border-b border-gray-100 mb-3">
-              {/* Texto esquerda */}
-              <div className="flex-1 min-w-0 flex flex-col justify-center gap-2">
-                <h2 className="text-2xl md:text-3xl font-extrabold text-[#1a1a1a] leading-snug group-hover:underline">
-                  {politica[0].title}
-                </h2>
-                {politica[0].excerpt && (
-                  <p className="text-sm text-gray-500 leading-relaxed line-clamp-3">
-                    {politica[0].excerpt.replace(/<[^>]+>/g, '')}
-                  </p>
-                )}
-                {politica[0].author_name && (
-                  <p className="text-xs font-semibold text-[#7c3aed]">{politica[0].author_name}</p>
-                )}
-              </div>
-              {/* Imagem direita — sem ratio fixo no desktop, estica com o texto */}
-              {politica[0].featured_image_url && (
-                <div className="w-full md:w-[42%] shrink-0 aspect-[4/3] md:aspect-auto overflow-hidden">
-                  {/* eslint-disable-next-line @next/next/no-img-element */}
-                  <img
-                    src={politica[0].featured_image_url}
-                    alt={politica[0].title}
-                    className="w-full h-full object-cover object-center group-hover:scale-[1.02] transition-transform duration-300"
-                  />
-                </div>
-              )}
-            </Link>
-
-            {/* Secundários — grid 2×2 com thumb 10:9, padrão dos cards do portal */}
-            <div className="grid grid-cols-2 gap-x-4 gap-y-4">
-              {politica.slice(1, 5).map((artigo) => (
-                <Link key={artigo.id} href={`/${artigo.slug}`} className="group flex flex-col gap-2">
-                  <div className="aspect-[10/9] overflow-hidden bg-gray-100">
-                    {artigo.featured_image_url && (
-                      // eslint-disable-next-line @next/next/no-img-element
-                      <img
-                        src={artigo.featured_image_url}
-                        alt={artigo.title}
-                        className="w-full h-full object-cover object-center group-hover:scale-[1.02] transition-transform duration-300"
-                      />
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+              {politica.slice(0, 4).map(art => (
+                <Link key={art.id} href={`/${art.slug}`} className="group flex gap-4">
+                  <div className="relative w-[48%] aspect-[4/3] shrink-0 overflow-hidden bg-gray-200">
+                    {art.featured_image_url ? (
+                      <Image src={art.featured_image_url} alt={art.title} fill
+                        className="object-cover group-hover:scale-[1.02] transition-transform duration-300"
+                        sizes="(max-width: 1024px) 50vw, 25vw" />
+                    ) : (
+                      <div className="absolute inset-0 bg-gradient-to-br from-gray-100 to-gray-200" />
                     )}
                   </div>
-                  <p className="text-sm font-semibold text-[#1a1a1a] leading-snug group-hover:underline line-clamp-2">
-                    {artigo.title}
-                  </p>
+                  <div className="flex-1 min-w-0 flex flex-col justify-start pt-1">
+                    {art.category_name && (
+                      <div><Badge name={art.category_name} color={art.badge_color} size="sm" /></div>
+                    )}
+                    <h3 className="text-xl font-bold leading-snug mt-1 group-hover:underline line-clamp-4 text-[#1a1a1a]">
+                      {art.title}
+                    </h3>
+                    {art.excerpt && (
+                      <p className="text-sm text-gray-500 mt-2 line-clamp-3 leading-relaxed">
+                        {art.excerpt.replace(/<[^>]+>/g, '')}
+                      </p>
+                    )}
+                  </div>
                 </Link>
               ))}
             </div>
@@ -547,14 +524,15 @@ export default async function Home() {
             <div className="grid grid-cols-1 lg:grid-cols-4 gap-4 items-start">
               <div className="lg:col-span-3">
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-                  {ultimas.map((article) => (
+                  {ultimas.slice(0, 12).map((article) => (
                     <ArticleCard key={article.id} article={article} />
                   ))}
                 </div>
               </div>
-              <aside className="hidden lg:flex flex-col items-center pt-1">
-                <AdUnit slot="ultimas-sidebar" format="rectangle" />
-                <BannerPlaceholder w={300} h={250} label="Banner 300×250" />
+              <aside className="hidden lg:flex flex-col gap-4">
+                {ultimas.slice(12, 16).map((article) => (
+                  <ArticleCard key={article.id} article={article} size="compact" />
+                ))}
               </aside>
             </div>
           </section>

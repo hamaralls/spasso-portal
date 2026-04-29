@@ -428,16 +428,11 @@ export default async function Home() {
           </section>
         )}
 
-        {/* ── Banner pós-Brasil ── */}
-        <div className="flex justify-center py-2">
-          <AdUnit slot="post-brasil-leaderboard" format="leaderboard" />
-          <BannerPlaceholder w={728} h={90} label="Banner 728×90" />
-        </div>
 
         {/* ── 5. Cultura e Lazer ── */}
         {culturaELazer.length > 0 && (
           <section>
-            <SectionHeader title="Cultura e Lazer" href="/cultura-e-lazer" color="#db2777" />
+            <SectionHeader title="Cultura e Lazer" href="/cultura-e-lazer" color="#2563eb" />
             <div className="grid grid-cols-1 lg:grid-cols-4 gap-4 items-start">
               <div className="lg:col-span-3">
                 <MetropolesGrid articles={culturaELazer.slice(0, 3)} extraRows={0} />
@@ -459,12 +454,19 @@ export default async function Home() {
                 <MetropolesGrid articles={saude.slice(0, 3)} extraRows={0} />
               </div>
               <aside className="hidden lg:flex flex-col gap-4">
-                <AdUnit slot="saude-sidebar" format="rectangle" />
-                <BannerPlaceholder w={300} h={250} label="Banner 300×250" />
+                {saude.slice(3, 5).map(art => (
+                  <ArticleCard key={art.id} article={art} size="compact" />
+                ))}
               </aside>
             </div>
           </section>
         )}
+
+        {/* ── Banner pós-Saúde ── */}
+        <div className="flex justify-center py-2">
+          <AdUnit slot="post-saude-leaderboard" format="leaderboard" />
+          <BannerPlaceholder w={728} h={90} label="Banner 728×90" />
+        </div>
 
         {/* ── 7. Política ── */}
         {politica.length >= 2 && (

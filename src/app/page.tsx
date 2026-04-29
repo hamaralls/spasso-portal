@@ -119,8 +119,12 @@ function MetropolesGrid({
                     <div className="absolute inset-0 bg-gradient-to-br from-gray-100 to-gray-200" />
                   )}
                 </div>
-                <div className="flex-1 min-w-0 pt-1">
-                  {a[0].category_name && <Badge name={a[0].category_name} color={a[0].badge_color} size="sm" />}
+                <div className="flex-1 min-w-0 flex flex-col justify-start pt-1">
+                  {a[0].category_name && (
+                    <div>
+                      <Badge name={a[0].category_name} color={a[0].badge_color} size="sm" />
+                    </div>
+                  )}
                   <h3 className="text-xl font-bold leading-snug mt-2 group-hover:underline line-clamp-4 text-[#1a1a1a]">
                     {a[0].title}
                   </h3>
@@ -172,8 +176,12 @@ function MetropolesGrid({
                   <div className="absolute inset-0 bg-gradient-to-br from-gray-100 to-gray-200" />
                 )}
               </div>
-              <div className="flex-1 min-w-0 pt-1">
-                {a[0].category_name && <Badge name={a[0].category_name} color={a[0].badge_color} size="sm" />}
+              <div className="flex-1 min-w-0 flex flex-col justify-start pt-1">
+                {a[0].category_name && (
+                  <div>
+                    <Badge name={a[0].category_name} color={a[0].badge_color} size="sm" />
+                  </div>
+                )}
                 <h3 className="text-xl font-bold leading-snug mt-2 group-hover:underline line-clamp-4 text-[#1a1a1a]">
                   {a[0].title}
                 </h3>

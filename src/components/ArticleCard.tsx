@@ -112,8 +112,12 @@ export default function ArticleCard({ article, size = 'default' }: ArticleCardPr
             <div className="absolute inset-0 bg-gradient-to-br from-gray-100 to-gray-200" />
           )}
         </div>
-        <div className="flex-1 min-w-0 pt-1">
-          {category_name && <Badge name={category_name} color={badge_color} size="sm" />}
+        <div className="flex-1 min-w-0 flex flex-col justify-start pt-1">
+          {category_name && (
+            <div>
+              <Badge name={category_name} color={badge_color} size="sm" />
+            </div>
+          )}
           <h3 className="text-sm font-bold text-[#1a1a1a] leading-snug mt-1 group-hover:underline line-clamp-4">
             {title}
           </h3>

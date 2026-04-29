@@ -13,9 +13,8 @@ export default function EdicaoSemanalWidget({ edition }: Props) {
   return (
     <div>
       {/* Label */}
-      <div className="flex items-center gap-2 mb-2.5">
-        <span className="w-1 h-4 bg-[#f5821f] block rounded-sm" />
-        <p className="text-[11px] font-bold uppercase tracking-widest text-gray-600">
+      <div className="flex items-center justify-center mb-3">
+        <p className="text-base font-bold uppercase tracking-widest text-[#1a1a1a]">
           Edição de Sexta
         </p>
       </div>
@@ -37,13 +36,10 @@ export default function EdicaoSemanalWidget({ edition }: Props) {
           )}
         </div>
 
-        {/* Info: só número + data, sem duplicar */}
-        <div className="mt-2 space-y-0.5">
-          <p className="text-[11px] text-gray-500">
-            {edition.edition_number ? `Nº ${edition.edition_number} · ` : ''}{dateStr}
-          </p>
-          <p className="text-[11px] font-semibold text-[#f5821f] pt-0.5 group-hover:underline">
-            Ler edição completa →
+        {/* Info: número + data + link em uma linha só */}
+        <div className="mt-3 text-center">
+          <p className="text-[13px] text-gray-600 group-hover:text-[#f5821f] transition-colors">
+            {dateStr}{edition.edition_number ? ` - Nº ${edition.edition_number}` : ''} <span className="font-semibold underline ml-1">Ler edição completa →</span>
           </p>
         </div>
       </Link>

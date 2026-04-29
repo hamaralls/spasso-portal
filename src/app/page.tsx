@@ -216,7 +216,7 @@ export default async function Home() {
                   {hero[0].category_name && (
                     <Badge name={hero[0].category_name} color={hero[0].badge_color} size="sm" />
                   )}
-                  <h1 className="text-2xl md:text-3xl lg:text-4xl font-extrabold leading-tight mt-2 group-hover:underline line-clamp-4 text-[#1a1a1a]">
+                  <h1 className="text-2xl md:text-3xl lg:text-4xl font-extrabold leading-tight mt-2 group-hover:underline line-clamp-5 text-[#1a1a1a]">
                     {hero[0].title}
                   </h1>
                   {hero[0].excerpt && (
@@ -243,10 +243,10 @@ export default async function Home() {
                       )}
                     </div>
                     <div className="flex-1 min-w-0 flex flex-col justify-center h-full pt-1">
-                      <p className="text-[#f5821f] text-[10px] font-bold uppercase tracking-wide truncate mb-1">
+                      <p className="text-[10px] font-bold uppercase tracking-wide truncate mb-1" style={{ color: article.badge_color || '#f5821f' }}>
                         {article.author_name ?? article.category_name ?? ''}
                       </p>
-                      <h2 className="text-sm font-bold leading-snug group-hover:text-[#f5821f] transition-colors line-clamp-3 text-[#1a1a1a]">
+                      <h2 className="text-sm font-bold leading-snug group-hover:text-[#f5821f] transition-colors line-clamp-4 text-[#1a1a1a]">
                         {article.title}
                       </h2>
                     </div>

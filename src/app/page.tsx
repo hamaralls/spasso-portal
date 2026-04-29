@@ -201,22 +201,22 @@ export default async function Home() {
         <section className="bg-white border-b border-gray-100">
           <div className="max-w-7xl mx-auto px-4 py-6">
 
-            <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-5">
+            <div className="grid grid-cols-1 lg:grid-cols-4 gap-6 mb-5">
               {/* Principal */}
               <Link href={`/${hero[0].slug}`}
-                className="group lg:col-span-2 flex flex-col sm:flex-row gap-4">
-                <div className="sm:w-[55%] relative aspect-video overflow-hidden bg-gray-200 shrink-0">
+                className="group lg:col-span-3 flex flex-col sm:flex-row gap-6">
+                <div className="sm:w-[60%] relative aspect-video overflow-hidden bg-gray-200 shrink-0">
                   {hero[0].featured_image_url && (
                     <Image src={hero[0].featured_image_url} alt={hero[0].title}
                       fill priority className="object-cover group-hover:scale-[1.02] transition-transform duration-300"
-                      sizes="(max-width: 640px) 100vw, 40vw" />
+                      sizes="(max-width: 640px) 100vw, 60vw" />
                   )}
                 </div>
-                <div className="sm:w-[45%] flex flex-col justify-start pt-1">
+                <div className="sm:w-[40%] flex flex-col justify-start pt-1">
                   {hero[0].category_name && (
                     <Badge name={hero[0].category_name} color={hero[0].badge_color} size="sm" />
                   )}
-                  <h1 className="text-xl md:text-2xl font-bold leading-snug mt-2 group-hover:underline line-clamp-4 text-[#1a1a1a]">
+                  <h1 className="text-2xl md:text-3xl lg:text-4xl font-extrabold leading-tight mt-2 group-hover:underline line-clamp-4 text-[#1a1a1a]">
                     {hero[0].title}
                   </h1>
                   {hero[0].excerpt && (

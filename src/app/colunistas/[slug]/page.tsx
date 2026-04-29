@@ -148,7 +148,7 @@ export default async function ColunistaPaginaPage({ params, searchParams }: Prop
             {articles.map(article => (
               <Link key={article.id} href={`/${article.slug}`}
                 className="group flex flex-col gap-1 py-5 hover:bg-gray-50 transition-colors px-1 -mx-1">
-                <h3 className="font-bold text-[#1a1a1a] leading-snug group-hover:text-[#f5821f] transition-colors text-base">
+                <h3 className="font-bold text-[#1a1a1a] leading-snug group-hover:underline text-base">
                   {article.title}
                 </h3>
                 {article.excerpt && (

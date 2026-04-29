@@ -54,7 +54,7 @@ function DestaqueGrid({ articles }: { articles: ArticlePublico[] }) {
           </div>
           <div className="pt-2">
             {a[0].category_name && <Badge name={a[0].category_name} color={a[0].badge_color} size="sm" />}
-            <h3 className="text-base font-bold text-[#1a1a1a] leading-snug mt-1 group-hover:text-[#f5821f] transition-colors line-clamp-3">
+            <h3 className="text-base font-bold text-[#1a1a1a] leading-snug mt-1 group-hover:underline line-clamp-3">
               {a[0].title}
             </h3>
             {a[0].excerpt && (
@@ -114,7 +114,7 @@ function MetropolesGrid({
               </div>
               <div className="flex-1 min-w-0 pt-1">
                 {a[0].category_name && <Badge name={a[0].category_name} color={a[0].badge_color} size="sm" />}
-                <h3 className="text-xl font-bold leading-snug mt-2 group-hover:text-[#f5821f] transition-colors line-clamp-4 text-[#1a1a1a]">
+                <h3 className="text-xl font-bold leading-snug mt-2 group-hover:underline line-clamp-4 text-[#1a1a1a]">
                   {a[0].title}
                 </h3>
                 {a[0].excerpt && (
@@ -246,7 +246,7 @@ export default async function Home() {
                       <p className="text-[10px] font-bold uppercase tracking-wide truncate mb-1" style={{ color: article.badge_color || '#f5821f' }}>
                         {article.author_name ?? article.category_name ?? ''}
                       </p>
-                      <h2 className="text-sm font-bold leading-snug group-hover:text-[#f5821f] transition-colors line-clamp-4 text-[#1a1a1a]">
+                      <h2 className="text-sm font-bold leading-snug group-hover:underline line-clamp-4 text-[#1a1a1a]">
                         {article.title}
                       </h2>
                     </div>
@@ -265,6 +265,52 @@ export default async function Home() {
       )}
 
       <div className="max-w-7xl mx-auto px-4 py-8 space-y-12">
+
+        {/* ── 3. Colunistas ── */}
+        {colunistas.length > 0 && (
+          <section>
+            <SectionHeader title="Colunistas" href="/colunistas" color="#f5821f" />
+            <div className={`grid gap-4 ${
+              colunistas.length === 1 ? 'grid-cols-1 max-w-sm' :
+              colunistas.length === 2 ? 'grid-cols-1 sm:grid-cols-2 max-w-2xl' :
+              'grid-cols-1 sm:grid-cols-2 lg:grid-cols-3'
+            }`}>
+              {colunistas.map(col => {
+                const initials = col.name.split(' ').filter(Boolean)
+                  .map((n: string) => n[0].toUpperCase()).slice(0, 2).join('')
+                const href = `/colunistas/${col.slug}`
+                return (
+                  <Link key={col.id} href={href}
+                    className="group flex items-start gap-3 bg-white p-4 shadow-sm hover:shadow-md transition-shadow">
+                    <div className="w-12 h-12 rounded-full overflow-hidden shrink-0 flex items-center justify-center"
+                      style={{ background: col.avatar_url ? undefined : '#f5821f1a' }}>
+                      {col.avatar_url ? (
+                        <Image src={col.avatar_url} alt={col.name} width={48} height={48}
+                          className="object-cover w-full h-full" />
+                      ) : (
+                        <span className="text-base font-extrabold text-[#f5821f]">{initials}</span>
+                      )}
+                    </div>
+                    <div className="min-w-0 flex-1">
+                      <p className="text-xs font-bold text-[#f5821f] uppercase tracking-wide truncate mb-0.5">
+                        {col.name}
+                      </p>
+                      {col.lastArticle && (
+                        <>
+                          <p className="text-sm font-semibold text-[#1a1a1a] leading-snug line-clamp-1 group-hover:underline">
+                            {col.lastArticle.title}
+                          </p>
+                          {col.lastArticle.excerpt && (
+                            <p className="text-xs text-gray-500 leading-relaxed line-clamp-2 mt-0.5">
+                              {col.lastArticle.excerpt.replace(/<[^>]+>/g, '')}
+                            </p>
+                          )}
+                        </>
+                      )}
+                    </div>
+                  </Link>
+                )
+              })}
 
         {/* ── 2. Região Metropolitana de Campinas ── */}
         {regiao.length > 0 && (
@@ -306,52 +352,7 @@ export default async function Home() {
           </div>
         </div>
 
-        {/* ── 3. Colunistas ── */}
-        {colunistas.length > 0 && (
-          <section>
-            <SectionHeader title="Colunistas" href="/colunistas" color="#f5821f" />
-            <div className={`grid gap-4 ${
-              colunistas.length === 1 ? 'grid-cols-1 max-w-sm' :
-              colunistas.length === 2 ? 'grid-cols-1 sm:grid-cols-2 max-w-2xl' :
-              'grid-cols-1 sm:grid-cols-2 lg:grid-cols-3'
-            }`}>
-              {colunistas.map(col => {
-                const initials = col.name.split(' ').filter(Boolean)
-                  .map((n: string) => n[0].toUpperCase()).slice(0, 2).join('')
-                const href = `/colunistas/${col.slug}`
-                return (
-                  <Link key={col.id} href={href}
-                    className="group flex items-start gap-3 bg-white p-4 shadow-sm hover:shadow-md transition-shadow">
-                    <div className="w-12 h-12 rounded-full overflow-hidden shrink-0 flex items-center justify-center"
-                      style={{ background: col.avatar_url ? undefined : '#f5821f1a' }}>
-                      {col.avatar_url ? (
-                        <Image src={col.avatar_url} alt={col.name} width={48} height={48}
-                          className="object-cover w-full h-full" />
-                      ) : (
-                        <span className="text-base font-extrabold text-[#f5821f]">{initials}</span>
-                      )}
                     </div>
-                    <div className="min-w-0 flex-1">
-                      <p className="text-xs font-bold text-[#f5821f] uppercase tracking-wide truncate mb-0.5">
-                        {col.name}
-                      </p>
-                      {col.lastArticle && (
-                        <>
-                          <p className="text-sm font-semibold text-[#1a1a1a] leading-snug line-clamp-1 group-hover:text-[#f5821f] transition-colors">
-                            {col.lastArticle.title}
-                          </p>
-                          {col.lastArticle.excerpt && (
-                            <p className="text-xs text-gray-500 leading-relaxed line-clamp-2 mt-0.5">
-                              {col.lastArticle.excerpt.replace(/<[^>]+>/g, '')}
-                            </p>
-                          )}
-                        </>
-                      )}
-                    </div>
-                  </Link>
-                )
-              })}
-            </div>
           </section>
         )}
 
@@ -413,7 +414,7 @@ export default async function Home() {
               className="group flex flex-col md:flex-row gap-5 pb-5 border-b border-gray-100 mb-3">
               {/* Texto esquerda */}
               <div className="flex-1 min-w-0 flex flex-col justify-center gap-2">
-                <h2 className="text-2xl md:text-3xl font-extrabold text-[#1a1a1a] leading-snug group-hover:text-[#7c3aed] transition-colors">
+                <h2 className="text-2xl md:text-3xl font-extrabold text-[#1a1a1a] leading-snug group-hover:underline">
                   {politica[0].title}
                 </h2>
                 {politica[0].excerpt && (
@@ -452,7 +453,7 @@ export default async function Home() {
                       />
                     )}
                   </div>
-                  <p className="text-sm font-semibold text-[#1a1a1a] leading-snug group-hover:text-[#7c3aed] transition-colors line-clamp-2">
+                  <p className="text-sm font-semibold text-[#1a1a1a] leading-snug group-hover:underline line-clamp-2">
                     {artigo.title}
                   </p>
                 </Link>

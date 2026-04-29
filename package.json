@@ -11,6 +11,7 @@
     "migrate:02": "tsx --env-file=.env.local scripts/02-migrar-posts.ts",
     "migrate:03": "tsx --env-file=.env.local scripts/03-migrar-imagens.ts",
     "migrate:04": "tsx --env-file=.env.local scripts/04-migrar-inline.ts",
+    "pdf:midia-kit": "tsx scripts/11-exportar-midia-kit-pdf.ts",
     "validate": "tsx --env-file=.env.local scripts/06-validar.ts",
     "validate:prod": "tsx --env-file=.env.local scripts/06-validar.ts --base=https://jornalspassocidades.com.br"
   },
@@ -30,7 +31,9 @@
     "clsx": "^2.1.1",
     "lucide-react": "^1.8.0",
     "next": "15.5.2",
+    "pdf-lib": "^1.17.1",
     "pdfjs-dist": "^5.6.205",
+    "puppeteer-core": "^24.42.0",
     "react": "19.2.4",
     "react-dom": "19.2.4",
     "resend": "^6.12.0",

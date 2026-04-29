@@ -34,7 +34,7 @@ export default function ArticleCard({ article, size = 'default' }: ArticleCardPr
           {displayName && (
             <p className="text-xs font-bold text-[#f5821f] uppercase tracking-wide truncate mb-0.5">{displayName}</p>
           )}
-          <h3 className="text-sm font-semibold text-[#1a1a1a] leading-snug group-hover:text-[#f5821f] transition-colors line-clamp-2">
+          <h3 className="text-sm font-semibold text-[#1a1a1a] leading-snug group-hover:underline line-clamp-2">
             {title}
           </h3>
           <div className="mt-1 text-xs text-gray-400">{timeAgo(published_at)}</div>
@@ -61,7 +61,7 @@ export default function ArticleCard({ article, size = 'default' }: ArticleCardPr
         </div>
         <div className="p-3">
           {category_name && <Badge name={category_name} color={badge_color} size="sm" />}
-          <h3 className="font-bold text-[#1a1a1a] leading-snug group-hover:text-[#f5821f] transition-colors line-clamp-3 mt-1.5">
+          <h3 className="font-bold text-[#1a1a1a] leading-snug group-hover:underline line-clamp-3 mt-1.5">
             {title}
           </h3>
           {excerpt && (
@@ -89,7 +89,7 @@ export default function ArticleCard({ article, size = 'default' }: ArticleCardPr
         </div>
         <div className="flex-1 min-w-0 pt-0.5">
           {category_name && <Badge name={category_name} color={badge_color} size="sm" />}
-          <h3 className="text-base font-bold text-[#1a1a1a] leading-snug mt-1 group-hover:text-[#f5821f] transition-colors line-clamp-3">
+          <h3 className="text-base font-bold text-[#1a1a1a] leading-snug mt-1 group-hover:underline line-clamp-3">
             {title}
           </h3>
           {excerpt && (
@@ -112,7 +112,7 @@ export default function ArticleCard({ article, size = 'default' }: ArticleCardPr
         </div>
         <div className="flex-1 min-w-0">
           {category_name && <Badge name={category_name} color={badge_color} size="sm" />}
-          <h3 className="text-xs font-bold text-[#1a1a1a] leading-snug mt-0.5 group-hover:text-[#f5821f] transition-colors line-clamp-3">
+          <h3 className="text-xs font-bold text-[#1a1a1a] leading-snug mt-0.5 group-hover:underline line-clamp-3">
             {title}
           </h3>
         </div>
@@ -151,7 +151,7 @@ export default function ArticleCard({ article, size = 'default' }: ArticleCardPr
       </div>
       <div className="flex-1 min-w-0 pt-0.5">
         {category_name && <Badge name={category_name} color={badge_color} size="sm" />}
-        <h3 className="text-sm font-bold text-[#1a1a1a] leading-snug mt-1 group-hover:text-[#f5821f] transition-colors line-clamp-3">
+        <h3 className="text-sm font-bold text-[#1a1a1a] leading-snug mt-1 group-hover:underline line-clamp-3">
           {title}
         </h3>
       </div>

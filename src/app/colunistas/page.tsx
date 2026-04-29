@@ -74,7 +74,7 @@ function ColumnistCard({ col }: { col: ColunistaCom }) {
               />
             </div>
           )}
-          <p className="text-xs text-gray-600 line-clamp-2 leading-snug group-hover:text-[#f5821f] transition-colors">
+          <p className="text-xs text-gray-600 line-clamp-2 leading-snug group-hover:underline">
             {col.lastArticle.title}
           </p>
         </div>

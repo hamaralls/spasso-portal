@@ -341,7 +341,7 @@ export default async function SlugPage({ params, searchParams }: Props) {
                       <p className="text-[10px] font-bold uppercase tracking-widest text-[#f5821f] mb-1">
                         {colData.type === 'person' ? 'Colunista' : 'Editorial'}
                       </p>
-                      <p className="font-extrabold text-[#1a1a1a] text-base leading-snug group-hover:text-[#f5821f] transition-colors">
+                      <p className="font-extrabold text-[#1a1a1a] text-base leading-snug group-hover:underline">
                         {colData.name}
                       </p>
                       {colData.bio && (
@@ -366,7 +366,7 @@ export default async function SlugPage({ params, searchParams }: Props) {
                       <Link href={`/${anterior.slug}`}
                         className="group flex flex-col gap-1 p-3 rounded-lg hover:bg-gray-50 transition-colors">
                         <span className="text-xs text-gray-400 font-medium">← Anterior</span>
-                        <span className="text-sm font-semibold text-[#1a1a1a] line-clamp-2 group-hover:text-[#f5821f] transition-colors">
+                        <span className="text-sm font-semibold text-[#1a1a1a] line-clamp-2 group-hover:underline">
                           {anterior.title}
                         </span>
                       </Link>
@@ -377,7 +377,7 @@ export default async function SlugPage({ params, searchParams }: Props) {
                       <Link href={`/${proximo.slug}`}
                         className="group flex flex-col gap-1 p-3 rounded-lg hover:bg-gray-50 transition-colors items-end">
                         <span className="text-xs text-gray-400 font-medium">Próximo →</span>
-                        <span className="text-sm font-semibold text-[#1a1a1a] line-clamp-2 group-hover:text-[#f5821f] transition-colors">
+                        <span className="text-sm font-semibold text-[#1a1a1a] line-clamp-2 group-hover:underline">
                           {proximo.title}
                         </span>
                       </Link>
@@ -403,7 +403,7 @@ export default async function SlugPage({ params, searchParams }: Props) {
                           <span className="text-xl font-extrabold text-gray-200 leading-none w-5 shrink-0 select-none">
                             {i + 1}
                           </span>
-                          <p className="flex-1 text-sm font-semibold text-[#1a1a1a] line-clamp-2 group-hover:text-[#f5821f] transition-colors leading-snug min-w-0">
+                          <p className="flex-1 text-sm font-semibold text-[#1a1a1a] line-clamp-2 group-hover:underline leading-snug min-w-0">
                             {a.title}
                           </p>
                           {a.featured_image_url && (
@@ -430,7 +430,7 @@ export default async function SlugPage({ params, searchParams }: Props) {
                   <div className="space-y-3">
                     {relacionados.map((a) => (
                       <Link key={a.id} href={`/${a.slug}`} className="group flex items-center gap-3">
-                        <p className="flex-1 text-sm font-semibold text-[#1a1a1a] line-clamp-2 group-hover:text-[#f5821f] transition-colors leading-snug min-w-0">
+                        <p className="flex-1 text-sm font-semibold text-[#1a1a1a] line-clamp-2 group-hover:underline leading-snug min-w-0">
                           {a.title}
                         </p>
                         {a.featured_image_url && (

@@ -95,7 +95,7 @@ export default async function BuscaPage({ searchParams }: Props) {
                     </div>
                   )}
                   <div className="flex-1 min-w-0">
-                    <p className="font-semibold text-[#1a1a1a] group-hover:text-[#f5821f] leading-snug line-clamp-2 transition-colors">
+                    <p className="font-semibold text-[#1a1a1a] group-hover:underline leading-snug line-clamp-2 transition-colors">
                       {highlight(article.title, query)}
                     </p>
                     <div className="flex items-center gap-2 mt-1 text-xs text-gray-400">

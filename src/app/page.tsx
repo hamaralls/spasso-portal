@@ -311,6 +311,10 @@ export default async function Home() {
                   </Link>
                 )
               })}
+            </div>
+          </section>
+        )}
+
 
         {/* ── 2. Região Metropolitana de Campinas ── */}
         {regiao.length > 0 && (
@@ -351,10 +355,6 @@ export default async function Home() {
             </a>
           </div>
         </div>
-
-                    </div>
-          </section>
-        )}
 
         {/* ── 4. Brasil — MetropolesGrid, sem extras ── */}
         {brasil.length > 0 && (

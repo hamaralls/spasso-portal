@@ -90,17 +90,70 @@ function MetropolesGrid({
 }) {
   const a = articles
   if (a.length === 0) return null
-  const col3End = wideLayout ? 1 : 5 + col3Count
-  const compactCols = wideLayout ? 3 : 2
-  const compactStart = 1
-  const compactRow2Start = wideLayout ? 4 : 3
 
+  // Para o wideLayout (Brasil): Mantém a lógica original
+  if (wideLayout) {
+    const compactCols = 3
+    const compactStart = 1
+    const compactRow2Start = 4
+    const col3End = 1
+    return (
+      <div className="space-y-4">
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-x-6 gap-y-4 items-start">
+          <div className="lg:col-span-3 flex flex-col gap-4">
+            {a[0] && (
+              <Link href={`/${a[0].slug}`} className="group flex gap-4">
+                <div className="relative w-[48%] aspect-[4/3] shrink-0 overflow-hidden bg-gray-200">
+                  {a[0].featured_image_url ? (
+                    <Image src={a[0].featured_image_url} alt={a[0].title} fill
+                      className="object-cover group-hover:scale-[1.02] transition-transform duration-300"
+                      sizes="(max-width: 1024px) 50vw, 28vw" />
+                  ) : (
+                    <div className="absolute inset-0 bg-gradient-to-br from-gray-100 to-gray-200" />
+                  )}
+                </div>
+                <div className="flex-1 min-w-0 pt-1">
+                  {a[0].category_name && <Badge name={a[0].category_name} color={a[0].badge_color} size="sm" />}
+                  <h3 className="text-xl font-bold leading-snug mt-2 group-hover:underline line-clamp-4 text-[#1a1a1a]">
+                    {a[0].title}
+                  </h3>
+                  {a[0].excerpt && (
+                    <p className="text-sm text-gray-500 mt-2 line-clamp-3 leading-relaxed">
+                      {a[0].excerpt.replace(/<[^>]+>/g, '')}
+                    </p>
+                  )}
+                </div>
+              </Link>
+            )}
+            {a.length >= compactStart + 2 && (
+              <div className={`grid grid-cols-${compactCols} gap-4`}>
+                {a.slice(compactStart, compactStart + compactCols).map(art => (
+                  <ArticleCard key={art.id} article={art} size="compact" />
+                ))}
+              </div>
+            )}
+            {a.length >= compactRow2Start + 2 && (
+              <div className={`grid grid-cols-${compactCols} gap-4`}>
+                {a.slice(compactRow2Start, compactRow2Start + compactCols).map(art => (
+                  <ArticleCard key={art.id} article={art} size="compact" />
+                ))}
+              </div>
+            )}
+          </div>
+        </div>
+      </div>
+    )
+  }
+
+  // Novo Layout para RMC e demais seções:
+  // Card Principal (lg:col-span-2) + 2 Cards Pequenos à direita (lg:col-span-1)
+  // Restante em linhas (grid-cols-1 sm:grid-cols-3) abaixo.
   return (
-    <div className="space-y-4">
+    <div className="space-y-6">
+      {/* Top Block */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-x-6 gap-y-4 items-start">
-
-        {/* Col 1+2 (ou col-span-3 no wideLayout) */}
-        <div className={`${wideLayout ? 'lg:col-span-3' : 'lg:col-span-2'} flex flex-col gap-4`}>
+        {/* Main Card */}
+        <div className="lg:col-span-2">
           {a[0] && (
             <Link href={`/${a[0].slug}`} className="group flex gap-4">
               <div className="relative w-[48%] aspect-[4/3] shrink-0 overflow-hidden bg-gray-200">
@@ -125,43 +178,20 @@ function MetropolesGrid({
               </div>
             </Link>
           )}
-          {a.length >= compactStart + 2 && (
-            <div className={`grid grid-cols-${compactCols} gap-4`}>
-              {a.slice(compactStart, compactStart + compactCols).map(art => (
-                <ArticleCard key={art.id} article={art} size="compact" />
-              ))}
-            </div>
-          )}
-          {a.length >= compactRow2Start + 2 && (
-            <div className={`grid grid-cols-${compactCols} gap-4`}>
-              {a.slice(compactRow2Start, compactRow2Start + compactCols).map(art => (
-                <ArticleCard key={art.id} article={art} size="compact" />
-              ))}
-            </div>
-          )}
         </div>
 
-        {/* Col 3: stacked (oculto no wideLayout) */}
-        {!wideLayout && (
-          <div className="hidden lg:flex flex-col gap-3">
-            {a.slice(5, col3End).map(art => (
-              <ArticleCard key={art.id} article={art} size="compact" />
-            ))}
-          </div>
-        )}
-      </div>
-
-      {extraRows >= 1 && a.length >= col3End + 1 && (
-        <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-          {a.slice(col3End, col3End + 3).map(art => (
+        {/* 2 Pequenos à direita */}
+        <div className="hidden lg:flex flex-col gap-4">
+          {a.slice(1, 3).map(art => (
             <ArticleCard key={art.id} article={art} size="compact" />
           ))}
         </div>
-      )}
+      </div>
 
-      {extraRows >= 2 && a.length >= col3End + 4 && (
+      {/* Bottom Block: Restante em linhas */}
+      {a.length > 3 && (
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-          {a.slice(col3End + 3, col3End + 6).map(art => (
+          {a.slice(3).map(art => (
             <ArticleCard key={art.id} article={art} size="compact" />
           ))}
         </div>
@@ -325,7 +355,7 @@ export default async function Home() {
         {/* ── 2. Região Metropolitana de Campinas ── */}
         {regiao.length > 0 && (
           <section>
-            <SectionHeader title="Região Metropolitana de Campinas" href="/rmc" color="#8dc63f" titleColor="#8dc63f" linkColor="#8dc63f" />
+            <SectionHeader title="Região Metropolitana de Campinas" href="/rmc" color="#8dc63f" />
             <div className="grid grid-cols-1 lg:grid-cols-4 gap-4 items-start">
               <div className="lg:col-span-3">
                 <MetropolesGrid articles={regiao} />

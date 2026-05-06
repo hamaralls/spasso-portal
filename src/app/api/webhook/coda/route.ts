@@ -78,8 +78,10 @@ export async function POST(request: Request) {
   const slug  = ((body.slug  as string | undefined) ?? '').replace(/^[\`"'\[\]]+|[\`"'\[\]]+$/g, '').trim()
   const content            = body.content            as string | undefined
   const excerpt            = body.excerpt            as string | undefined
-  const featured_image_url = body.featured_image_url as string | undefined
-  const coda_image_url    = body.coda_image_url    as string | undefined
+  const featured_image_url  = body.featured_image_url  as string | undefined
+  const coda_image_url      = body.coda_image_url      as string | undefined
+  const featured_image_alt  = (body.featured_image_alt  as string | undefined)?.trim() || undefined
+  const featured_image_caption = (body.featured_image_caption as string | undefined)?.trim() || undefined
   const rawCategorySlug   = ((body.category_slug as string | undefined) ?? '').trim()
   const category_slug     = VALID_CATEGORY_SLUGS.has(rawCategorySlug) ? rawCategorySlug : undefined
   const rawThemeSlug      = ((body.theme_slug as string | undefined) ?? '').trim()
@@ -88,6 +90,7 @@ export async function POST(request: Request) {
   const status            = body.status             as string | undefined
   const seo_title         = (body.seo_title as string | undefined)?.trim() || undefined
   const seo_description   = (body.seo_description as string | undefined)?.trim() || undefined
+  const fonte             = (body.fonte as string | undefined)?.trim() || undefined
 
   if (!title || !slug) {
     return Response.json({ error: 'Campos obrigatórios: title, slug' }, { status: 400 })
@@ -113,14 +116,17 @@ export async function POST(request: Request) {
         title,
         content:            contentObj,
         excerpt:            excerpt            || null,
-        featured_image_url: imageUrl,
-        category_slug:      category_slug      || null,
-        theme_slug:         theme_slug         || null,
-        status:             articleStatus,
-        published_at:       articleStatus === 'published' ? (published_at ?? new Date().toISOString()) : null,
-        seo_title:          seo_title ?? title.slice(0, 60),
-        seo_description:    seo_description ?? (excerpt ? excerpt.slice(0, 160) : null),
-        reading_time_min:   mins,
+        featured_image_url:     imageUrl,
+        featured_image_alt:     featured_image_alt     ?? null,
+        featured_image_caption: featured_image_caption ?? null,
+        category_slug:          category_slug          || null,
+        theme_slug:             theme_slug             || null,
+        status:                 articleStatus,
+        published_at:           articleStatus === 'published' ? (published_at ?? new Date().toISOString()) : null,
+        seo_title:              seo_title ?? title.slice(0, 60),
+        seo_description:        seo_description ?? (excerpt ? excerpt.slice(0, 160) : null),
+        reading_time_min:       mins,
+        fonte:                  fonte ?? null,
       })
       .eq('id', existing.id)
       .select('id, slug')
@@ -136,16 +142,19 @@ export async function POST(request: Request) {
       slug,
       content:            contentObj,
       excerpt:            excerpt            || null,
-      featured_image_url: imageUrl,
-      category_slug:      category_slug      || null,
-      theme_slug:         theme_slug         || null,
-      status:             articleStatus,
-      published_at:       articleStatus === 'published' ? (published_at ?? new Date().toISOString()) : null,
-      content_type:       'news',
+      featured_image_url:     imageUrl,
+      featured_image_alt:     featured_image_alt     ?? null,
+      featured_image_caption: featured_image_caption ?? null,
+      category_slug:          category_slug          || null,
+      theme_slug:             theme_slug             || null,
+      status:                 articleStatus,
+      published_at:           articleStatus === 'published' ? (published_at ?? new Date().toISOString()) : null,
+      content_type:           'news',
       source_type:        'original',
       seo_title:          seo_title ?? title.slice(0, 60),
       seo_description:    seo_description ?? (excerpt ? excerpt.slice(0, 160) : null),
       reading_time_min:   mins,
+      fonte:              fonte ?? null,
     })
     .select('id, slug')
     .single()

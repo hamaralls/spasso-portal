@@ -90,7 +90,7 @@ export async function POST(request: Request) {
   const status            = body.status             as string | undefined
   const seo_title         = (body.seo_title as string | undefined)?.trim() || undefined
   const seo_description   = (body.seo_description as string | undefined)?.trim() || undefined
-  const fonte             = (body.fonte as string | undefined)?.trim() || undefined
+  const fonte             = ((body.fonte as string | undefined) ?? '').replace(/^[\`"'\[\]]+|[\`"'\[\]]+$/g, '').trim() || undefined
 
   if (!title || !slug) {
     return Response.json({ error: 'Campos obrigatórios: title, slug' }, { status: 400 })

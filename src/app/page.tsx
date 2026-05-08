@@ -11,6 +11,21 @@ import type { ArticlePublico } from '@/types'
 export const runtime = 'edge'
 
 const hasAds = !!process.env.NEXT_PUBLIC_GAM_NETWORK_CODE
+const HOME_LIMITS = {
+  ultimas: 8,
+  regiaoFetch: 10,
+  regiao: 8,
+  culturaFetch: 4,
+  cultura: 3,
+  brasilFetch: 7,
+  brasil: 6,
+  saudeFetch: 4,
+  saude: 3,
+  politicaFetch: 3,
+  politica: 2,
+  economiaFetch: 4,
+  economia: 3,
+} as const
 
 function BannerPlaceholder({ w, h, label, fill, minH }: { w: number; h: number; label: string; fill?: boolean; minH?: number }) {
   if (hasAds) return null
@@ -218,13 +233,13 @@ function MetropolesGrid({
 export default async function Home() {
   const [hero, ultimas, regiaoRaw, culturaELazarRaw, brasilRaw, saudeRaw, politicaRaw, economiaRaw, colunistas, ultimaEdicao] = await Promise.all([
     getArtigosHero(),
-    getArtigosRecentes(16),
-    getArtigosPorCategorias(['sumare', 'hortolandia', 'nova-odessa', 'campinas', 'paulinia', 'monte-mor', 'santa-barbara-doeste', 'outras-cidades', 'rmc'], 16),
-    getArtigosPorCategorias(['estilo-de-vida', 'cultura-e-lazer', 'eventos'], 5),
-    getArtigosPorCategorias(['brasil'], 13),
-    getArtigosPorTema('saude', 5),
-    getArtigosPorTema('politica', 5),
-    getArtigosPorTema('economia', 5),
+    getArtigosRecentes(HOME_LIMITS.ultimas),
+    getArtigosPorCategorias(['sumare', 'hortolandia', 'nova-odessa', 'campinas', 'paulinia', 'monte-mor', 'santa-barbara-doeste', 'outras-cidades', 'rmc'], HOME_LIMITS.regiaoFetch),
+    getArtigosPorCategorias(['estilo-de-vida', 'cultura-e-lazer', 'eventos'], HOME_LIMITS.culturaFetch),
+    getArtigosPorCategorias(['brasil'], HOME_LIMITS.brasilFetch),
+    getArtigosPorTema('saude', HOME_LIMITS.saudeFetch),
+    getArtigosPorTema('politica', HOME_LIMITS.politicaFetch),
+    getArtigosPorTema('economia', HOME_LIMITS.economiaFetch),
     getColunistas(),
     getUltimaEdicao(),
   ])
@@ -232,12 +247,12 @@ export default async function Home() {
   // Deduplica: artigos do hero não aparecem novamente nas seções
   const heroIds = new Set(hero.map((a: ArticlePublico) => a.id))
   const dedupe = (arr: ArticlePublico[]) => arr.filter(a => !heroIds.has(a.id))
-  const regiao        = dedupe(regiaoRaw)
-  const culturaELazer = dedupe(culturaELazarRaw).map(a => ({ ...a, badge_color: '#2563eb' }))
-  const brasil        = dedupe(brasilRaw)
-  const saude         = dedupe(saudeRaw).map(a => ({ ...a, badge_color: '#0891b2' }))
-  const politica      = dedupe(politicaRaw).map(a => ({ ...a, badge_color: '#7c3aed' }))
-  const economia      = dedupe(economiaRaw).map(a => ({ ...a, badge_color: '#16a34a' }))
+  const regiao        = dedupe(regiaoRaw).slice(0, HOME_LIMITS.regiao)
+  const culturaELazer = dedupe(culturaELazarRaw).slice(0, HOME_LIMITS.cultura).map(a => ({ ...a, badge_color: '#2563eb' }))
+  const brasil        = dedupe(brasilRaw).slice(0, HOME_LIMITS.brasil)
+  const saude         = dedupe(saudeRaw).slice(0, HOME_LIMITS.saude).map(a => ({ ...a, badge_color: '#0891b2' }))
+  const politica      = dedupe(politicaRaw).slice(0, HOME_LIMITS.politica).map(a => ({ ...a, badge_color: '#7c3aed' }))
+  const economia      = dedupe(economiaRaw).slice(0, HOME_LIMITS.economia).map(a => ({ ...a, badge_color: '#16a34a' }))
 
   return (
     <>
@@ -415,16 +430,7 @@ export default async function Home() {
         {brasil.length > 0 && (
           <section>
             <SectionHeader title="Brasil" href="/brasil" color="#ec3535" />
-            <div className="grid grid-cols-1 lg:grid-cols-4 gap-4 items-start">
-              <div className="lg:col-span-3">
-                <MetropolesGrid articles={brasil.slice(0, 6)} extraRows={0} />
-              </div>
-              <aside className="hidden lg:flex flex-col gap-4">
-                {brasil.slice(6, 9).map(art => (
-                  <ArticleCard key={art.id} article={art} size="compact" />
-                ))}
-              </aside>
-            </div>
+            <MetropolesGrid articles={brasil} extraRows={0} />
           </section>
         )}
 
@@ -449,16 +455,7 @@ export default async function Home() {
         {saude.length >= 3 && (
           <section>
             <SectionHeader title="Saúde" href="/saude" color="#0891b2" />
-            <div className="grid grid-cols-1 lg:grid-cols-4 gap-4 items-start">
-              <div className="lg:col-span-3">
-                <MetropolesGrid articles={saude.slice(0, 3)} extraRows={0} />
-              </div>
-              <aside className="hidden lg:flex flex-col gap-4">
-                {saude.slice(3, 5).map(art => (
-                  <ArticleCard key={art.id} article={art} size="compact" />
-                ))}
-              </aside>
-            </div>
+            <MetropolesGrid articles={saude} extraRows={0} />
           </section>
         )}
 
@@ -473,7 +470,7 @@ export default async function Home() {
           <section>
             <SectionHeader title="Política" href="/politica" color="#7c3aed" />
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-              {politica.slice(0, 4).map(art => (
+              {politica.map(art => (
                 <Link key={art.id} href={`/${art.slug}`} className="group flex gap-4">
                   <div className="relative w-[48%] aspect-[4/3] shrink-0 overflow-hidden bg-gray-200">
                     {art.featured_image_url ? (
@@ -523,19 +520,10 @@ export default async function Home() {
         {ultimas.length > 0 && (
           <section>
             <SectionHeader title="Últimas Notícias" color="#f5821f" />
-            <div className="grid grid-cols-1 lg:grid-cols-4 gap-4 items-start">
-              <div className="lg:col-span-3">
-                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-                  {ultimas.slice(0, 12).map((article) => (
-                    <ArticleCard key={article.id} article={article} />
-                  ))}
-                </div>
-              </div>
-              <aside className="hidden lg:flex flex-col gap-4">
-                {ultimas.slice(12, 16).map((article) => (
-                  <ArticleCard key={article.id} article={article} size="compact" />
-                ))}
-              </aside>
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+              {ultimas.map((article) => (
+                <ArticleCard key={article.id} article={article} />
+              ))}
             </div>
           </section>
         )}

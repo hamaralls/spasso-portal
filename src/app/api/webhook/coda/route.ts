@@ -91,6 +91,8 @@ export async function POST(request: Request) {
   const seo_title         = (body.seo_title as string | undefined)?.trim() || undefined
   const seo_description   = (body.seo_description as string | undefined)?.trim() || undefined
   const fonte             = ((body.fonte as string | undefined) ?? '').replace(/^[\`"'\[\]]+|[\`"'\[\]]+$/g, '').trim() || undefined
+  // is_featured: só aplica se o campo vier no payload. Operador continua livre pra fixar via admin.
+  const is_featured       = 'is_featured' in body ? Boolean(body.is_featured) : undefined
 
   if (!title || !slug) {
     return Response.json({ error: 'Campos obrigatórios: title, slug' }, { status: 400 })
@@ -127,6 +129,7 @@ export async function POST(request: Request) {
         seo_description:        seo_description ?? (excerpt ? excerpt.slice(0, 160) : null),
         reading_time_min:       mins,
         fonte:                  fonte ?? null,
+        ...(is_featured !== undefined && { is_featured }),
       })
       .eq('id', existing.id)
       .select('id, slug')
@@ -155,6 +158,7 @@ export async function POST(request: Request) {
       seo_description:    seo_description ?? (excerpt ? excerpt.slice(0, 160) : null),
       reading_time_min:   mins,
       fonte:              fonte ?? null,
+      ...(is_featured !== undefined && { is_featured }),
     })
     .select('id, slug')
     .single()

@@ -155,10 +155,28 @@ export default function ArticleEditor({ categories, columnists = [], initial }: 
     input.onchange = async () => {
       const file = input.files?.[0]
       if (!file || !editor) return
+
+      // Pede alt antes do upload — importante pra acessibilidade e SEO
+      const altInput = window.prompt(
+        'Texto alternativo (descrição da imagem):\n\nImportante pra leitores de tela e SEO. Ex: "Vista aérea do parque..."',
+        ''
+      )
+      if (altInput === null) return // cancelou
+      const alt = altInput.trim() || file.name
+
+      // Legenda opcional (renderiza como tooltip do TipTap nativo)
+      const captionInput = window.prompt(
+        'Legenda (opcional — aparece como tooltip ao passar o mouse):',
+        ''
+      )
+      const caption = captionInput?.trim()
+
       setUploadingInline(true)
       try {
         const url = await uploadAsset(file)
-        editor.chain().focus().setImage({ src: url, alt: file.name }).run()
+        const attrs: { src: string; alt: string; title?: string } = { src: url, alt }
+        if (caption) attrs.title = caption
+        editor.chain().focus().setImage(attrs).run()
       } catch (e) {
         setError(e instanceof Error ? e.message : 'Erro ao inserir imagem.')
       } finally {

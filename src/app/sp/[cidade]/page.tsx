@@ -1,7 +1,7 @@
 import { notFound } from 'next/navigation'
 import type { Metadata } from 'next'
+import Link from 'next/link'
 import ArticleCard from '@/components/ArticleCard'
-import SectionHeader from '@/components/SectionHeader'
 import { AdUnit } from '@/components/AdUnit'
 import { getCategoria, getArtigosPorCategoria } from '@/lib/supabase/queries'
 
@@ -38,12 +38,62 @@ export default async function CidadePage({ params, searchParams }: Props) {
 
   const totalPages = Math.ceil(total / perPage)
 
+  const cidadeUrl = `https://jornalspassocidades.com.br/sp/${cidade}`
+  const heroDescricao = `Notícias de ${categoria.name} e região: política, saúde, educação, economia, cultura e mais.`
+
+  const collectionLd = {
+    '@context': 'https://schema.org',
+    '@type': 'CollectionPage',
+    name: `${categoria.name} — Spasso Cidades`,
+    url: cidadeUrl,
+    description: heroDescricao,
+    isPartOf: {
+      '@type': 'WebSite',
+      name: 'Spasso Cidades',
+      url: 'https://jornalspassocidades.com.br',
+    },
+  }
+  const breadcrumbLd = {
+    '@context': 'https://schema.org',
+    '@type': 'BreadcrumbList',
+    itemListElement: [
+      { '@type': 'ListItem', position: 1, name: 'Home', item: 'https://jornalspassocidades.com.br' },
+      { '@type': 'ListItem', position: 2, name: 'Cidades', item: 'https://jornalspassocidades.com.br/rmc' },
+      { '@type': 'ListItem', position: 3, name: categoria.name, item: cidadeUrl },
+    ],
+  }
+
   return (
     <div className="max-w-7xl mx-auto px-4 py-8">
-      <div className="mb-8">
-        <SectionHeader title={categoria.name} color={categoria.badge_color ?? '#f5821f'} />
-        <p className="text-sm text-gray-500">{total} notícias</p>
-      </div>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(collectionLd) }}
+      />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbLd) }}
+      />
+
+      {/* Breadcrumb visual */}
+      <nav className="text-xs text-gray-400 mb-3 flex items-center gap-1.5" aria-label="Navegação">
+        <Link href="/" className="hover:text-[#f5821f]">Home</Link>
+        <span>/</span>
+        <Link href="/rmc" className="hover:text-[#f5821f]">Cidades</Link>
+        <span>/</span>
+        <span className="text-gray-500">{categoria.name}</span>
+      </nav>
+
+      {/* Hero editorial */}
+      <header className="mb-8 pb-6 border-b border-gray-100">
+        <h1
+          className="text-3xl sm:text-4xl font-bold text-[#1a1a1a] mb-2"
+          style={{ borderLeft: `4px solid ${categoria.badge_color ?? '#f5821f'}`, paddingLeft: '0.75rem' }}
+        >
+          {categoria.name}
+        </h1>
+        <p className="text-base text-gray-600 max-w-3xl mb-2">{heroDescricao}</p>
+        <p className="text-xs text-gray-400">{total} notícia{total === 1 ? '' : 's'} publicada{total === 1 ? '' : 's'}</p>
+      </header>
 
       <div className="lg:grid lg:grid-cols-[1fr_300px] lg:gap-8 lg:items-start">
         <div>

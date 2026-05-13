@@ -242,16 +242,34 @@ export async function getArtigosDestaque(limit = 3): Promise<ArticlePublico[]> {
 export async function getArtigosRelacionados(
   categorySlug: string,
   excludeSlug: string,
-  limit = 3
+  limit = 3,
+  themeSlug?: string | null
 ): Promise<ArticlePublico[]> {
-  const { data } = await getSupabase()
+  // 1ª onda: mesma categoria (mais relevante)
+  const { data: porCategoria } = await getSupabase()
     .from('artigos_publicados')
     .select('*')
     .eq('category_slug', categorySlug)
     .neq('slug', excludeSlug)
     .order('published_at', { ascending: false })
     .limit(limit)
-  return data ?? []
+
+  let resultado = porCategoria ?? []
+
+  // 2ª onda (fallback): se ainda falta gente, complementa por tema
+  if (resultado.length < limit && themeSlug) {
+    const slugsExcluir = [excludeSlug, ...resultado.map((a) => a.slug)]
+    const { data: porTema } = await getSupabase()
+      .from('artigos_publicados')
+      .select('*')
+      .eq('theme_slug', themeSlug)
+      .not('slug', 'in', `(${slugsExcluir.map((s) => `"${s}"`).join(',')})`)
+      .order('published_at', { ascending: false })
+      .limit(limit - resultado.length)
+    resultado = [...resultado, ...(porTema ?? [])]
+  }
+
+  return resultado
 }
 
 // ── Busca full-text ──────────────────────────────────────────────────────────

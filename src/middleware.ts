@@ -3,7 +3,12 @@ import { NextResponse } from 'next/server'
 import type { NextRequest } from 'next/server'
 
 export async function middleware(request: NextRequest) {
-  const { pathname } = request.nextUrl
+  const { pathname, searchParams } = request.nextUrl
+
+  // URLs legadas do WordPress (`/?post_type=post&p=N`) — redireciona pra home limpa
+  if (pathname === '/' && (searchParams.has('post_type') || searchParams.has('p'))) {
+    return NextResponse.redirect(new URL('/', request.url), 301)
+  }
 
   // Modo manutenção — ativa com MAINTENANCE_MODE=true no Cloudflare Pages
   if (process.env.MAINTENANCE_MODE === 'true') {

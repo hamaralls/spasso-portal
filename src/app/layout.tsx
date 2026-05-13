@@ -96,6 +96,13 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         `}
       </Script>
 
+      {/* Google AdSense */}
+      <Script
+        src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-1055239551457826"
+        strategy="afterInteractive"
+        crossOrigin="anonymous"
+      />
+
       {/* Google Ad Manager — ativo só quando NEXT_PUBLIC_GAM_NETWORK_CODE estiver configurado */}
       {gamEnabled && (
         <Script

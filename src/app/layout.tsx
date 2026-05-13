@@ -58,9 +58,9 @@ const orgJsonLd = {
   url: 'https://jornalspassocidades.com.br',
   logo: {
     '@type': 'ImageObject',
-    url: 'https://jornalspassocidades.com.br/og-default.jpg',
-    width: 1200,
-    height: 630,
+    url: 'https://jornalspassocidades.com.br/logo.png',
+    width: 500,
+    height: 100,
   },
 }
 

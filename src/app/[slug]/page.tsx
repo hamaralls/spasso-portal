@@ -9,6 +9,7 @@ import ShareButtons from '@/components/ShareButtons'
 import SocialFollowCard from '@/components/SocialFollowCard'
 import { AdUnit } from '@/components/AdUnit'
 import ViewTracker from '@/components/ViewTracker'
+import BackToTop from '@/components/BackToTop'
 import {
   getCategoria,
   getArtigosPorCategoria,
@@ -49,6 +50,10 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const metaAuthorName = Array.isArray(authorRaw)
     ? (authorRaw[0] as { name: string } | undefined)?.name
     : (authorRaw as { name: string } | null)?.name
+  const sectionRaw = (artigo.category_slug as string | null | undefined) || ''
+  const section = sectionRaw
+    ? sectionRaw.replace(/-/g, ' ').replace(/\b\w/g, (c: string) => c.toUpperCase())
+    : undefined
 
   return {
     title,
@@ -62,6 +67,8 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
       type: 'article',
       publishedTime: artigo.published_at ?? undefined,
       modifiedTime: artigo.updated_at ?? undefined,
+      ...(section ? { section } : {}),
+      ...(metaAuthorName ? { authors: [metaAuthorName] } : {}),
       images: image
         ? [{ url: image, width: 1200, height: 630, alt: title }]
         : [{ url: '/og-default.jpg', width: 1200, height: 630 }],
@@ -182,9 +189,9 @@ export default async function SlugPage({ params, searchParams }: Props) {
       url: 'https://jornalspassocidades.com.br',
       logo: {
         '@type': 'ImageObject',
-        url: 'https://jornalspassocidades.com.br/og-default.jpg',
-        width: 1200,
-        height: 630,
+        url: 'https://jornalspassocidades.com.br/logo.png',
+        width: 500,
+        height: 100,
       },
     },
   }
@@ -222,6 +229,7 @@ export default async function SlugPage({ params, searchParams }: Props) {
       />
 
       <ViewTracker slug={artigo.slug} />
+      <BackToTop />
       <div className="bg-white">
         <div className="max-w-6xl mx-auto px-4 py-8">
           <div className="lg:grid lg:grid-cols-[1fr_288px] lg:gap-10 lg:items-start">

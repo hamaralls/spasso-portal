@@ -379,3 +379,25 @@ export async function getAllArtigosSlugs(): Promise<
     .limit(10000)
   return data ?? []
 }
+
+// ── Image sitemap: artigos com capa pro Google Images ────────────────────────
+
+export async function getAllArtigosParaImageSitemap(): Promise<
+  {
+    slug: string
+    title: string
+    featured_image_url: string | null
+    featured_image_alt: string | null
+    featured_image_caption: string | null
+    published_at: string
+  }[]
+> {
+  const { data } = await getSupabase()
+    .from('articles')
+    .select('slug, title, featured_image_url, featured_image_alt, featured_image_caption, published_at')
+    .eq('status', 'published')
+    .not('featured_image_url', 'is', null)
+    .order('published_at', { ascending: false })
+    .limit(10000)
+  return data ?? []
+}

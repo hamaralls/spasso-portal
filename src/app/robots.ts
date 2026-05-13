@@ -23,6 +23,9 @@ export default function robots(): MetadataRoute.Robots {
         disallow: ['/admin/', '/api/'],
       },
     ],
-    sitemap: 'https://jornalspassocidades.com.br/sitemap.xml',
+    sitemap: [
+      'https://jornalspassocidades.com.br/sitemap.xml',
+      'https://jornalspassocidades.com.br/image-sitemap.xml',
+    ],
   }
 }

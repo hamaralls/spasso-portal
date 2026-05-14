@@ -1,6 +1,7 @@
 'use client'
 
 import { useEffect, useRef } from 'react'
+import { HouseAd } from './HouseAd'
 
 declare global {
   interface Window {
@@ -22,6 +23,9 @@ interface AdUnitProps {
   slot: string
   format: AdFormat
   className?: string
+  /** Se true e GAM ainda não estiver configurado, renderiza a campanha vigente
+   *  (HouseAd) em vez de null. Quando GAM ativar, GAM toma o lugar automaticamente. */
+  houseAd?: boolean
 }
 
 const SIZES: Record<AdFormat, number[][]> = {
@@ -31,7 +35,7 @@ const SIZES: Record<AdFormat, number[][]> = {
 
 const NETWORK_CODE = process.env.NEXT_PUBLIC_GAM_NETWORK_CODE
 
-export function AdUnit({ slot, format, className }: AdUnitProps) {
+export function AdUnit({ slot, format, className, houseAd }: AdUnitProps) {
   const divId = `gpt-${slot}`
   const registered = useRef(false)
 
@@ -49,7 +53,9 @@ export function AdUnit({ slot, format, className }: AdUnitProps) {
     })
   }, [slot, format, divId])
 
-  if (!NETWORK_CODE) return null
+  if (!NETWORK_CODE) {
+    return houseAd ? <HouseAd format={format} className={className} /> : null
+  }
 
   return (
     <div className={className}>

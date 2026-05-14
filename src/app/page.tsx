@@ -380,8 +380,7 @@ export default async function Home() {
         {/* ── Leaderboard e Redes Sociais entre Colunistas e RMC ── */}
         <div className="flex flex-col xl:flex-row items-center justify-center gap-8 py-4">
           <div className="flex justify-center shrink-0">
-            <AdUnit slot="home-leaderboard" format="leaderboard" />
-            <BannerPlaceholder w={728} h={90} label="Banner 728×90" />
+            <AdUnit slot="home-leaderboard" format="leaderboard" houseAd />
           </div>
 
           {/* ── Siga-nos ── */}

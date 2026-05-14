@@ -484,7 +484,7 @@ export default async function SlugPage({ params, searchParams }: Props) {
               )}
 
               {/* Banner sidebar artigo */}
-              <AdUnit slot="artigo-sidebar" format="rectangle" className="flex justify-center" />
+              <AdUnit slot="artigo-sidebar" format="rectangle" houseAd className="flex justify-center" />
 
               {/* Veja Também */}
               {relacionados.length > 0 && (

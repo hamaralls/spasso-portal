@@ -9,6 +9,7 @@ import EdicaoSemanalWidget from '@/components/EdicaoSemanalWidget'
 import type { ArticlePublico } from '@/types'
 
 export const runtime = 'edge'
+export const revalidate = 120
 
 const hasAds = !!process.env.NEXT_PUBLIC_GAM_NETWORK_CODE
 const HOME_LIMITS = {

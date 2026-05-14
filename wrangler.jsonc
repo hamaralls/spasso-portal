@@ -1,0 +1,12 @@
+{
+  // Cloudflare Pages config — versionado pra ativar Observability e fixar runtime.
+  // Criado 2026-05-14 pra capturar Error 1102 esporádico (Worker exceeded resource limits).
+  // Plano de investigação: spasso-vault/produto/PORTAL-ERROR-1102-PLANO.md
+  "name": "spasso-portal",
+  "compatibility_date": "2026-04-16",
+  "compatibility_flags": ["nodejs_compat"],
+  "observability": {
+    "enabled": true,
+    "head_sampling_rate": 1
+  }
+}

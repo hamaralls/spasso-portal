@@ -2,10 +2,7 @@
   // Cloudflare Pages config — versionado pra ativar Observability e fixar runtime.
   // Criado 2026-05-14 pra capturar Error 1102 esporádico (Worker exceeded resource limits).
   // Plano de investigação: spasso-vault/produto/PORTAL-ERROR-1102-PLANO.md
-  // pages_build_output_dir é OBRIGATÓRIO: sem ele o Cloudflare Pages ignora este
-  // arquivo inteiro (build via @cloudflare/next-on-pages sai em .vercel/output/static).
   "name": "spasso-portal",
-  "pages_build_output_dir": ".vercel/output/static",
   "compatibility_date": "2026-04-16",
   "compatibility_flags": ["nodejs_compat"],
   "observability": {

@@ -18,10 +18,14 @@ export default function FeaturedToggleButton({
     const next = !active
     setActive(next)
     try {
+      // Estrela = FIXAR no hero. is_featured_pinned força a matéria pro topo
+      // (a query do hero ordena por ele antes da data); is_featured mantém
+      // ela dentro do filtro is_featured=true. Juntos garantem que a escolha
+      // manual aparece mesmo competindo com auto-destaques mais recentes.
       await fetch(`/api/artigos/${id}`, {
         method: 'PATCH',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ is_featured: next }),
+        body: JSON.stringify({ is_featured: next, is_featured_pinned: next }),
       })
       startTransition(() => router.refresh())
     } catch {

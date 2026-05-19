@@ -173,8 +173,23 @@ export default function Header() {
   const [scrolled, setScrolled] = useState(false)
 
   useEffect(() => {
-    const onScroll = () => setScrolled(window.scrollY > 60)
+    // Histerese: encolhe ao passar de 120px, só volta a expandir abaixo de 40px.
+    // A zona morta (40–120) impede o loop sticky-encolhe → conteúdo sobe →
+    // scroll volta → expande → tremor. rAF evita reflow a cada evento de scroll.
+    let ticking = false
+    const update = () => {
+      ticking = false
+      const y = window.scrollY
+      setScrolled((prev) => (prev ? y >= 40 : y > 120))
+    }
+    const onScroll = () => {
+      if (!ticking) {
+        ticking = true
+        requestAnimationFrame(update)
+      }
+    }
     window.addEventListener('scroll', onScroll, { passive: true })
+    onScroll()
     return () => window.removeEventListener('scroll', onScroll)
   }, [])
 

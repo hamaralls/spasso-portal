@@ -1,6 +1,10 @@
 import { getAllArtigosParaImageSitemap } from '@/lib/supabase/queries'
 
 export const runtime = 'edge'
+// Regenera no schedule (1h) em vez de no cache-miss sob demanda. Casa com o
+// s-maxage=3600 da resposta e tira o pico de gerar ~4k artigos por request
+// edge — gatilho provável do Cloudflare Error 1102. Ver produto/PORTAL-ERROR-1102-PLANO.md.
+export const revalidate = 3600
 
 const BASE = 'https://jornalspassocidades.com.br'
 

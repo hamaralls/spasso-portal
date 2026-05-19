@@ -75,7 +75,7 @@ export async function listArticles(page = 1, perPage = 20, status?: string, cate
 
   let query = sb
     .from('articles')
-    .select('id, slug, title, status, category_slug, published_at, created_at, views, featured_image_url, is_featured', { count: 'exact' })
+    .select('id, slug, title, status, category_slug, published_at, created_at, views, featured_image_url, is_featured, is_featured_pinned', { count: 'exact' })
     .order('published_at', { ascending: false })
     .range(from, to)
 

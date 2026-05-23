@@ -1,0 +1,28 @@
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "email-to-n8n",
+  "main": "src/index.js",
+  "compatibility_date": "2026-04-29",
+  "compatibility_flags": [
+    "nodejs_compat",
+    "global_fetch_strictly_public"
+  ],
+  "observability": {
+    "enabled": true
+  },
+  "upload_source_maps": true,
+  "workers_dev": false,
+  "preview_urls": false,
+  "vars": {
+    "N8N_WEBHOOK_URL": "https://primary-production-f54c.up.railway.app/webhook/email-spasso-inbox",
+    "FORWARD_TO": "contato.spassocidades@gmail.com",
+    "R2_PUBLIC_BASE": "https://pub-e2001ebd7e21497aab9f0958d110d3c5.r2.dev",
+    "TEMP_PREFIX": "temp-raw"
+  },
+  "r2_buckets": [
+    {
+      "binding": "MEDIA_BUCKET",
+      "bucket_name": "spasso-media"
+    }
+  ]
+}

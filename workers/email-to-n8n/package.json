@@ -1,0 +1,14 @@
+{
+  "name": "email-to-n8n",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Cloudflare Email Worker — recebe emails em emerson@jornalspassocidades.com.br, extrai o corpo, faz POST no webhook n8n e encaminha para Gmail.",
+  "scripts": {
+    "deploy": "wrangler deploy",
+    "dev": "wrangler dev",
+    "tail": "wrangler tail"
+  },
+  "devDependencies": {
+    "wrangler": "^4.86.0"
+  }
+}

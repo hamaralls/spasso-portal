@@ -87,6 +87,8 @@ export interface ArticlePublico {
   columnist_id: string | null
   columnist_slug: string | null
   columnist_subtitle: string | null
+  cidade_principal: string | null
+  outras_cidades: string[] | null
 }
 
 export interface Columnist {

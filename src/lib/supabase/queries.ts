@@ -129,12 +129,23 @@ export async function getArtigoCompleto(slug: string) {
       seo_title, seo_description, seo_keywords,
       wp_post_id,
       author:users!author_id(name),
-      columnist:columnists!columnist_id(name, slug, type, subtitle, bio, avatar_url)
+      columnist:columnists!columnist_id(name, slug, type, subtitle, bio, avatar_url),
+      article_editorial(cidade_principal, outras_cidades)
     `)
     .eq('slug', slug)
     .eq('status', 'published')
     .single()
-  return data ?? null
+  if (!data) return null
+  // Flatten editorial pra ficar igual ArticlePublico (que vem da view).
+  type EdRow = { cidade_principal: string | null; outras_cidades: string[] | null }
+  const ed = Array.isArray(data.article_editorial)
+    ? (data.article_editorial[0] as EdRow | undefined)
+    : (data.article_editorial as EdRow | undefined)
+  return {
+    ...data,
+    cidade_principal: ed?.cidade_principal ?? null,
+    outras_cidades: ed?.outras_cidades ?? null,
+  }
 }
 
 // ── Categoria por slug ────────────────────────────────────────────────────────

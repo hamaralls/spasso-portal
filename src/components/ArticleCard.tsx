@@ -10,7 +10,15 @@ interface ArticleCardProps {
 }
 
 export default function ArticleCard({ article, size = 'default' }: ArticleCardProps) {
-  const { slug, title, excerpt, featured_image_url, category_name, badge_color, published_at, author_name, author_avatar, origin_badge, columnist_type } = article
+  const { slug, title, excerpt, featured_image_url, category_name, badge_color, published_at, author_name, author_avatar, origin_badge, columnist_type, cidade_principal } = article
+
+  // Jornal regional: o selo do card destaca a CIDADE. Matéria sem cidade
+  // (nacional) cai na categoria temática.
+  const selo = cidade_principal
+    ? { nome: `📍 ${cidade_principal}`, cor: '#f5821f' }
+    : category_name
+      ? { nome: category_name, cor: badge_color }
+      : null
 
   if (size === 'columnist') {
     const displayName = author_name ?? origin_badge ?? null
@@ -60,7 +68,7 @@ export default function ArticleCard({ article, size = 'default' }: ArticleCardPr
           )}
         </div>
         <div className="p-3">
-          {category_name && <Badge name={category_name} color={badge_color} size="sm" />}
+          {selo && <Badge name={selo.nome} color={selo.cor} size="sm" />}
           <h3 className="font-bold text-[#1a1a1a] leading-snug group-hover:underline line-clamp-3 mt-1.5">
             {title}
           </h3>
@@ -88,7 +96,7 @@ export default function ArticleCard({ article, size = 'default' }: ArticleCardPr
           )}
         </div>
         <div className="flex-1 min-w-0 pt-0.5">
-          {category_name && <Badge name={category_name} color={badge_color} size="sm" />}
+          {selo && <Badge name={selo.nome} color={selo.cor} size="sm" />}
           <h3 className="text-base font-bold text-[#1a1a1a] leading-snug mt-1 group-hover:underline line-clamp-3">
             {title}
           </h3>
@@ -113,9 +121,9 @@ export default function ArticleCard({ article, size = 'default' }: ArticleCardPr
           )}
         </div>
         <div className="flex-1 min-w-0 flex flex-col justify-start pt-1">
-          {category_name && (
+          {selo && (
             <div>
-              <Badge name={category_name} color={badge_color} size="sm" />
+              <Badge name={selo.nome} color={selo.cor} size="sm" />
             </div>
           )}
           <h3 className="text-sm font-bold text-[#1a1a1a] leading-snug mt-1 group-hover:underline line-clamp-4">

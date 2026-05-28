@@ -283,6 +283,33 @@ async function uploadAttachments(env, attachments, messageId) {
   return out;
 }
 
+// ─── POST n8n com retry ──────────────────────────────────────────────────────
+
+// O n8n no Railway às vezes responde 403/5xx transitório (cold start, reinício,
+// ou 2 emails quase simultâneos). Sem retry o email era perdido silenciosamente.
+// Tenta algumas vezes com backoff antes de desistir.
+async function postToN8n(url, payload) {
+  const ATTEMPTS = 4;
+  for (let i = 1; i <= ATTEMPTS; i++) {
+    try {
+      const r = await fetch(url, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload),
+      });
+      if (r.ok) {
+        if (i > 1) console.log(`n8n ok na tentativa ${i}`);
+        return;
+      }
+      console.error(`n8n non-2xx ${r.status} (tentativa ${i}/${ATTEMPTS})`);
+    } catch (err) {
+      console.error(`n8n webhook erro (tentativa ${i}/${ATTEMPTS}): ${String(err)}`);
+    }
+    if (i < ATTEMPTS) await new Promise(res => setTimeout(res, 1500 * i));
+  }
+  console.error(`n8n FALHOU após ${ATTEMPTS} tentativas — email pode ter se perdido: ${payload.subject || '(sem assunto)'}`);
+}
+
 // ─── handler ─────────────────────────────────────────────────────────────────
 
 export default {
@@ -327,16 +354,8 @@ export default {
       cloudLinks,
     };
 
-    // POST n8n (não bloqueia o forward)
-    ctx.waitUntil(
-      fetch(env.N8N_WEBHOOK_URL, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(payload),
-      })
-        .then(r => { if (!r.ok) console.error('n8n non-2xx', r.status); })
-        .catch(err => console.error('n8n webhook error:', err))
-    );
+    // POST n8n com retry (não bloqueia o forward)
+    ctx.waitUntil(postToN8n(env.N8N_WEBHOOK_URL, payload));
 
     // Forward pro destino de leitura humana (mantém comportamento atual)
     try {

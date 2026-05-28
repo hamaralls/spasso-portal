@@ -9,7 +9,7 @@ export default function SeloLocal({
   a: Pick<ArticlePublico, 'cidade_principal' | 'category_name' | 'badge_color'>
 }) {
   if (a.cidade_principal) {
-    return <Badge name={`📍 ${a.cidade_principal}`} color="#f5821f" size="sm" />
+    return <Badge name={a.cidade_principal} color="#f5821f" size="sm" />
   }
   if (a.category_name) {
     return <Badge name={a.category_name} color={a.badge_color} size="sm" />

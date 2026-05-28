@@ -1,6 +1,6 @@
 import Link from 'next/link'
 import Image from 'next/image'
-import Badge from './Badge'
+import SeloLocal from './SeloLocal'
 import { timeAgo } from '@/lib/format'
 import type { ArticlePublico } from '@/types'
 
@@ -10,15 +10,7 @@ interface ArticleCardProps {
 }
 
 export default function ArticleCard({ article, size = 'default' }: ArticleCardProps) {
-  const { slug, title, excerpt, featured_image_url, category_name, badge_color, published_at, author_name, author_avatar, origin_badge, columnist_type, cidade_principal } = article
-
-  // Jornal regional: o selo do card destaca a CIDADE. Matéria sem cidade
-  // (nacional) cai na categoria temática.
-  const selo = cidade_principal
-    ? { nome: `📍 ${cidade_principal}`, cor: '#f5821f' }
-    : category_name
-      ? { nome: category_name, cor: badge_color }
-      : null
+  const { slug, title, excerpt, featured_image_url, published_at, author_name, author_avatar, origin_badge, columnist_type } = article
 
   if (size === 'columnist') {
     const displayName = author_name ?? origin_badge ?? null
@@ -68,7 +60,7 @@ export default function ArticleCard({ article, size = 'default' }: ArticleCardPr
           )}
         </div>
         <div className="p-3">
-          {selo && <Badge name={selo.nome} color={selo.cor} size="sm" />}
+          <SeloLocal a={article} />
           <h3 className="font-bold text-[#1a1a1a] leading-snug group-hover:underline line-clamp-3 mt-1.5">
             {title}
           </h3>
@@ -96,7 +88,7 @@ export default function ArticleCard({ article, size = 'default' }: ArticleCardPr
           )}
         </div>
         <div className="flex-1 min-w-0 pt-0.5">
-          {selo && <Badge name={selo.nome} color={selo.cor} size="sm" />}
+          <SeloLocal a={article} />
           <h3 className="text-base font-bold text-[#1a1a1a] leading-snug mt-1 group-hover:underline line-clamp-3">
             {title}
           </h3>
@@ -121,11 +113,9 @@ export default function ArticleCard({ article, size = 'default' }: ArticleCardPr
           )}
         </div>
         <div className="flex-1 min-w-0 flex flex-col justify-start pt-1">
-          {selo && (
-            <div>
-              <Badge name={selo.nome} color={selo.cor} size="sm" />
-            </div>
-          )}
+          <div>
+            <SeloLocal a={article} />
+          </div>
           <h3 className="text-sm font-bold text-[#1a1a1a] leading-snug mt-1 group-hover:underline line-clamp-4">
             {title}
           </h3>
@@ -164,7 +154,7 @@ export default function ArticleCard({ article, size = 'default' }: ArticleCardPr
         )}
       </div>
       <div className="flex-1 min-w-0 pt-0.5">
-        {category_name && <Badge name={category_name} color={badge_color} size="sm" />}
+        <SeloLocal a={article} />
         <h3 className="text-sm font-bold text-[#1a1a1a] leading-snug mt-1 group-hover:underline line-clamp-3">
           {title}
         </h3>

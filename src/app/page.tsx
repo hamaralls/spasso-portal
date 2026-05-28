@@ -1,6 +1,6 @@
 import Link from 'next/link'
 import Image from 'next/image'
-import Badge from '@/components/Badge'
+import SeloLocal from '@/components/SeloLocal'
 import ArticleCard from '@/components/ArticleCard'
 import SectionHeader from '@/components/SectionHeader'
 import { AdUnit } from '@/components/AdUnit'
@@ -76,7 +76,7 @@ function DestaqueGrid({ articles }: { articles: ArticlePublico[] }) {
             )}
           </div>
           <div className="pt-2">
-            {a[0].category_name && <Badge name={a[0].category_name} color={a[0].badge_color} size="sm" />}
+            <SeloLocal a={a[0]} />
             <h3 className="text-base font-bold text-[#1a1a1a] leading-snug mt-1 group-hover:underline line-clamp-3">
               {a[0].title}
             </h3>
@@ -136,11 +136,9 @@ function MetropolesGrid({
                   )}
                 </div>
                 <div className="flex-1 min-w-0 flex flex-col justify-start pt-1">
-                  {a[0].category_name && (
-                    <div>
-                      <Badge name={a[0].category_name} color={a[0].badge_color} size="sm" />
-                    </div>
-                  )}
+                  <div>
+                    <SeloLocal a={a[0]} />
+                  </div>
                   <h3 className="text-xl font-bold leading-snug mt-2 group-hover:underline line-clamp-4 text-[#1a1a1a]">
                     {a[0].title}
                   </h3>
@@ -193,11 +191,9 @@ function MetropolesGrid({
                 )}
               </div>
               <div className="flex-1 min-w-0 flex flex-col justify-start pt-1">
-                {a[0].category_name && (
-                  <div>
-                    <Badge name={a[0].category_name} color={a[0].badge_color} size="sm" />
-                  </div>
-                )}
+                <div>
+                  <SeloLocal a={a[0]} />
+                </div>
                 <h3 className="text-xl font-bold leading-snug mt-1 group-hover:underline line-clamp-4 text-[#1a1a1a]">
                   {a[0].title}
                 </h3>
@@ -274,9 +270,7 @@ export default async function Home() {
                   )}
                 </div>
                 <div className="sm:w-[45%] flex flex-col justify-start pt-1">
-                  {hero[0].category_name && (
-                    <Badge name={hero[0].category_name} color={hero[0].badge_color} size="sm" />
-                  )}
+                  <SeloLocal a={hero[0]} />
                   <h1 className="text-2xl md:text-3xl lg:text-4xl font-extrabold leading-tight mt-2 group-hover:underline line-clamp-5 text-[#1a1a1a]">
                     {hero[0].title}
                   </h1>
@@ -483,7 +477,7 @@ export default async function Home() {
                   </div>
                   <div className="flex-1 min-w-0 flex flex-col justify-start pt-1">
                     {art.category_name && (
-                      <div><Badge name={art.category_name} color={art.badge_color} size="sm" /></div>
+                      <div><SeloLocal a={art} /></div>
                     )}
                     <h3 className="text-xl font-bold leading-snug mt-1 group-hover:underline line-clamp-4 text-[#1a1a1a]">
                       {art.title}

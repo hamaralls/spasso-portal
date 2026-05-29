@@ -27,7 +27,9 @@ export async function POST(request: Request) {
   const htmlContent = body.content?.rendered ?? ''
   const mins = readingTime(htmlContent)
 
-  const article = await createArticle({
+  let article
+  try {
+  article = await createArticle({
     title:              body.title,
     slug:               body.slug,
     excerpt:            body.excerpt   || null,
@@ -47,6 +49,11 @@ export async function POST(request: Request) {
     published_at:       body.published_at  || undefined,
     reading_time_min:   mins,
   })
+  } catch (e) {
+    const msg = e instanceof Error ? e.message : String(e)
+    console.error('POST /api/artigos erro:', msg)
+    return Response.json({ error: `Falha ao criar: ${msg}` }, { status: 400 })
+  }
 
   return Response.json(article, { status: 201 })
 }

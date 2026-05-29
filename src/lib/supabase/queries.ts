@@ -193,7 +193,7 @@ export async function getColunistas(): Promise<ColunistaCom[]> {
   const slugs = cols.map(c => c.slug)
   const { data: recents } = await getSupabase()
     .from('artigos_publicados')
-    .select('slug, title, excerpt, featured_image_url, columnist_slug')
+    .select('slug, title, excerpt, content, featured_image_url, columnist_slug')
     .in('columnist_slug', slugs)
     .order('published_at', { ascending: false })
     .limit(50)
@@ -201,7 +201,14 @@ export async function getColunistas(): Promise<ColunistaCom[]> {
   const lastBySlug: Record<string, { slug: string; title: string; excerpt: string | null; featured_image_url: string | null }> = {}
   for (const a of recents ?? []) {
     if (a.columnist_slug && !lastBySlug[a.columnist_slug]) {
-      lastBySlug[a.columnist_slug] = { slug: a.slug, title: a.title, excerpt: a.excerpt ?? null, featured_image_url: a.featured_image_url }
+      // resumo = excerpt; se vazio (comum nos colunistas via CMS), deriva do início do corpo
+      const rendered = (a.content as { rendered?: string } | null)?.rendered
+      const resumo = (a.excerpt && a.excerpt.trim())
+        ? a.excerpt
+        : (typeof rendered === 'string'
+            ? rendered.replace(/<[^>]+>/g, ' ').replace(/\s+/g, ' ').trim().slice(0, 200)
+            : null)
+      lastBySlug[a.columnist_slug] = { slug: a.slug, title: a.title, excerpt: resumo, featured_image_url: a.featured_image_url }
     }
   }
 

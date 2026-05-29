@@ -42,8 +42,14 @@ export async function PATCH(
     if (htmlContent) patch.reading_time_min = readingTime(htmlContent)
   }
 
-  const article = await updateArticle(id, patch)
-  return Response.json(article)
+  try {
+    const article = await updateArticle(id, patch)
+    return Response.json(article)
+  } catch (e) {
+    const msg = e instanceof Error ? e.message : String(e)
+    console.error('PATCH /api/artigos erro:', msg)
+    return Response.json({ error: `Falha ao salvar: ${msg}` }, { status: 400 })
+  }
 }
 
 export async function DELETE(

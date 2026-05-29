@@ -352,7 +352,7 @@ export default async function Home() {
                       </p>
                       {col.lastArticle && (
                         <>
-                          <p className="text-sm font-semibold text-[#1a1a1a] leading-snug line-clamp-1 group-hover:underline">
+                          <p className="text-sm font-semibold text-[#1a1a1a] leading-snug line-clamp-2 group-hover:underline">
                             {col.lastArticle.title}
                           </p>
                           {col.lastArticle.excerpt && (

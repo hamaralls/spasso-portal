@@ -310,6 +310,38 @@ async function postToN8n(url, payload) {
   console.error(`n8n FALHOU após ${ATTEMPTS} tentativas — email pode ter se perdido: ${payload.subject || '(sem assunto)'}`);
 }
 
+// ─── grava email_inbox no Supabase (rede de segurança P1) ────────────────────
+
+// Grava o e-mail no Supabase ANTES do n8n. Se o n8n cair/ignorar, o e-mail não
+// some — fica como status='novo' na Inbox pra reprocessar. UPSERT por message_id
+// (ignore-duplicates): o WF1 depois faz merge no MESMO registro, sem duplicar.
+// try/catch: falha aqui NUNCA bloqueia o pipeline (n8n + forward seguem).
+async function insertInbox(env, rec) {
+  if (!env.SUPABASE_URL || !env.SUPABASE_SERVICE_KEY) {
+    console.warn('email_inbox: SUPABASE_URL/KEY ausente — pulando rede de segurança');
+    return;
+  }
+  try {
+    const r = await fetch(`${env.SUPABASE_URL}/rest/v1/email_inbox?on_conflict=message_id`, {
+      method: 'POST',
+      headers: {
+        'apikey': env.SUPABASE_SERVICE_KEY,
+        'Authorization': `Bearer ${env.SUPABASE_SERVICE_KEY}`,
+        'Content-Type': 'application/json',
+        'Prefer': 'resolution=ignore-duplicates,return=minimal',
+      },
+      body: JSON.stringify(rec),
+    });
+    if (!r.ok) {
+      console.error(`email_inbox insert non-2xx ${r.status}: ${(await r.text()).slice(0, 200)}`);
+    } else {
+      console.log(`email_inbox gravado (rede de segurança): ${rec.subject || '(sem assunto)'}`);
+    }
+  } catch (e) {
+    console.error('email_inbox insert erro:', String(e));
+  }
+}
+
 // ─── handler ─────────────────────────────────────────────────────────────────
 
 export default {
@@ -353,6 +385,18 @@ export default {
       attachments,
       cloudLinks,
     };
+
+    // Rede de segurança P1: grava o email_inbox ANTES de depender do n8n.
+    ctx.waitUntil(insertInbox(env, {
+      message_id: messageId,
+      from_address: from,
+      from_name: fromName,
+      subject,
+      body_text: textBody,
+      body_html: parsed.textHtml || '',
+      attachments,
+      cloud_links: cloudLinks,
+    }));
 
     // POST n8n com retry (não bloqueia o forward)
     ctx.waitUntil(postToN8n(env.N8N_WEBHOOK_URL, payload));

@@ -17,7 +17,8 @@
     "N8N_WEBHOOK_URL": "https://primary-production-f54c.up.railway.app/webhook/email-spasso-inbox",
     "FORWARD_TO": "contato.spassocidades@gmail.com",
     "R2_PUBLIC_BASE": "https://pub-e2001ebd7e21497aab9f0958d110d3c5.r2.dev",
-    "TEMP_PREFIX": "temp-raw"
+    "TEMP_PREFIX": "temp-raw",
+    "SUPABASE_URL": "https://vrholrhnvmighgmswmiu.supabase.co"
   },
   "r2_buckets": [
     {

@@ -50,7 +50,7 @@ export async function POST(request: Request) {
     reading_time_min:   mins,
   })
   } catch (e) {
-    const msg = e instanceof Error ? e.message : String(e)
+    const msg = (e as { message?: string })?.message ?? (typeof e === 'string' ? e : JSON.stringify(e))
     console.error('POST /api/artigos erro:', msg)
     return Response.json({ error: `Falha ao criar: ${msg}` }, { status: 400 })
   }

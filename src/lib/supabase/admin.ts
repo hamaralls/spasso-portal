@@ -32,12 +32,25 @@ export interface ArticleInput {
   is_featured_pinned?: boolean
 }
 
+async function ensureUniqueSlug(sb: ReturnType<typeof getAdminClient>, base: string) {
+  const raiz = (base || 'artigo').trim() || 'artigo'
+  let slug = raiz
+  for (let n = 2; n < 100; n++) {
+    const { data } = await sb.from('articles').select('id').eq('slug', slug).maybeSingle()
+    if (!data) return slug
+    slug = `${raiz}-${n}`
+  }
+  return `${raiz}-${Date.now()}`
+}
+
 export async function createArticle(input: ArticleInput) {
   const sb = getAdminClient()
+  const slug = await ensureUniqueSlug(sb, input.slug)
   const { data, error } = await sb
     .from('articles')
     .insert({
       ...input,
+      slug,
       published_at: input.status === 'published' ? (input.published_at ?? new Date().toISOString()) : null,
     })
     .select('id, slug')

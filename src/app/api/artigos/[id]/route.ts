@@ -46,7 +46,7 @@ export async function PATCH(
     const article = await updateArticle(id, patch)
     return Response.json(article)
   } catch (e) {
-    const msg = e instanceof Error ? e.message : String(e)
+    const msg = (e as { message?: string })?.message ?? (typeof e === 'string' ? e : JSON.stringify(e))
     console.error('PATCH /api/artigos erro:', msg)
     return Response.json({ error: `Falha ao salvar: ${msg}` }, { status: 400 })
   }

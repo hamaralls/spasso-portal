@@ -45,13 +45,15 @@ const nextConfig: NextConfig = {
     // Fontes SEM trailing slash — Next.js 15 normaliza para sem barra (308)
     // antes de aplicar redirects, então a source deve casar sem barra
     return [
-      // ── Artigos: slug limpo (pós-fix do sufixo de rascunho) ──
-      // Quando uma matéria publicada com slug sufixado for renomeada pro slug
-      // limpo, adicione aqui o redirect do antigo → novo pra não perder links/SEO.
-      { source: '/cadunico-itinerante-atende-tres-regioes-de-sumare-nesta-semana-xh85mk', destination: '/cadunico-itinerante-atende-tres-regioes-de-sumare-nesta-semana', permanent: true },
+      { source: '/admin',                           destination: 'https://redacao.jornalspassocidades.com.br/', permanent: true },
+      { source: '/admin/:path*',                    destination: 'https://redacao.jornalspassocidades.com.br/', permanent: true },
+      { source: '/login',                           destination: 'https://redacao.jornalspassocidades.com.br/login', permanent: true },
+      { source: '/reset-password',                  destination: 'https://redacao.jornalspassocidades.com.br/login', permanent: true },
 
       // ── Cidades ──────────────────────────────────────────
       // Sem trailing slash no destination — evita double redirect (301 + 308)
+      // Artigo: slug limpo (redirect do sufixo de rascunho do CadUnico)
+      { source: '/cadunico-itinerante-atende-tres-regioes-de-sumare-nesta-semana-xh85mk', destination: '/cadunico-itinerante-atende-tres-regioes-de-sumare-nesta-semana', permanent: true },
       { source: '/category/sumare',                           destination: '/sp/sumare',              permanent: true },
       { source: '/category/hortolandia',                      destination: '/sp/hortolandia',         permanent: true },
       { source: '/category/nova-odessa',                      destination: '/sp/nova-odessa',         permanent: true },
@@ -140,4 +142,13 @@ const nextConfig: NextConfig = {
       { source: '/politica-de-privacidade',         destination: '/privacidade',    permanent: true },
       { source: '/politica-de-privacidade/',        destination: '/privacidade',    permanent: true },
       { source: '/sobre-nos',                       destination: '/sobre',          permanent: true },
-     
+      { source: '/sobre-nos/',                      destination: '/sobre',          permanent: true },
+
+      // ── Edição de Sexta (antigo nome Edição Impressa) ────
+      { source: '/edicao-impressa',                 destination: '/edicao-de-sexta', permanent: true },
+      { source: '/edicao-impressa/:path*',          destination: '/edicao-de-sexta/:path*', permanent: true },
+    ]
+  },
+}
+
+export default nextConfig

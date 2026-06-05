@@ -34,7 +34,8 @@ function parseCodaDate(raw?: string): string | undefined {
   // Formato brasileiro DD/MM/YY ou DD/MM/YYYY
   const match = raw.match(/^(\d{1,2})\/(\d{1,2})\/(\d{2,4})$/)
   if (!match) return raw
-  let [, day, month, year] = match
+  const [, day, month, yearRaw] = match
+  let year = yearRaw
   if (year.length === 2) year = Number(year) > 50 ? `19${year}` : `20${year}`
   const iso = `${year}-${month.padStart(2, '0')}-${day.padStart(2, '0')}T12:00:00Z`
   return iso

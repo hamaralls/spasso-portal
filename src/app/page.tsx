@@ -4,221 +4,69 @@ import SeloLocal from '@/components/SeloLocal'
 import ArticleCard from '@/components/ArticleCard'
 import SectionHeader from '@/components/SectionHeader'
 import { AdUnit } from '@/components/AdUnit'
-import { getArtigosHero, getArtigosRecentes, getArtigosPorCategorias, getArtigosPorTema, getColunistas, getUltimaEdicao } from '@/lib/supabase/queries'
 import EdicaoSemanalWidget from '@/components/EdicaoSemanalWidget'
+import {
+  getArtigosHero,
+  getArtigosRecentes,
+  getArtigosPorCategorias,
+  getArtigosPorTema,
+  getColunistas,
+  getUltimaEdicao,
+  getHomeSections,
+  type HomeSectionConfig,
+} from '@/lib/supabase/queries'
 import type { ArticlePublico } from '@/types'
 
 export const runtime = 'edge'
 export const revalidate = 120
 
 const hasAds = !!process.env.NEXT_PUBLIC_GAM_NETWORK_CODE
-const HOME_LIMITS = {
-  ultimas: 8,
-  regiaoFetch: 10,
-  regiao: 8,
-  culturaFetch: 4,
-  cultura: 3,
-  brasilFetch: 7,
-  brasil: 6,
-  saudeFetch: 4,
-  saude: 3,
-  politicaFetch: 3,
-  politica: 2,
-  economiaFetch: 4,
-  economia: 3,
-} as const
 
-function BannerPlaceholder({ w, h, label, fill, minH }: { w: number; h: number; label: string; fill?: boolean; minH?: number }) {
+function BannerPlaceholder({ w, h }: { w: number; h: number }) {
   if (hasAds) return null
-  
-  const content = (
-    <Link href="/anuncie-aqui" className="text-gray-400 hover:text-gray-600 transition-colors">
-      Anuncie Aqui
-    </Link>
-  )
-
-  if (fill) {
-    return (
-      <div
-        className="w-full flex-1 bg-gray-50 border border-dashed border-gray-300 flex items-center justify-center text-xs text-gray-400"
-        style={{ minHeight: minH ?? 150 }}
-      >
-        {content}
-      </div>
-    )
-  }
   return (
     <div
       style={{ width: w, height: h }}
       className="bg-gray-50 border border-dashed border-gray-300 flex items-center justify-center text-xs text-gray-400 mx-auto"
     >
-      {content}
+      <Link href="/anuncie-aqui" className="text-gray-400 hover:text-gray-600 transition-colors">
+        Anuncie Aqui
+      </Link>
     </div>
   )
 }
 
-// Layout Destaque — seções pequenas (< 8 artigos)
-// 1 featured vertical (col 1) + lista de compacts (col 2+3)
-function DestaqueGrid({ articles }: { articles: ArticlePublico[] }) {
+function MetropolesGrid({ articles }: { articles: ArticlePublico[] }) {
   const a = articles
   if (a.length === 0) return null
-  return (
-    <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 items-start">
-      <div>
-        <Link href={`/${a[0].slug}`} className="group block">
-          <div className="relative aspect-video overflow-hidden bg-gray-200">
-            {a[0].featured_image_url ? (
-              <Image src={a[0].featured_image_url} alt={a[0].title} fill
-                className="object-cover group-hover:scale-[1.02] transition-transform duration-300"
-                sizes="(max-width: 1024px) 100vw, 25vw" />
-            ) : (
-              <div className="absolute inset-0 bg-gradient-to-br from-gray-100 to-gray-200" />
-            )}
-          </div>
-          <div className="pt-2">
-            <SeloLocal a={a[0]} />
-            <h3 className="text-base font-bold text-[#1a1a1a] leading-snug mt-1 group-hover:underline line-clamp-3">
-              {a[0].title}
-            </h3>
-            {a[0].excerpt && (
-              <p className="text-xs text-gray-500 mt-1 line-clamp-2 leading-relaxed">
-                {a[0].excerpt.replace(/<[^>]+>/g, '')}
-              </p>
-            )}
-          </div>
-        </Link>
-      </div>
-      <div className="lg:col-span-2 flex flex-col gap-3">
-        {a.slice(1).map(art => (
-          <ArticleCard key={art.id} article={art} size="compact" />
-        ))}
-      </div>
-    </div>
-  )
-}
-
-// extraRows: 0 = só topo, 1 = +1 linha, 2 = +2 linhas (padrão RMC)
-// col3Count: cards empilhados na col 3. 0 = sem col 3 (wideLayout)
-// wideLayout: col 1+2 ocupa 3 cols, compact rows com 3 cards — ideal para seções pequenas
-function MetropolesGrid({
-  articles,
-  extraRows = 2,
-  col3Count = 5,
-  wideLayout = false,
-}: {
-  articles: ArticlePublico[]
-  extraRows?: number
-  col3Count?: number
-  wideLayout?: boolean
-}) {
-  const a = articles
-  if (a.length === 0) return null
-
-  // Para o wideLayout (Brasil): Mantém a lógica original
-  if (wideLayout) {
-    const compactCols = 3
-    const compactStart = 1
-    const compactRow2Start = 4
-    const col3End = 1
-    return (
-      <div className="space-y-4">
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-x-6 gap-y-4 items-start">
-          <div className="lg:col-span-3 flex flex-col gap-4">
-            {a[0] && (
-              <Link href={`/${a[0].slug}`} className="group flex gap-4">
-                <div className="relative w-[48%] aspect-[4/3] shrink-0 overflow-hidden bg-gray-200">
-                  {a[0].featured_image_url ? (
-                    <Image src={a[0].featured_image_url} alt={a[0].title} fill
-                      className="object-cover group-hover:scale-[1.02] transition-transform duration-300"
-                      sizes="(max-width: 1024px) 50vw, 28vw" />
-                  ) : (
-                    <div className="absolute inset-0 bg-gradient-to-br from-gray-100 to-gray-200" />
-                  )}
-                </div>
-                <div className="flex-1 min-w-0 flex flex-col justify-start pt-1">
-                  <div>
-                    <SeloLocal a={a[0]} />
-                  </div>
-                  <h3 className="text-xl font-bold leading-snug mt-2 group-hover:underline line-clamp-4 text-[#1a1a1a]">
-                    {a[0].title}
-                  </h3>
-                  {a[0].excerpt && (
-                    <p className="text-sm text-gray-500 mt-2 line-clamp-3 leading-relaxed">
-                      {a[0].excerpt.replace(/<[^>]+>/g, '')}
-                    </p>
-                  )}
-                </div>
-              </Link>
-            )}
-            {a.length >= compactStart + 2 && (
-              <div className={`grid grid-cols-${compactCols} gap-4`}>
-                {a.slice(compactStart, compactStart + compactCols).map(art => (
-                  <ArticleCard key={art.id} article={art} size="compact" />
-                ))}
-              </div>
-            )}
-            {a.length >= compactRow2Start + 2 && (
-              <div className={`grid grid-cols-${compactCols} gap-4`}>
-                {a.slice(compactRow2Start, compactRow2Start + compactCols).map(art => (
-                  <ArticleCard key={art.id} article={art} size="compact" />
-                ))}
-              </div>
-            )}
-          </div>
-        </div>
-      </div>
-    )
-  }
-
-  // Novo Layout para RMC e demais seções:
-  // Card Principal (lg:col-span-2) + 2 Cards Pequenos à direita (lg:col-span-1)
-  // Restante em linhas (grid-cols-1 sm:grid-cols-3) abaixo.
   return (
     <div className="space-y-6">
-      {/* Top Block */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-x-6 gap-y-4 items-start">
-        {/* Main Card */}
         <div className="lg:col-span-2">
-          {a[0] && (
-            <Link href={`/${a[0].slug}`} className="group flex gap-4">
-              <div className="relative w-[48%] aspect-[4/3] shrink-0 overflow-hidden bg-gray-200">
-                {a[0].featured_image_url ? (
-                  <Image src={a[0].featured_image_url} alt={a[0].title} fill
-                    className="object-cover group-hover:scale-[1.02] transition-transform duration-300"
-                    sizes="(max-width: 1024px) 50vw, 28vw" />
-                ) : (
-                  <div className="absolute inset-0 bg-gradient-to-br from-gray-100 to-gray-200" />
-                )}
-              </div>
-              <div className="flex-1 min-w-0 flex flex-col justify-start pt-1">
-                <div>
-                  <SeloLocal a={a[0]} />
-                </div>
-                <h3 className="text-xl font-bold leading-snug mt-1 group-hover:underline line-clamp-4 text-[#1a1a1a]">
-                  {a[0].title}
-                </h3>
-                {a[0].excerpt && (
-                  <p className="text-sm text-gray-500 mt-2 line-clamp-3 leading-relaxed">
-                    {a[0].excerpt.replace(/<[^>]+>/g, '')}
-                  </p>
-                )}
-              </div>
-            </Link>
-          )}
+          <Link href={`/${a[0].slug}`} className="group flex gap-4">
+            <ArticleThumb article={a[0]} sizes="(max-width: 1024px) 50vw, 28vw" />
+            <div className="flex-1 min-w-0 flex flex-col justify-start pt-1">
+              <SeloLocal a={a[0]} />
+              <h3 className="text-xl font-bold leading-snug mt-1 group-hover:underline line-clamp-4 text-[#1a1a1a]">
+                {a[0].title}
+              </h3>
+              {a[0].excerpt && (
+                <p className="text-sm text-gray-500 mt-2 line-clamp-3 leading-relaxed">
+                  {strip(a[0].excerpt)}
+                </p>
+              )}
+            </div>
+          </Link>
         </div>
-
-        {/* 2 Pequenos à direita */}
         <div className="hidden lg:flex flex-col gap-4">
-          {a.slice(1, 3).map(art => (
+          {a.slice(1, 3).map((art) => (
             <ArticleCard key={art.id} article={art} size="compact" />
           ))}
         </div>
       </div>
-
-      {/* Bottom Block: Restante em linhas */}
       {a.length > 3 && (
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-          {a.slice(3).map(art => (
+          {a.slice(3).map((art) => (
             <ArticleCard key={art.id} article={art} size="compact" />
           ))}
         </div>
@@ -227,302 +75,321 @@ function MetropolesGrid({
   )
 }
 
+function ArticleThumb({ article, sizes }: { article: ArticlePublico; sizes: string }) {
+  return (
+    <div className="relative w-[48%] aspect-[4/3] shrink-0 overflow-hidden bg-gray-200">
+      {article.featured_image_url ? (
+        <Image
+          src={article.featured_image_url}
+          alt={article.title}
+          fill
+          className="object-cover group-hover:scale-[1.02] transition-transform duration-300"
+          sizes={sizes}
+        />
+      ) : (
+        <div className="absolute inset-0 bg-gradient-to-br from-gray-100 to-gray-200" />
+      )}
+    </div>
+  )
+}
+
+async function loadSectionArticles(section: HomeSectionConfig): Promise<ArticlePublico[]> {
+  const limit = Math.max(1, section.article_count + 4)
+  if (section.slug === 'ultimas' || !section.category_slugs?.length) {
+    return getArtigosRecentes(limit)
+  }
+  if (section.category_slugs.length === 1) {
+    return getArtigosPorTema(section.category_slugs[0], limit)
+  }
+  return getArtigosPorCategorias(section.category_slugs, limit)
+}
+
 export default async function Home() {
-  const [hero, ultimas, regiaoRaw, culturaELazarRaw, brasilRaw, saudeRaw, politicaRaw, economiaRaw, colunistas, ultimaEdicao] = await Promise.all([
+  const [hero, homeSections, colunistas, ultimaEdicao] = await Promise.all([
     getArtigosHero(),
-    getArtigosRecentes(HOME_LIMITS.ultimas),
-    getArtigosPorCategorias(['sumare', 'hortolandia', 'nova-odessa', 'campinas', 'paulinia', 'monte-mor', 'santa-barbara-doeste', 'outras-cidades', 'rmc'], HOME_LIMITS.regiaoFetch),
-    getArtigosPorCategorias(['estilo-de-vida', 'cultura-e-lazer', 'eventos'], HOME_LIMITS.culturaFetch),
-    getArtigosPorCategorias(['brasil'], HOME_LIMITS.brasilFetch),
-    getArtigosPorTema('saude', HOME_LIMITS.saudeFetch),
-    getArtigosPorTema('politica', HOME_LIMITS.politicaFetch),
-    getArtigosPorTema('economia', HOME_LIMITS.economiaFetch),
+    getHomeSections(),
     getColunistas(),
     getUltimaEdicao(),
   ])
 
-  // Deduplica: artigos do hero não aparecem novamente nas seções
-  const heroIds = new Set(hero.map((a: ArticlePublico) => a.id))
-  const dedupe = (arr: ArticlePublico[]) => arr.filter(a => !heroIds.has(a.id))
-  const regiao        = dedupe(regiaoRaw).slice(0, HOME_LIMITS.regiao)
-  const culturaELazer = dedupe(culturaELazarRaw).slice(0, HOME_LIMITS.cultura).map(a => ({ ...a, badge_color: '#2563eb' }))
-  const brasil        = dedupe(brasilRaw).slice(0, HOME_LIMITS.brasil)
-  const saude         = dedupe(saudeRaw).slice(0, HOME_LIMITS.saude).map(a => ({ ...a, badge_color: '#0891b2' }))
-  const politica      = dedupe(politicaRaw).slice(0, HOME_LIMITS.politica).map(a => ({ ...a, badge_color: '#7c3aed' }))
-  const economia      = dedupe(economiaRaw).slice(0, HOME_LIMITS.economia).map(a => ({ ...a, badge_color: '#16a34a' }))
+  const heroIds = new Set(hero.map((a) => a.id))
+  const sectionData = await Promise.all(
+    homeSections.map(async (section) => ({
+      section,
+      articles: (await loadSectionArticles(section))
+        .filter((article) => !heroIds.has(article.id))
+        .slice(0, section.article_count),
+    })),
+  )
 
   return (
     <>
-      {/* ── 1. Hero / Destaques ── */}
-      {hero.length >= 2 ? (
-        <section className="bg-white">
-          <div className="max-w-7xl mx-auto px-4 py-6">
+      <Hero articles={hero} />
+      <div className="max-w-7xl mx-auto px-4 py-8 space-y-12">
+        {sectionData.map(({ section, articles }) => (
+          <HomeSection
+            key={section.slug}
+            section={section}
+            articles={articles}
+            colunistas={colunistas}
+            ultimaEdicao={ultimaEdicao}
+          />
+        ))}
+      </div>
+    </>
+  )
+}
 
-            <div className="grid grid-cols-1 lg:grid-cols-4 gap-6 mb-5">
-              {/* Principal */}
-              <Link href={`/${hero[0].slug}`}
-                className="group lg:col-span-3 flex flex-col sm:flex-row gap-6">
-                <div className="sm:w-[55%] relative aspect-video overflow-hidden bg-gray-200 shrink-0">
-                  {hero[0].featured_image_url && (
-                    <Image src={hero[0].featured_image_url} alt={hero[0].title}
-                      fill priority className="object-cover group-hover:scale-[1.02] transition-transform duration-300"
-                      sizes="(max-width: 640px) 100vw, 60vw" />
+function Hero({ articles }: { articles: ArticlePublico[] }) {
+  if (articles.length < 2) {
+    return (
+      <section className="bg-white py-12">
+        <div className="max-w-7xl mx-auto px-4 text-center text-gray-400">
+          <p className="text-lg">Portal em preparacao. Noticias em breve!</p>
+        </div>
+      </section>
+    )
+  }
+
+  return (
+    <section className="bg-white">
+      <div className="max-w-7xl mx-auto px-4 py-6">
+        <div className="grid grid-cols-1 lg:grid-cols-4 gap-6 mb-5">
+          <Link href={`/${articles[0].slug}`} className="group lg:col-span-3 flex flex-col sm:flex-row gap-6">
+            <div className="sm:w-[55%] relative aspect-video overflow-hidden bg-gray-200 shrink-0">
+              {articles[0].featured_image_url && (
+                <Image
+                  src={articles[0].featured_image_url}
+                  alt={articles[0].title}
+                  fill
+                  priority
+                  className="object-cover group-hover:scale-[1.02] transition-transform duration-300"
+                  sizes="(max-width: 640px) 100vw, 60vw"
+                />
+              )}
+            </div>
+            <div className="sm:w-[45%] flex flex-col justify-start pt-1">
+              <SeloLocal a={articles[0]} />
+              <h1 className="text-2xl md:text-3xl lg:text-4xl font-extrabold leading-tight mt-2 group-hover:underline line-clamp-5 text-[#1a1a1a]">
+                {articles[0].title}
+              </h1>
+              {articles[0].excerpt && (
+                <p className="text-sm text-gray-500 mt-2 line-clamp-3 leading-relaxed">
+                  {strip(articles[0].excerpt)}
+                </p>
+              )}
+              {articles[0].author_name && (
+                <p className="mt-auto pt-3 text-xs text-gray-400">{articles[0].author_name}</p>
+              )}
+            </div>
+          </Link>
+
+          <div className="flex flex-col gap-4 justify-between h-full">
+            {articles.slice(1, 4).map((article) => (
+              <Link key={article.id} href={`/${article.slug}`} className="group flex items-start gap-3">
+                <div className="relative w-24 h-24 shrink-0 overflow-hidden bg-gray-200">
+                  {article.featured_image_url ? (
+                    <Image
+                      src={article.featured_image_url}
+                      alt={article.title}
+                      fill
+                      className="object-cover group-hover:scale-[1.02] transition-transform duration-300"
+                      sizes="96px"
+                    />
+                  ) : (
+                    <div className="absolute inset-0 bg-gradient-to-br from-gray-100 to-gray-200" />
                   )}
                 </div>
-                <div className="sm:w-[45%] flex flex-col justify-start pt-1">
-                  <SeloLocal a={hero[0]} />
-                  <h1 className="text-2xl md:text-3xl lg:text-4xl font-extrabold leading-tight mt-2 group-hover:underline line-clamp-5 text-[#1a1a1a]">
-                    {hero[0].title}
-                  </h1>
-                  {hero[0].excerpt && (
-                    <p className="text-sm text-gray-500 mt-2 line-clamp-3 leading-relaxed">
-                      {hero[0].excerpt.replace(/<[^>]+>/g, '')}
-                    </p>
-                  )}
-                  {hero[0].author_name && (
-                    <p className="mt-auto pt-3 text-xs text-gray-400">{hero[0].author_name}</p>
-                  )}
+                <div className="flex-1 min-w-0 flex flex-col justify-center h-full pt-1">
+                  <p className="text-[10px] font-bold uppercase tracking-wide truncate mb-1" style={{ color: article.badge_color || '#f5821f' }}>
+                    {article.author_name ?? article.category_name ?? ''}
+                  </p>
+                  <h2 className="text-sm font-bold leading-snug group-hover:underline line-clamp-4 text-[#1a1a1a]">
+                    {article.title}
+                  </h2>
                 </div>
               </Link>
-
-              {/* Secundário (Lista de 3) */}
-              <div className="flex flex-col gap-4 justify-between h-full">
-                {hero.slice(1, 4).map(article => (
-                  <Link key={article.id} href={`/${article.slug}`} className="group flex items-start gap-3">
-                    <div className="relative w-24 h-24 shrink-0 overflow-hidden bg-gray-200">
-                      {article.featured_image_url ? (
-                        <Image src={article.featured_image_url} alt={article.title}
-                          fill className="object-cover group-hover:scale-[1.02] transition-transform duration-300" sizes="96px" />
-                      ) : (
-                        <div className="absolute inset-0 bg-gradient-to-br from-gray-100 to-gray-200" />
-                      )}
-                    </div>
-                    <div className="flex-1 min-w-0 flex flex-col justify-center h-full pt-1">
-                      <p className="text-[10px] font-bold uppercase tracking-wide truncate mb-1" style={{ color: article.badge_color || '#f5821f' }}>
-                        {article.author_name ?? article.category_name ?? ''}
-                      </p>
-                      <h2 className="text-sm font-bold leading-snug group-hover:underline line-clamp-4 text-[#1a1a1a]">
-                        {article.title}
-                      </h2>
-                    </div>
-                  </Link>
-                ))}
-              </div>
-            </div>
+            ))}
           </div>
-        </section>
-      ) : (
-        <section className="bg-white py-12">
-          <div className="max-w-7xl mx-auto px-4 text-center text-gray-400">
-            <p className="text-lg">Portal em preparação. Notícias em breve!</p>
-          </div>
-        </section>
-      )}
+        </div>
+      </div>
+    </section>
+  )
+}
 
-      <div className="max-w-7xl mx-auto px-4 py-8 space-y-12">
-
-        {/* ── 3. Colunistas ── */}
+function HomeSection({
+  section,
+  articles,
+  colunistas,
+  ultimaEdicao,
+}: {
+  section: HomeSectionConfig
+  articles: ArticlePublico[]
+  colunistas: Awaited<ReturnType<typeof getColunistas>>
+  ultimaEdicao: Awaited<ReturnType<typeof getUltimaEdicao>>
+}) {
+  if (section.layout === 'columnists') {
+    return (
+      <>
         {colunistas.length > 0 && (
           <section>
-            <SectionHeader title="Colunistas" href="/colunistas" color="#f5821f" titleColor="#f5821f" linkColor="#f5821f" />
+            <SectionHeader title={section.title} href={section.href ?? '/colunistas'} color={section.color ?? '#f5821f'} titleColor={section.color ?? '#f5821f'} linkColor={section.color ?? '#f5821f'} />
             <div className={`grid gap-4 ${
               colunistas.length === 1 ? 'grid-cols-1 max-w-sm' :
               colunistas.length === 2 ? 'grid-cols-1 sm:grid-cols-2 max-w-2xl' :
               'grid-cols-1 sm:grid-cols-2 lg:grid-cols-3'
             }`}>
-              {colunistas.map(col => {
-                const initials = col.name.split(' ').filter(Boolean)
-                  .map((n: string) => n[0].toUpperCase()).slice(0, 2).join('')
-                const href = `/colunistas/${col.slug}`
-                return (
-                  <Link key={col.id} href={href}
-                    className="group flex items-start gap-3 bg-white p-4 shadow-sm hover:shadow-md transition-shadow">
-                    <div className="w-12 h-12 rounded-full overflow-hidden shrink-0 flex items-center justify-center"
-                      style={{ background: col.avatar_url ? undefined : '#f5821f1a' }}>
-                      {col.avatar_url ? (
-                        <Image src={col.avatar_url} alt={col.name} width={48} height={48}
-                          className="object-cover w-full h-full" />
-                      ) : (
-                        <span className="text-base font-extrabold text-[#f5821f]">{initials}</span>
-                      )}
-                    </div>
-                    <div className="min-w-0 flex-1">
-                      <p className="text-xs font-bold text-[#f5821f] uppercase tracking-wide truncate mb-0.5">
-                        {col.name}
-                      </p>
-                      {col.lastArticle && (
-                        <>
-                          <p className="text-sm font-semibold text-[#1a1a1a] leading-snug line-clamp-2 group-hover:underline">
-                            {col.lastArticle.title}
-                          </p>
-                          {col.lastArticle.excerpt && (
-                            <p className="text-xs text-gray-500 leading-relaxed line-clamp-2 mt-0.5">
-                              {col.lastArticle.excerpt.replace(/<[^>]+>/g, '')}
-                            </p>
-                          )}
-                        </>
-                      )}
-                    </div>
-                  </Link>
-                )
-              })}
-            </div>
-          </section>
-        )}
-
-
-        {/* ── Leaderboard e Redes Sociais entre Colunistas e RMC ── */}
-        <div className="flex flex-col xl:flex-row items-center justify-center gap-8 py-4">
-          <div className="flex justify-center shrink-0">
-            <AdUnit slot="home-leaderboard" format="leaderboard" houseAd />
-          </div>
-
-          {/* ── Siga-nos ── */}
-          <div className="flex flex-col sm:flex-row items-center justify-center gap-3">
-            <span className="text-sm font-semibold text-gray-400">Siga o Spasso Cidades:</span>
-            <div className="flex gap-3">
-              <a href="https://www.facebook.com/jornalspassocidades" target="_blank" rel="noopener noreferrer"
-                className="flex items-center gap-2 px-4 py-2 rounded-full bg-[#1877F2] text-white text-sm font-semibold hover:bg-[#0d6de0] transition-colors">
-                <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M24 12.073C24 5.405 18.627 0 12 0S0 5.405 0 12.073C0 18.1 4.388 23.094 10.125 24v-8.437H7.078v-3.49h3.047V9.41c0-3.025 1.791-4.697 4.533-4.697 1.312 0 2.686.236 2.686.236v2.97h-1.513c-1.491 0-1.956.93-1.956 1.886v2.268h3.328l-.532 3.49h-2.796V24C19.612 23.094 24 18.1 24 12.073z"/></svg>
-                Facebook
-              </a>
-              <a href="https://www.instagram.com/spassocidades" target="_blank" rel="noopener noreferrer"
-                className="flex items-center gap-2 px-4 py-2 rounded-full text-white text-sm font-semibold hover:opacity-90 transition-opacity"
-                style={{ background: 'linear-gradient(135deg, #f09433 0%, #e6683c 25%, #dc2743 50%, #cc2366 75%, #bc1888 100%)' }}>
-                <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/></svg>
-                Instagram
-              </a>
-            </div>
-          </div>
-        </div>
-
-        {/* ── 2. Região Metropolitana de Campinas ── */}
-        {regiao.length > 0 && (
-          <section>
-            <SectionHeader title="Região Metropolitana de Campinas" href="/rmc" color="#8dc63f" />
-            <div className="grid grid-cols-1 lg:grid-cols-4 gap-4 items-start">
-              <div className="lg:col-span-3">
-                <MetropolesGrid articles={regiao} />
-              </div>
-              <aside className="hidden lg:flex flex-col gap-4">
-                {ultimaEdicao && <EdicaoSemanalWidget edition={ultimaEdicao} />}
-                <AdUnit slot="rmc-sidebar" format="rectangle" />
-              </aside>
-            </div>
-          </section>
-        )}
-
-        {/* ── Banner pós-RMC ── */}
-        <div className="flex justify-center py-2">
-          <AdUnit slot="post-rmc-leaderboard" format="leaderboard" />
-          <BannerPlaceholder w={728} h={90} label="Banner 728×90" />
-        </div>
-
-        {/* ── Siga-nos (Movido para cima da RMC) ── */}
-
-        {/* ── 4. Brasil — MetropolesGrid + 3 cards laterais ── */}
-        {brasil.length > 0 && (
-          <section>
-            <SectionHeader title="Brasil" href="/brasil" color="#ec3535" />
-            <MetropolesGrid articles={brasil} extraRows={0} />
-          </section>
-        )}
-
-
-        {/* ── 5. Cultura e Lazer ── */}
-        {culturaELazer.length > 0 && (
-          <section>
-            <SectionHeader title="Cultura e Lazer" href="/cultura-e-lazer" color="#2563eb" />
-            <div className="grid grid-cols-1 lg:grid-cols-4 gap-4 items-start">
-              <div className="lg:col-span-3">
-                <MetropolesGrid articles={culturaELazer.slice(0, 3)} extraRows={0} />
-              </div>
-              <aside className="hidden lg:flex flex-col gap-4">
-                <AdUnit slot="cultura-sidebar" format="rectangle" />
-                <BannerPlaceholder w={300} h={250} label="Banner 300×250" />
-              </aside>
-            </div>
-          </section>
-        )}
-
-        {/* ── 6. Saúde ── */}
-        {saude.length >= 3 && (
-          <section>
-            <SectionHeader title="Saúde" href="/saude" color="#0891b2" />
-            <MetropolesGrid articles={saude} extraRows={0} />
-          </section>
-        )}
-
-        {/* ── Banner pós-Saúde ── */}
-        <div className="flex justify-center py-2">
-          <AdUnit slot="post-saude-leaderboard" format="leaderboard" />
-          <BannerPlaceholder w={728} h={90} label="Banner 728×90" />
-        </div>
-
-        {/* ── 7. Política ── */}
-        {politica.length >= 2 && (
-          <section>
-            <SectionHeader title="Política" href="/politica" color="#7c3aed" />
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-              {politica.map(art => (
-                <Link key={art.id} href={`/${art.slug}`} className="group flex gap-4">
-                  <div className="relative w-[48%] aspect-[4/3] shrink-0 overflow-hidden bg-gray-200">
-                    {art.featured_image_url ? (
-                      <Image src={art.featured_image_url} alt={art.title} fill
-                        className="object-cover group-hover:scale-[1.02] transition-transform duration-300"
-                        sizes="(max-width: 1024px) 50vw, 25vw" />
-                    ) : (
-                      <div className="absolute inset-0 bg-gradient-to-br from-gray-100 to-gray-200" />
-                    )}
-                  </div>
-                  <div className="flex-1 min-w-0 flex flex-col justify-start pt-1">
-                    {art.category_name && (
-                      <div><SeloLocal a={art} /></div>
-                    )}
-                    <h3 className="text-xl font-bold leading-snug mt-1 group-hover:underline line-clamp-4 text-[#1a1a1a]">
-                      {art.title}
-                    </h3>
-                    {art.excerpt && (
-                      <p className="text-sm text-gray-500 mt-2 line-clamp-3 leading-relaxed">
-                        {art.excerpt.replace(/<[^>]+>/g, '')}
-                      </p>
-                    )}
-                  </div>
-                </Link>
+              {colunistas.map((col) => (
+                <ColumnistCard key={col.id} col={col} />
               ))}
             </div>
           </section>
         )}
+        <SocialAndAd slot={section.banner_slot ?? 'home-leaderboard'} showAd={section.show_banner} />
+      </>
+    )
+  }
 
-        {/* ── 8. Economia ── */}
-        {economia.length >= 3 && (
-          <section>
-            <SectionHeader title="Economia" href="/economia" color="#16a34a" />
-            <div className="grid grid-cols-1 lg:grid-cols-4 gap-4 items-start">
-              <div className="lg:col-span-3">
-                <MetropolesGrid articles={economia.slice(0, 3)} extraRows={0} />
+  if (articles.length === 0) return null
+
+  const header = (
+    <SectionHeader
+      title={section.title}
+      href={section.href ?? undefined}
+      color={section.color ?? '#f5821f'}
+    />
+  )
+
+  if (section.layout === 'metropoles-sidebar') {
+    return (
+      <section>
+        {header}
+        <div className="grid grid-cols-1 lg:grid-cols-4 gap-4 items-start">
+          <div className="lg:col-span-3">
+            <MetropolesGrid articles={articles} />
+          </div>
+          <aside className="hidden lg:flex flex-col gap-4">
+            {section.slug === 'rmc' && ultimaEdicao && <EdicaoSemanalWidget edition={ultimaEdicao} />}
+            {section.banner_slot && <AdUnit slot={section.banner_slot} format="rectangle" />}
+            {section.show_banner && <BannerPlaceholder w={300} h={250} />}
+          </aside>
+        </div>
+      </section>
+    )
+  }
+
+  if (section.layout === 'two-up') {
+    return (
+      <section>
+        {header}
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+          {articles.map((art) => (
+            <Link key={art.id} href={`/${art.slug}`} className="group flex gap-4">
+              <ArticleThumb article={art} sizes="(max-width: 1024px) 50vw, 25vw" />
+              <div className="flex-1 min-w-0 flex flex-col justify-start pt-1">
+                <SeloLocal a={art} />
+                <h3 className="text-xl font-bold leading-snug mt-1 group-hover:underline line-clamp-4 text-[#1a1a1a]">
+                  {art.title}
+                </h3>
+                {art.excerpt && (
+                  <p className="text-sm text-gray-500 mt-2 line-clamp-3 leading-relaxed">
+                    {strip(art.excerpt)}
+                  </p>
+                )}
               </div>
-              <aside className="hidden lg:flex flex-col gap-4">
-                <AdUnit slot="economia-sidebar" format="rectangle" />
-                <BannerPlaceholder w={300} h={250} label="Banner 300×250" />
-              </aside>
-            </div>
-          </section>
-        )}
+            </Link>
+          ))}
+        </div>
+      </section>
+    )
+  }
 
-        {/* ── 9. Últimas Notícias ── */}
-        {ultimas.length > 0 && (
-          <section>
-            <SectionHeader title="Últimas Notícias" color="#f5821f" />
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-              {ultimas.map((article) => (
-                <ArticleCard key={article.id} article={article} />
-              ))}
-            </div>
-          </section>
-        )}
+  if (section.layout === 'cards') {
+    return (
+      <section>
+        {header}
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+          {articles.map((article) => (
+            <ArticleCard key={article.id} article={article} />
+          ))}
+        </div>
+      </section>
+    )
+  }
 
-      </div>
+  return (
+    <>
+      <section>
+        {header}
+        <MetropolesGrid articles={articles} />
+      </section>
+      {section.show_banner && section.banner_slot && (
+        <div className="flex justify-center py-2">
+          <AdUnit slot={section.banner_slot} format="leaderboard" />
+          <BannerPlaceholder w={728} h={90} />
+        </div>
+      )}
     </>
   )
+}
+
+function ColumnistCard({ col }: { col: Awaited<ReturnType<typeof getColunistas>>[number] }) {
+  const initials = col.name.split(' ').filter(Boolean)
+    .map((n) => n[0].toUpperCase()).slice(0, 2).join('')
+  const href = `/colunistas/${col.slug}`
+  return (
+    <Link href={href} className="group flex items-start gap-3 bg-white p-4 shadow-sm hover:shadow-md transition-shadow">
+      <div className="w-12 h-12 rounded-full overflow-hidden shrink-0 flex items-center justify-center" style={{ background: col.avatar_url ? undefined : '#f5821f1a' }}>
+        {col.avatar_url ? (
+          <Image src={col.avatar_url} alt={col.name} width={48} height={48} className="object-cover w-full h-full" />
+        ) : (
+          <span className="text-base font-extrabold text-[#f5821f]">{initials}</span>
+        )}
+      </div>
+      <div className="min-w-0 flex-1">
+        <p className="text-xs font-bold text-[#f5821f] uppercase tracking-wide truncate mb-0.5">
+          {col.name}
+        </p>
+        {col.lastArticle && (
+          <>
+            <p className="text-sm font-semibold text-[#1a1a1a] leading-snug line-clamp-2 group-hover:underline">
+              {col.lastArticle.title}
+            </p>
+            {col.lastArticle.excerpt && (
+              <p className="text-xs text-gray-500 leading-relaxed line-clamp-2 mt-0.5">
+                {strip(col.lastArticle.excerpt)}
+              </p>
+            )}
+          </>
+        )}
+      </div>
+    </Link>
+  )
+}
+
+function SocialAndAd({ slot, showAd }: { slot: string; showAd: boolean }) {
+  return (
+    <div className="flex flex-col xl:flex-row items-center justify-center gap-8 py-4">
+      {showAd && (
+        <div className="flex justify-center shrink-0">
+          <AdUnit slot={slot} format="leaderboard" houseAd />
+        </div>
+      )}
+      <div className="flex flex-col sm:flex-row items-center justify-center gap-3">
+        <span className="text-sm font-semibold text-gray-400">Siga o Spasso Cidades:</span>
+        <div className="flex gap-3">
+          <a href="https://www.facebook.com/jornalspassocidades" target="_blank" rel="noopener noreferrer" className="flex items-center gap-2 px-4 py-2 rounded-full bg-[#1877F2] text-white text-sm font-semibold hover:bg-[#0d6de0] transition-colors">
+            Facebook
+          </a>
+          <a href="https://www.instagram.com/spassocidades" target="_blank" rel="noopener noreferrer" className="flex items-center gap-2 px-4 py-2 rounded-full text-white text-sm font-semibold hover:opacity-90 transition-opacity" style={{ background: 'linear-gradient(135deg, #f09433 0%, #e6683c 25%, #dc2743 50%, #cc2366 75%, #bc1888 100%)' }}>
+            Instagram
+          </a>
+        </div>
+      </div>
+    </div>
+  )
+}
+
+function strip(value: string): string {
+  return value.replace(/<[^>]+>/g, '')
 }

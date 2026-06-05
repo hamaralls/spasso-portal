@@ -1,6 +1,43 @@
 import { getSupabase } from './edge'
 import type { ArticlePublico, Category, Columnist } from '@/types'
 
+export type HomeSectionConfig = {
+  id: string | null
+  slug: string
+  title: string
+  href: string | null
+  color: string | null
+  category_slugs: string[] | null
+  article_count: number
+  layout: string
+  show_banner: boolean
+  banner_slot: string | null
+  active: boolean
+  position: number
+}
+
+export const DEFAULT_HOME_SECTIONS: HomeSectionConfig[] = [
+  { id: null, slug: 'colunistas', title: 'Colunistas', href: '/colunistas', color: '#f5821f', category_slugs: ['colunistas'], article_count: 3, layout: 'columnists', show_banner: true, banner_slot: 'home-leaderboard', active: true, position: 10 },
+  { id: null, slug: 'rmc', title: 'Região Metropolitana de Campinas', href: '/rmc', color: '#8dc63f', category_slugs: ['sumare', 'hortolandia', 'nova-odessa', 'campinas', 'paulinia', 'monte-mor', 'santa-barbara-doeste', 'outras-cidades', 'rmc'], article_count: 8, layout: 'metropoles', show_banner: true, banner_slot: 'post-rmc-leaderboard', active: true, position: 20 },
+  { id: null, slug: 'brasil', title: 'Brasil', href: '/brasil', color: '#ec3535', category_slugs: ['brasil'], article_count: 6, layout: 'metropoles', show_banner: false, banner_slot: null, active: true, position: 30 },
+  { id: null, slug: 'cultura-e-lazer', title: 'Cultura e Lazer', href: '/cultura-e-lazer', color: '#2563eb', category_slugs: ['cultura-e-lazer', 'estilo-de-vida', 'eventos'], article_count: 3, layout: 'metropoles-sidebar', show_banner: true, banner_slot: 'cultura-sidebar', active: true, position: 40 },
+  { id: null, slug: 'saude', title: 'Saúde', href: '/saude', color: '#0891b2', category_slugs: ['saude'], article_count: 3, layout: 'metropoles', show_banner: true, banner_slot: 'post-saude-leaderboard', active: true, position: 50 },
+  { id: null, slug: 'politica', title: 'Política', href: '/politica', color: '#7c3aed', category_slugs: ['politica'], article_count: 2, layout: 'two-up', show_banner: false, banner_slot: null, active: true, position: 60 },
+  { id: null, slug: 'economia', title: 'Economia', href: '/economia', color: '#16a34a', category_slugs: ['economia'], article_count: 3, layout: 'metropoles-sidebar', show_banner: false, banner_slot: 'economia-sidebar', active: true, position: 70 },
+  { id: null, slug: 'ultimas', title: 'Últimas Notícias', href: '/ultimas-noticias', color: '#f5821f', category_slugs: null, article_count: 8, layout: 'cards', show_banner: false, banner_slot: null, active: true, position: 80 },
+]
+
+export async function getHomeSections(): Promise<HomeSectionConfig[]> {
+  const { data, error } = await getSupabase()
+    .from('home_sections')
+    .select('id, slug, title, href, color, category_slugs, article_count, layout, show_banner, banner_slot, active, position')
+    .eq('active', true)
+    .order('position', { ascending: true })
+
+  if (error || !data?.length) return DEFAULT_HOME_SECTIONS
+  return data as HomeSectionConfig[]
+}
+
 // ── Hero: artigos marcados como destaque (com diversity filter) ──────────────
 
 export async function getArtigosHero(): Promise<ArticlePublico[]> {

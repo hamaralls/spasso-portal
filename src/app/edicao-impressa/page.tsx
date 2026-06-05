@@ -1,4 +1,5 @@
 import type { Metadata } from 'next'
+import Link from 'next/link'
 
 export const runtime = 'edge'
 
@@ -29,12 +30,12 @@ export default function EdicaoImpressaPage() {
           <p className="text-sm text-gray-600 mb-4">
             Alcance leitores de Sumaré e região com anúncios no jornal impresso.
           </p>
-          <a
+          <Link
             href="/anuncie"
             className="inline-block bg-[#f5821f] text-white font-bold px-6 py-2 rounded-lg text-sm hover:bg-[#c47600] transition-colors"
           >
             Ver formatos e preços →
-          </a>
+          </Link>
         </div>
       </div>
     </div>

@@ -1,63 +1,31 @@
-import { createServerClient } from '@supabase/ssr'
 import { NextResponse } from 'next/server'
 import type { NextRequest } from 'next/server'
 
-export async function middleware(request: NextRequest) {
+const REDACAO = 'https://redacao.jornalspassocidades.com.br'
+
+export function middleware(request: NextRequest) {
   const { pathname, searchParams } = request.nextUrl
 
-  // URLs legadas do WordPress (`/?post_type=post&p=N`) — redireciona pra home limpa
+  if (pathname.startsWith('/admin')) {
+    return NextResponse.redirect(new URL('/', REDACAO), 301)
+  }
+
+  if (pathname === '/login' || pathname === '/reset-password') {
+    return NextResponse.redirect(new URL('/login', REDACAO), 301)
+  }
+
+  // URLs legadas do WordPress (`/?post_type=post&p=N`) -> home limpa.
   if (pathname === '/' && (searchParams.has('post_type') || searchParams.has('p'))) {
     return NextResponse.redirect(new URL('/', request.url), 301)
   }
 
-  // Modo manutenção — ativa com MAINTENANCE_MODE=true no Cloudflare Pages
   if (process.env.MAINTENANCE_MODE === 'true') {
-    if (!pathname.startsWith('/admin') && !pathname.startsWith('/api') &&
-        !pathname.startsWith('/login') && !pathname.startsWith('/reset-password') &&
-        pathname !== '/manutencao') {
+    if (!pathname.startsWith('/api') && pathname !== '/manutencao') {
       return NextResponse.redirect(new URL('/manutencao', request.url))
     }
   }
 
-  let response = NextResponse.next({ request })
-
-  const needsSessionCheck =
-    pathname.startsWith('/admin') || pathname === '/login'
-
-  if (!needsSessionCheck) {
-    return response
-  }
-
-  const supabase = createServerClient(
-    process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
-    {
-      cookies: {
-        getAll() {
-          return request.cookies.getAll()
-        },
-        setAll(cookiesToSet) {
-          cookiesToSet.forEach(({ name, value }) => request.cookies.set(name, value))
-          response = NextResponse.next({ request })
-          cookiesToSet.forEach(({ name, value, options }) =>
-            response.cookies.set(name, value, options)
-          )
-        },
-      },
-    }
-  )
-
-  const { data: { user } } = await supabase.auth.getUser()
-
-  if (!user && pathname.startsWith('/admin')) {
-    return NextResponse.redirect(new URL('/login', request.url))
-  }
-
-  if (user && pathname === '/login') {
-    return NextResponse.redirect(new URL('/admin/artigos', request.url))
-  }
-
-  return response
+  return NextResponse.next()
 }
 
 export const config = {

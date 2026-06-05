@@ -3,7 +3,6 @@ import { Inter } from 'next/font/google'
 import Script from 'next/script'
 import Header from '@/components/Header'
 import Footer from '@/components/Footer'
-import AuthRecoveryRedirect from '@/components/AuthRecoveryRedirect'
 import './globals.css'
 
 const inter = Inter({
@@ -14,7 +13,7 @@ const inter = Inter({
 
 export const metadata: Metadata = {
   title: {
-    default: 'Spasso Cidades — O diário digital de Sumaré e região',
+    default: 'Spasso Cidades - O diário digital de Sumaré e região',
     template: '%s | Spasso Cidades',
   },
   description: 'Cobertura completa de Sumaré e da Região Metropolitana de Campinas. Notícias, política, saúde, educação e mais.',
@@ -28,7 +27,7 @@ export const metadata: Metadata = {
         url: '/og-default.jpg',
         width: 1200,
         height: 630,
-        alt: 'Spasso Cidades — O diário digital de Sumaré e região',
+        alt: 'Spasso Cidades - O diário digital de Sumaré e região',
       },
     ],
   },
@@ -65,54 +64,55 @@ const orgJsonLd = {
 }
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
-  const gamEnabled = !!process.env.NEXT_PUBLIC_GAM_NETWORK_CODE
+  const externalScriptsEnabled = process.env.NODE_ENV === 'production'
+  const gamEnabled = externalScriptsEnabled && !!process.env.NEXT_PUBLIC_GAM_NETWORK_CODE
 
   return (
     <html lang="pt-BR" className={`${inter.variable} h-full`}>
       <body className="min-h-full flex flex-col bg-white text-[#1a1a1a] antialiased">
-        <AuthRecoveryRedirect />
         <Header />
         <main className="flex-1">{children}</main>
         <Footer />
-      </body>
 
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(websiteJsonLd) }}
-      />
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(orgJsonLd) }}
-      />
-
-      {/* GA4 */}
-      <Script
-        src="https://www.googletagmanager.com/gtag/js?id=G-WMZFHJHV10"
-        strategy="afterInteractive"
-      />
-      <Script id="ga4-init" strategy="afterInteractive">
-        {`
-          window.dataLayer = window.dataLayer || [];
-          function gtag(){dataLayer.push(arguments);}
-          gtag('js', new Date());
-          gtag('config', 'G-WMZFHJHV10');
-        `}
-      </Script>
-
-      {/* Google AdSense */}
-      <Script
-        src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-1055239551457826"
-        strategy="afterInteractive"
-        crossOrigin="anonymous"
-      />
-
-      {/* Google Ad Manager — ativo só quando NEXT_PUBLIC_GAM_NETWORK_CODE estiver configurado */}
-      {gamEnabled && (
-        <Script
-          src="https://securepubads.g.doubleclick.net/tag/js/gpt.js"
-          strategy="afterInteractive"
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(websiteJsonLd) }}
         />
-      )}
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(orgJsonLd) }}
+        />
+
+        {externalScriptsEnabled && (
+          <>
+            <Script
+              src="https://www.googletagmanager.com/gtag/js?id=G-WMZFHJHV10"
+              strategy="afterInteractive"
+            />
+            <Script id="ga4-init" strategy="afterInteractive">
+              {`
+                window.dataLayer = window.dataLayer || [];
+                function gtag(){dataLayer.push(arguments);}
+                gtag('js', new Date());
+                gtag('config', 'G-WMZFHJHV10');
+              `}
+            </Script>
+
+            <Script
+              src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-1055239551457826"
+              strategy="afterInteractive"
+              crossOrigin="anonymous"
+            />
+          </>
+        )}
+
+        {gamEnabled && (
+          <Script
+            src="https://securepubads.g.doubleclick.net/tag/js/gpt.js"
+            strategy="afterInteractive"
+          />
+        )}
+      </body>
     </html>
   )
 }

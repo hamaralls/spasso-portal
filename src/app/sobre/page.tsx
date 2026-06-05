@@ -1,4 +1,5 @@
 import type { Metadata } from 'next'
+import Link from 'next/link'
 
 export const runtime = 'edge'
 
@@ -67,9 +68,9 @@ export default function SobrePage() {
         </p>
         <p>
           Para anúncios e publicidade:{' '}
-          <a href="/anuncie" className="text-[#f5821f] hover:underline">
+          <Link href="/anuncie" className="text-[#f5821f] hover:underline">
             acesse nossa página Anuncie
-          </a>
+          </Link>
           {' '}ou envie para{' '}
           <a href="mailto:comercial@jornalspassocidades.com.br" className="text-[#f5821f] hover:underline">
             comercial@jornalspassocidades.com.br

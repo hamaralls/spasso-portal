@@ -1,4 +1,5 @@
 import type { Metadata } from 'next'
+import Link from 'next/link'
 import ContactForm from '@/components/ContactForm'
 
 export const runtime = 'edge'
@@ -47,9 +48,9 @@ export default function ContatoPage() {
               comercial@jornalspassocidades.com.br
             </a>
             <div className="mt-2">
-              <a href="/anuncie" className="text-sm text-gray-400 hover:text-[#f5821f] underline">
+              <Link href="/anuncie" className="text-sm text-gray-400 hover:text-[#f5821f] underline">
                 Ver formatos e preços →
-              </a>
+              </Link>
             </div>
           </div>
 

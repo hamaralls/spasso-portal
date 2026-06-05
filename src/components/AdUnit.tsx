@@ -54,7 +54,7 @@ export function AdUnit({ slot, format, className, houseAd }: AdUnitProps) {
   }, [slot, format, divId])
 
   if (!NETWORK_CODE) {
-    return houseAd ? <HouseAd format={format} className={className} /> : null
+    return houseAd ? <HouseAd format={format} slot={slot} className={className} /> : null
   }
 
   return (

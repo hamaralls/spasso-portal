@@ -20,22 +20,6 @@ import type { ArticlePublico } from '@/types'
 export const runtime = 'edge'
 export const revalidate = 120
 
-const hasAds = !!process.env.NEXT_PUBLIC_GAM_NETWORK_CODE
-
-function BannerPlaceholder({ w, h }: { w: number; h: number }) {
-  if (hasAds) return null
-  return (
-    <div
-      style={{ width: w, height: h }}
-      className="bg-gray-50 border border-dashed border-gray-300 flex items-center justify-center text-xs text-gray-400 mx-auto"
-    >
-      <Link href="/anuncie-aqui" className="text-gray-400 hover:text-gray-600 transition-colors">
-        Anuncie Aqui
-      </Link>
-    </div>
-  )
-}
-
 function MetropolesGrid({ articles }: { articles: ArticlePublico[] }) {
   const a = articles
   if (a.length === 0) return null
@@ -270,8 +254,9 @@ function HomeSection({
           </div>
           <aside className="hidden lg:flex flex-col gap-4">
             {section.slug === 'rmc' && ultimaEdicao && <EdicaoSemanalWidget edition={ultimaEdicao} />}
-            {section.banner_slot && <AdUnit slot={section.banner_slot} format="rectangle" />}
-            {section.show_banner && <BannerPlaceholder w={300} h={250} />}
+            {section.show_banner && section.banner_slot && (
+              <AdUnit slot={section.banner_slot} format="rectangle" houseAd />
+            )}
           </aside>
         </div>
       </section>
@@ -325,8 +310,7 @@ function HomeSection({
       </section>
       {section.show_banner && section.banner_slot && (
         <div className="flex justify-center py-2">
-          <AdUnit slot={section.banner_slot} format="leaderboard" />
-          <BannerPlaceholder w={728} h={90} />
+          <AdUnit slot={section.banner_slot} format="leaderboard" houseAd />
         </div>
       )}
     </>

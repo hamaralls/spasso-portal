@@ -1,7 +1,7 @@
 'use client'
 
-import { useEffect, useRef } from 'react'
-import { HouseAd } from './HouseAd'
+import { useEffect, useId, useRef, useState } from 'react'
+import { fetchHouseAd, HouseAdCreative, type RemoteAd } from './HouseAd'
 
 declare global {
   interface Window {
@@ -23,8 +23,7 @@ interface AdUnitProps {
   slot: string
   format: AdFormat
   className?: string
-  /** Se true e GAM ainda não estiver configurado, renderiza a campanha vigente
-   *  (HouseAd) em vez de null. Quando GAM ativar, GAM toma o lugar automaticamente. */
+  /** Shows the local fallback image when there is no local campaign or GAM. */
   houseAd?: boolean
 }
 
@@ -36,12 +35,36 @@ const SIZES: Record<AdFormat, number[][]> = {
 const NETWORK_CODE = process.env.NEXT_PUBLIC_GAM_NETWORK_CODE
 
 export function AdUnit({ slot, format, className, houseAd }: AdUnitProps) {
-  const divId = `gpt-${slot}`
-  const registered = useRef(false)
+  const reactId = useId().replace(/[^a-zA-Z0-9_-]/g, '')
+  const divId = `gpt-${slot}-${reactId}`
+  const registeredSlot = useRef<string | null>(null)
+  const [localAd, setLocalAd] = useState<RemoteAd | null>(null)
+  const [localChecked, setLocalChecked] = useState(false)
 
   useEffect(() => {
-    if (!NETWORK_CODE || registered.current) return
-    registered.current = true
+    let alive = true
+    setLocalAd(null)
+    setLocalChecked(false)
+
+    fetchHouseAd(slot)
+      .then((ad) => {
+        if (alive) setLocalAd(ad)
+      })
+      .catch(() => {
+        if (alive) setLocalAd(null)
+      })
+      .finally(() => {
+        if (alive) setLocalChecked(true)
+      })
+
+    return () => {
+      alive = false
+    }
+  }, [slot])
+
+  useEffect(() => {
+    if (!localChecked || localAd || !NETWORK_CODE || registeredSlot.current === slot) return
+    registeredSlot.current = slot
 
     window.googletag = window.googletag || { cmd: [] }
     window.googletag.cmd.push(() => {
@@ -51,10 +74,26 @@ export function AdUnit({ slot, format, className, houseAd }: AdUnitProps) {
       window.googletag.enableServices()
       window.googletag.display(divId)
     })
-  }, [slot, format, divId])
+  }, [slot, format, divId, localAd, localChecked])
+
+  if (!localChecked) {
+    return <div className={className} aria-hidden />
+  }
+
+  if (localAd) {
+    return (
+      <div className={className}>
+        <HouseAdCreative ad={localAd} format={format} />
+      </div>
+    )
+  }
 
   if (!NETWORK_CODE) {
-    return houseAd ? <HouseAd format={format} slot={slot} className={className} /> : null
+    return houseAd ? (
+      <div className={className}>
+        <HouseAdCreative ad={null} format={format} />
+      </div>
+    ) : null
   }
 
   return (

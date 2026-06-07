@@ -63,6 +63,7 @@ const MOBILE_ITEMS = [
   { name: 'Empregos',              href: '/empregos' },
   { name: 'Estilo de Vida',        href: '/estilo-de-vida' },
   { name: 'Entretenimento',        href: '/eventos' },
+  { name: 'Segurança',             href: '/seguranca' },
   { name: 'Colunistas',            href: '/colunistas' },
   { name: 'Edição de Sexta',       href: '/edicao-de-sexta' },
   { name: 'Anuncie',               href: '/anuncie' },

@@ -11,11 +11,7 @@ function normalizeSlot(value: string | null): string {
   return 'middle'
 }
 
-export async function GET(request: Request) {
-  const url = new URL(request.url)
-  const slot = normalizeSlot(url.searchParams.get('slot'))
-  const now = new Date().toISOString()
-
+async function findActiveAd(slot: string, now: string) {
   const { data, error } = await getSupabase()
     .from('house_ads')
     .select('id, name, image_url, link_url, slot')
@@ -26,6 +22,21 @@ export async function GET(request: Request) {
     .order('starts_at', { ascending: false })
     .limit(1)
 
-  if (error || !data?.[0]) return Response.json({ ad: null, slot })
-  return Response.json({ ad: data[0], slot })
+  if (error || !data?.[0]) return null
+  return data[0]
+}
+
+export async function GET(request: Request) {
+  const url = new URL(request.url)
+  const requestedSlot = url.searchParams.get('slot') ?? 'middle'
+  const normalizedSlot = normalizeSlot(requestedSlot)
+  const now = new Date().toISOString()
+
+  const exactAd = await findActiveAd(requestedSlot, now)
+  if (exactAd) return Response.json({ ad: exactAd, slot: requestedSlot, normalizedSlot })
+
+  const fallbackAd = requestedSlot === normalizedSlot ? null : await findActiveAd(normalizedSlot, now)
+  if (!fallbackAd) return Response.json({ ad: null, slot: requestedSlot, normalizedSlot })
+
+  return Response.json({ ad: fallbackAd, slot: requestedSlot, normalizedSlot })
 }

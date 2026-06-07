@@ -373,14 +373,15 @@ export default async function SlugPage({ params, searchParams }: Props) {
                 </figure>
               )}
 
-              {/* Banner meio-artigo */}
-              <AdUnit slot="artigo-meio" format="rectangle" fallbackSlot="middle" className="flex justify-center my-6" />
 
               {/* Conteúdo */}
               <div
                 className="prose-spasso"
                 dangerouslySetInnerHTML={{ __html: htmlContent }}
               />
+
+              {/* Banner pos-texto */}
+              <AdUnit slot="artigo-meio" format="leaderboard" fallbackSlot="middle" className="flex justify-center my-8" />
 
               {/* Badge de origem — só para conteúdo de terceiros sem colunista cadastrado */}
               {artigo.origin_badge && !colData && (
@@ -393,7 +394,7 @@ export default async function SlugPage({ params, searchParams }: Props) {
               )}
 
               {/* Banner fim-artigo */}
-              <AdUnit slot="artigo-fim" format="rectangle" className="flex justify-center my-6" />
+              <AdUnit slot="artigo-fim" format="leaderboard" className="flex justify-center my-6" />
 
               {/* Perfil do colunista */}
               {colData && (

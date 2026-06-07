@@ -44,6 +44,11 @@ interface HouseAdCreativeProps {
   format: AdFormat
 }
 
+const REMOTE_IMAGE_CLASS: Record<AdFormat, string> = {
+  leaderboard: 'mx-auto block h-auto w-full max-w-[728px] max-h-[180px] object-contain',
+  rectangle: 'mx-auto block h-auto w-full max-w-[300px] max-h-[600px] object-contain',
+}
+
 export async function fetchHouseAd(slot: string, fallbackSlot?: string | null): Promise<RemoteAd | null> {
   const params = new URLSearchParams({ slot })
   if (fallbackSlot) params.set('fallbackSlot', fallbackSlot)
@@ -61,7 +66,7 @@ export function HouseAdCreative({ ad, format }: HouseAdCreativeProps) {
     <img
       src={ad.image_url}
       alt={ad.name}
-      className="mx-auto h-auto max-h-[600px] max-w-full object-contain"
+      className={REMOTE_IMAGE_CLASS[format]}
     />
   ) : (
     <Image

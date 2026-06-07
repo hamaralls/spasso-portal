@@ -23,6 +23,7 @@ interface AdUnitProps {
   slot: string
   format: AdFormat
   className?: string
+  fallbackSlot?: string
   /** Shows the local fallback image when there is no local campaign or GAM. */
   houseAd?: boolean
 }
@@ -34,7 +35,7 @@ const SIZES: Record<AdFormat, number[][]> = {
 
 const NETWORK_CODE = process.env.NEXT_PUBLIC_GAM_NETWORK_CODE
 
-export function AdUnit({ slot, format, className, houseAd }: AdUnitProps) {
+export function AdUnit({ slot, format, className, fallbackSlot, houseAd }: AdUnitProps) {
   const reactId = useId().replace(/[^a-zA-Z0-9_-]/g, '')
   const divId = `gpt-${slot}-${reactId}`
   const registeredSlot = useRef<string | null>(null)
@@ -46,7 +47,7 @@ export function AdUnit({ slot, format, className, houseAd }: AdUnitProps) {
     setLocalAd(null)
     setLocalChecked(false)
 
-    fetchHouseAd(slot)
+    fetchHouseAd(slot, fallbackSlot)
       .then((ad) => {
         if (alive) setLocalAd(ad)
       })
@@ -60,7 +61,7 @@ export function AdUnit({ slot, format, className, houseAd }: AdUnitProps) {
     return () => {
       alive = false
     }
-  }, [slot])
+  }, [slot, fallbackSlot])
 
   useEffect(() => {
     if (!localChecked || localAd || !NETWORK_CODE || registeredSlot.current === slot) return

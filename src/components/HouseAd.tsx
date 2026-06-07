@@ -44,8 +44,11 @@ interface HouseAdCreativeProps {
   format: AdFormat
 }
 
-export async function fetchHouseAd(slot: string): Promise<RemoteAd | null> {
-  const res = await fetch(`/api/house-ads?slot=${encodeURIComponent(slot)}`)
+export async function fetchHouseAd(slot: string, fallbackSlot?: string | null): Promise<RemoteAd | null> {
+  const params = new URLSearchParams({ slot })
+  if (fallbackSlot) params.set('fallbackSlot', fallbackSlot)
+
+  const res = await fetch(`/api/house-ads?${params.toString()}`)
   if (!res.ok) return null
   const json = (await res.json()) as HouseAdApiResponse
   return json.ad ?? null

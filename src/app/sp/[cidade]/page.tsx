@@ -131,7 +131,7 @@ export default async function CidadePage({ params, searchParams }: Props) {
         </div>
 
         <aside className="hidden lg:block lg:sticky lg:top-4">
-          <AdUnit slot="cidade-sidebar" format="rectangle" />
+          <AdUnit slot="cidade-sidebar" format="rectangle" fallbackSlot="sidebar" />
         </aside>
       </div>
     </div>

@@ -183,7 +183,7 @@ export default async function SlugPage({ params, searchParams }: Props) {
           </div>
 
           <aside className="hidden lg:block lg:sticky lg:top-4">
-            <AdUnit slot="categoria-sidebar" format="rectangle" />
+            <AdUnit slot="categoria-sidebar" format="rectangle" fallbackSlot="sidebar" />
           </aside>
         </div>
       </div>
@@ -374,7 +374,7 @@ export default async function SlugPage({ params, searchParams }: Props) {
               )}
 
               {/* Banner meio-artigo */}
-              <AdUnit slot="artigo-meio" format="rectangle" className="flex justify-center my-6" />
+              <AdUnit slot="artigo-meio" format="rectangle" fallbackSlot="middle" className="flex justify-center my-6" />
 
               {/* Conteúdo */}
               <div
@@ -493,7 +493,7 @@ export default async function SlugPage({ params, searchParams }: Props) {
               )}
 
               {/* Banner sidebar artigo */}
-              <AdUnit slot="artigo-sidebar" format="rectangle" houseAd className="flex justify-center" />
+              <AdUnit slot="artigo-sidebar" format="rectangle" fallbackSlot="sidebar" houseAd className="flex justify-center" />
 
               {/* Veja Também */}
               {relacionados.length > 0 && (

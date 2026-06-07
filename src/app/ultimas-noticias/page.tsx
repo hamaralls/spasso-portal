@@ -67,7 +67,7 @@ export default async function UltimasNoticiasPage({ searchParams }: Props) {
         </div>
 
         <aside className="hidden lg:block lg:sticky lg:top-4">
-          <AdUnit slot="ultimas-sidebar" format="rectangle" />
+          <AdUnit slot="ultimas-sidebar" format="rectangle" fallbackSlot="sidebar" />
         </aside>
       </div>
     </div>

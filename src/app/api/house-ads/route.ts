@@ -2,15 +2,6 @@ import { getSupabase } from '@/lib/supabase/edge'
 
 export const runtime = 'edge'
 
-function normalizeSlot(value: string | null): string {
-  const slot = (value ?? '').toLowerCase()
-  if (slot.includes('sidebar')) return 'sidebar'
-  if (slot.includes('below') || slot.includes('article')) return 'below_article'
-  if (slot.includes('footer')) return 'footer'
-  if (slot.includes('top') || slot.includes('leaderboard')) return 'top'
-  return 'middle'
-}
-
 async function findActiveAd(slot: string, now: string) {
   const { data, error } = await getSupabase()
     .from('house_ads')
@@ -29,14 +20,27 @@ async function findActiveAd(slot: string, now: string) {
 export async function GET(request: Request) {
   const url = new URL(request.url)
   const requestedSlot = url.searchParams.get('slot') ?? 'middle'
-  const normalizedSlot = normalizeSlot(requestedSlot)
+  const fallbackSlot = url.searchParams.get('fallbackSlot')
   const now = new Date().toISOString()
 
   const exactAd = await findActiveAd(requestedSlot, now)
-  if (exactAd) return Response.json({ ad: exactAd, slot: requestedSlot, normalizedSlot })
+  if (exactAd) {
+    return Response.json({
+      ad: exactAd,
+      slot: requestedSlot,
+      fallbackSlot,
+      matchedSlot: requestedSlot,
+    })
+  }
 
-  const fallbackAd = requestedSlot === normalizedSlot ? null : await findActiveAd(normalizedSlot, now)
-  if (!fallbackAd) return Response.json({ ad: null, slot: requestedSlot, normalizedSlot })
+  const fallbackAd = fallbackSlot && fallbackSlot !== requestedSlot
+    ? await findActiveAd(fallbackSlot, now)
+    : null
 
-  return Response.json({ ad: fallbackAd, slot: requestedSlot, normalizedSlot })
+  return Response.json({
+    ad: fallbackAd,
+    slot: requestedSlot,
+    fallbackSlot,
+    matchedSlot: fallbackAd ? fallbackSlot : null,
+  })
 }

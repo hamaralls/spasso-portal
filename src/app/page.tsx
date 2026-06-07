@@ -110,15 +110,26 @@ export default async function Home() {
     <>
       <Hero articles={hero} />
       <div className="max-w-7xl mx-auto px-4 py-8 space-y-12">
-        {sectionData.map(({ section, articles }) => (
-          <HomeSection
-            key={section.slug}
-            section={section}
-            articles={articles}
-            colunistas={colunistas}
-            ultimaEdicao={ultimaEdicao}
-          />
-        ))}
+        {(() => {
+          let usedSidebarFallback = false
+          return sectionData.map(({ section, articles }) => {
+            const allowSidebarFallback = section.layout === 'metropoles-sidebar'
+              && section.show_banner
+              && !usedSidebarFallback
+            if (allowSidebarFallback) usedSidebarFallback = true
+
+            return (
+              <HomeSection
+                key={section.slug}
+                section={section}
+                articles={articles}
+                colunistas={colunistas}
+                ultimaEdicao={ultimaEdicao}
+                allowSidebarFallback={allowSidebarFallback}
+              />
+            )
+          })
+        })()}
       </div>
     </>
   )
@@ -206,11 +217,13 @@ function HomeSection({
   articles,
   colunistas,
   ultimaEdicao,
+  allowSidebarFallback,
 }: {
   section: HomeSectionConfig
   articles: ArticlePublico[]
   colunistas: Awaited<ReturnType<typeof getColunistas>>
   ultimaEdicao: Awaited<ReturnType<typeof getUltimaEdicao>>
+  allowSidebarFallback: boolean
 }) {
   if (section.layout === 'columnists') {
     return (
@@ -229,7 +242,11 @@ function HomeSection({
             </div>
           </section>
         )}
-        <SocialAndAd slot={section.banner_slot ?? 'home-leaderboard'} showAd={section.show_banner} />
+        <SocialAndAd
+          slot={section.banner_slot ?? 'home-leaderboard'}
+          showAd={section.show_banner}
+          fallbackSlot="middle"
+        />
       </>
     )
   }
@@ -255,7 +272,12 @@ function HomeSection({
           <aside className="hidden lg:flex flex-col gap-4">
             {section.slug === 'rmc' && ultimaEdicao && <EdicaoSemanalWidget edition={ultimaEdicao} />}
             {section.show_banner && section.banner_slot && (
-              <AdUnit slot={section.banner_slot} format="rectangle" houseAd />
+              <AdUnit
+                slot={section.banner_slot}
+                format="rectangle"
+                fallbackSlot={allowSidebarFallback ? 'sidebar' : undefined}
+                houseAd
+              />
             )}
           </aside>
         </div>
@@ -351,12 +373,12 @@ function ColumnistCard({ col }: { col: Awaited<ReturnType<typeof getColunistas>>
   )
 }
 
-function SocialAndAd({ slot, showAd }: { slot: string; showAd: boolean }) {
+function SocialAndAd({ slot, showAd, fallbackSlot }: { slot: string; showAd: boolean; fallbackSlot?: string }) {
   return (
     <div className="flex flex-col xl:flex-row items-center justify-center gap-8 py-4">
       {showAd && (
         <div className="flex justify-center shrink-0">
-          <AdUnit slot={slot} format="leaderboard" houseAd />
+          <AdUnit slot={slot} format="leaderboard" fallbackSlot={fallbackSlot} houseAd />
         </div>
       )}
       <div className="flex flex-col sm:flex-row items-center justify-center gap-3">
